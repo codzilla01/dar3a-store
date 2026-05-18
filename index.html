@@ -1,0 +1,2167 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Dar3a Store — درعة ستور</title>
+    <meta name="description" content="متجر درعة ستور - أفضل الأفلام والمسلسلات والبرامج الهندسية">
+    <meta name="theme-color" content="#0a0e17">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <style>
+        /* ===== 🌐 CSS CUSTOM PROPERTIES ===== */
+        :root {
+            --font-main: 'Tajawal', -apple-system, BlinkMacSystemFont, sans-serif;
+            --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-med: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-slow: 0.55s cubic-bezier(0.34, 1.56, 0.64, 1);
+            --bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+            --radius-xs: 6px;
+            --radius-sm: 10px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --radius-xl: 32px;
+            --radius-full: 9999px;
+            --nav-height: 68px;
+            --safe-bottom: env(safe-area-inset-bottom, 0px);
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #070b14;
+            --bg-secondary: #0e1422;
+            --bg-tertiary: #161e30;
+            --bg-card: linear-gradient(145deg, #121927 0%, #0f1525 100%);
+            --bg-elevated: #1a2238;
+            --bg-glass: rgba(18, 25, 39, 0.78);
+            --glass-border: rgba(255, 255, 255, 0.06);
+            --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+            --text-primary: #eef2f8;
+            --text-secondary: #94a3b8;
+            --text-muted: #5c6b83;
+            --border-color: #1a2337;
+            --border-light: #263048;
+            --accent: #e63946;
+            --accent-soft: rgba(230, 57, 70, 0.12);
+            --accent-hover: #ff4757;
+            --accent-glow: rgba(230, 57, 70, 0.2);
+            --accent-gradient: linear-gradient(135deg, #e63946 0%, #ff6b6b 100%);
+            --green: #22c55e;
+            --green-soft: rgba(34, 197, 94, 0.12);
+            --amber: #f59e0b;
+            --blue: #3b82f6;
+            --purple: #8b5cf6;
+            --gradient-hero: linear-gradient(165deg, #070b14 0%, #0e1a2e 50%, #0d1117 100%);
+            --gradient-card-hover: linear-gradient(145deg, #1a2440 0%, #141e34 100%);
+            --nav-bg: rgba(7, 11, 20, 0.88);
+            --shimmer: linear-gradient(90deg, transparent, rgba(255,255,255,0.04), transparent);
+            --scrollbar-thumb: linear-gradient(180deg, var(--accent), #ff6b6b);
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+            --shadow-md: 0 4px 16px rgba(0,0,0,0.25);
+            --shadow-lg: 0 12px 48px rgba(0,0,0,0.4);
+            --shadow-glow: 0 0 20px var(--accent-glow);
+        }
+
+        [data-theme="light"] {
+            --bg-primary: #f6f8fc;
+            --bg-secondary: #ffffff;
+            --bg-tertiary: #f0f4fa;
+            --bg-card: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+            --bg-elevated: #ffffff;
+            --bg-glass: rgba(255, 255, 255, 0.82);
+            --glass-border: rgba(148, 163, 184, 0.2);
+            --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+            --text-primary: #0b1424;
+            --text-secondary: #475569;
+            --text-muted: #94a3b8;
+            --border-color: #e2e8f0;
+            --border-light: #f0f4fa;
+            --accent: #d32f2f;
+            --accent-soft: rgba(211, 47, 47, 0.08);
+            --accent-hover: #b71c1c;
+            --accent-glow: rgba(211, 47, 47, 0.12);
+            --accent-gradient: linear-gradient(135deg, #d32f2f 0%, #ff5252 100%);
+            --green: #16a34a;
+            --green-soft: rgba(22, 163, 74, 0.08);
+            --amber: #d97706;
+            --blue: #2563eb;
+            --purple: #7c3aed;
+            --gradient-hero: linear-gradient(165deg, #0b1424 0%, #1a2a4a 50%, #162032 100%);
+            --gradient-card-hover: linear-gradient(145deg, #ffffff 0%, #f0f4fa 100%);
+            --nav-bg: rgba(255, 255, 255, 0.9);
+            --shimmer: linear-gradient(90deg, transparent, rgba(0,0,0,0.03), transparent);
+            --scrollbar-thumb: linear-gradient(180deg, #d32f2f, #ff5252);
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+            --shadow-md: 0 4px 16px rgba(0,0,0,0.08);
+            --shadow-lg: 0 12px 48px rgba(0,0,0,0.1);
+            --shadow-glow: 0 0 20px rgba(211, 47, 47, 0.15);
+        }
+
+        /* ===== 🌐 RESET & BASE ===== */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; font-size: 16px; -webkit-tap-highlight-color: transparent; }
+        body {
+            font-family: var(--font-main);
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
+            transition: background-color var(--transition-med), color var(--transition-med);
+            overflow-x: hidden;
+            min-height: 100dvh;
+        }
+
+        ::selection { background: var(--accent); color: #fff; }
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: var(--bg-secondary); }
+        ::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 10px; }
+        :focus-visible { outline: 2.5px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+
+        .container { width: 100%; max-width: 1320px; margin: 0 auto; padding: 0 clamp(14px, 3vw, 32px); }
+
+        /* ===== 🚀 NAVIGATION — Modern, Compact, Thumb-Friendly ===== */
+        .navbar {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            height: var(--nav-height);
+            background: var(--nav-bg);
+            backdrop-filter: blur(20px) saturate(1.4);
+            -webkit-backdrop-filter: blur(20px) saturate(1.4);
+            border-bottom: 1px solid var(--glass-border);
+            display: flex; align-items: center;
+            transition: background var(--transition-med);
+        }
+        .navbar .container { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+
+        .nav-logo {
+            display: flex; align-items: center; gap: 10px;
+            text-decoration: none; color: var(--text-primary);
+            font-weight: 900; font-size: 1.2rem;
+            cursor: pointer; user-select: none; position: relative;
+            flex-shrink: 0;
+        }
+        .nav-logo .logo-icon {
+            width: 40px; height: 40px;
+            background: var(--accent-gradient);
+            border-radius: var(--radius-sm);
+            display: flex; align-items: center; justify-content: center;
+            color: #fff; font-size: 1.1rem;
+            box-shadow: 0 4px 16px var(--accent-glow);
+            transition: transform var(--transition-slow), box-shadow var(--transition-med);
+        }
+        .nav-logo:hover .logo-icon { transform: scale(1.08) rotate(-5deg); }
+        .nav-logo .logo-text { display: none; }
+
+        @media (min-width: 480px) {
+            .nav-logo .logo-text { display: inline; }
+        }
+
+        .nav-links { display: flex; align-items: center; gap: 2px; list-style: none; }
+        .nav-links a {
+            text-decoration: none; color: var(--text-secondary);
+            padding: 8px 14px; border-radius: var(--radius-full);
+            transition: all var(--transition-fast);
+            font-weight: 600; font-size: 0.82rem;
+            white-space: nowrap; position: relative;
+        }
+        .nav-links a::after {
+            content: ''; position: absolute; bottom: 4px; left: 50%; transform: translateX(-50%);
+            width: 0; height: 2.5px; border-radius: 2px;
+            background: var(--accent-gradient);
+            transition: width var(--transition-med);
+        }
+        .nav-links a:hover::after,
+        .nav-links a.active::after { width: 60%; }
+        .nav-links a:hover, .nav-links a.active { color: var(--text-primary); }
+
+        .nav-actions { display: flex; align-items: center; gap: 4px; }
+
+        .nav-btn {
+            width: 38px; height: 38px; border-radius: 50%;
+            border: 1px solid var(--border-color);
+            background: var(--bg-glass);
+            color: var(--text-primary);
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.9rem;
+            transition: all var(--transition-fast);
+            position: relative;
+            backdrop-filter: blur(8px);
+        }
+        .nav-btn:hover { border-color: var(--accent); color: var(--accent); box-shadow: var(--shadow-glow); }
+        .nav-btn:active { transform: scale(0.9); }
+
+        .badge-dot {
+            position: absolute; top: -3px; right: -3px;
+            width: 18px; height: 18px; border-radius: 50%;
+            background: var(--accent-gradient);
+            color: #fff; font-size: 0.6rem; font-weight: 800;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 2px 8px rgba(230,57,70,0.5);
+            border: 2px solid var(--bg-primary);
+        }
+
+        .hamburger { display: none; background: none; border: none; color: var(--text-primary); font-size: 1.4rem; cursor: pointer; padding: 6px; }
+
+        /* ===== 🌟 MOBILE BOTTOM NAV ===== */
+        .bottom-nav {
+            display: none;
+            position: fixed; bottom: 0; left: 0; right: 0; z-index: 999;
+            background: var(--nav-bg);
+            backdrop-filter: blur(20px) saturate(1.4);
+            -webkit-backdrop-filter: blur(20px) saturate(1.4);
+            border-top: 1px solid var(--glass-border);
+            padding: 4px 0 calc(4px + var(--safe-bottom));
+            height: calc(60px + var(--safe-bottom));
+        }
+        .bottom-nav-inner { display: flex; justify-content: space-around; align-items: center; height: 100%; }
+        .bottom-nav-link {
+            display: flex; flex-direction: column; align-items: center;
+            gap: 2px; text-decoration: none; color: var(--text-muted);
+            font-size: 0.6rem; font-weight: 600;
+            padding: 4px 12px; border-radius: var(--radius-sm);
+            transition: all var(--transition-fast);
+            position: relative;
+        }
+        .bottom-nav-link i { font-size: 1.2rem; transition: var(--transition-fast); }
+        .bottom-nav-link.active { color: var(--accent); }
+        .bottom-nav-link.active i { transform: translateY(-2px); }
+        .bottom-nav-link .badge-dot { top: 0; right: 4px; width: 16px; height: 16px; font-size: 0.5rem; border-width: 1.5px; }
+
+        /* ===== 🔐 SECRET PRESS PROGRESS BAR ===== */
+        .secret-press-bar {
+            position: fixed; top: 0; left: 0; right: 0; height: 3px;
+            z-index: 10001; pointer-events: none;
+            opacity: 0; transition: opacity 0.2s;
+        }
+        .secret-press-bar.active { opacity: 1; }
+        .secret-press-bar .fill {
+            height: 100%; width: 0%;
+            background: var(--accent-gradient);
+            box-shadow: 0 0 12px rgba(230, 57, 70, 0.7);
+            border-radius: 0 3px 3px 0;
+        }
+
+        .secret-hint {
+            position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
+            background: rgba(0,0,0,0.92); color: #fff;
+            padding: 10px 22px; border-radius: var(--radius-full);
+            font-size: 0.85rem; z-index: 10002;
+            opacity: 0; pointer-events: none; transform: translateX(-50%) translateY(10px);
+            transition: all var(--transition-med);
+            font-family: var(--font-main); white-space: nowrap;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+        }
+        .secret-hint.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+        /* ===== 🎬 HERO ===== */
+        .hero {
+            background: var(--gradient-hero); color: #fff;
+            padding: calc(var(--nav-height) + clamp(50px, 8vw, 90px)) 0 clamp(60px, 10vw, 100px);
+            text-align: center;
+            position: relative; overflow: hidden;
+        }
+        .hero::before {
+            content: '';
+            position: absolute; width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(230,57,70,0.07) 0%, transparent 70%);
+            top: -200px; right: -200px; border-radius: 50%;
+            pointer-events: none;
+            animation: heroFloat 12s ease-in-out infinite;
+        }
+        .hero::after {
+            content: '';
+            position: absolute; width: 400px; height: 400px;
+            background: radial-gradient(circle, rgba(59,130,246,0.05) 0%, transparent 70%);
+            bottom: -100px; left: -100px; border-radius: 50%;
+            pointer-events: none;
+            animation: heroFloat 8s ease-in-out infinite reverse;
+        }
+        @keyframes heroFloat {
+            0%,100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(-20px, 25px) scale(1.05); }
+            66% { transform: translate(15px, -15px) scale(0.95); }
+        }
+        .hero h1 {
+            font-size: clamp(1.8rem, 5vw, 3.2rem);
+            font-weight: 900; margin-bottom: 14px; line-height: 1.2;
+            position: relative; z-index: 1;
+        }
+        .hero h1 .accent-text {
+            background: var(--accent-gradient);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero p {
+            font-size: clamp(0.95rem, 1.5vw, 1.1rem);
+            opacity: 0.8; max-width: 580px; margin: 0 auto 30px;
+            position: relative; z-index: 1;
+        }
+        .hero-btns {
+            display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+            position: relative; z-index: 1;
+        }
+
+        /* ===== 🎯 BUTTON SYSTEM ===== */
+        .btn {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 12px 28px; border-radius: var(--radius-full);
+            font-weight: 700; text-decoration: none; cursor: pointer;
+            border: none; font-family: inherit; font-size: 0.92rem;
+            transition: all var(--transition-med);
+            white-space: nowrap; position: relative;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .btn:active { transform: scale(0.96); }
+        .btn-primary { background: var(--accent-gradient); color: #fff; box-shadow: 0 4px 20px var(--accent-glow); }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(230,57,70,0.45); }
+        .btn-outline {
+            background: transparent; color: var(--text-primary);
+            border: 2px solid var(--border-color);
+        }
+        .btn-outline:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+        .btn-ghost { background: var(--accent-soft); color: var(--accent); border: none; }
+        .btn-ghost:hover { background: var(--accent-soft); filter: brightness(1.1); }
+        .btn-whatsapp { background: #25D366; color: #fff; }
+        .btn-whatsapp:hover { background: #1ebe57; transform: translateY(-2px); }
+        .btn-sm { padding: 8px 18px; font-size: 0.82rem; }
+        .btn-icon { width: 42px; height: 42px; padding: 0; justify-content: center; border-radius: 50%; }
+
+        /* ===== 📦 SECTION LAYOUT ===== */
+        .section { padding: 60px 0; }
+        .section-alt { background: var(--bg-secondary); }
+        .section-header {
+            text-align: center; margin-bottom: 40px;
+            animation: fadeUp 0.6s ease both;
+        }
+        .section-header h2 {
+            font-size: clamp(1.5rem, 3vw, 2rem);
+            font-weight: 900;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+        }
+        .section-header p { color: var(--text-muted); font-size: 0.95rem; margin-top: 6px; }
+        .section-line {
+            width: 60px; height: 3.5px;
+            background: var(--accent-gradient);
+            border-radius: 3px; margin: 12px auto 0;
+        }
+
+        /* ===== 🃏 PRODUCT CARDS — State-of-the-Art ===== */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr));
+            gap: 24px;
+        }
+
+        .product-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            border: 1px solid var(--glass-border);
+            transition: all var(--transition-med);
+            display: flex; flex-direction: column;
+            cursor: pointer;
+            box-shadow: var(--shadow-sm);
+            position: relative;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            animation: cardFadeIn 0.5s ease both;
+        }
+        .product-card:nth-child(1) { animation-delay: 0.05s; }
+        .product-card:nth-child(2) { animation-delay: 0.1s; }
+        .product-card:nth-child(3) { animation-delay: 0.15s; }
+        .product-card:nth-child(4) { animation-delay: 0.2s; }
+        .product-card:nth-child(5) { animation-delay: 0.25s; }
+        .product-card:nth-child(6) { animation-delay: 0.3s; }
+
+        @keyframes cardFadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .product-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-lg), 0 0 0 1px var(--accent) inset;
+            background: var(--gradient-card-hover);
+        }
+
+        .product-card::before {
+            content: '';
+            position: absolute; top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: var(--shimmer);
+            transition: left 0.8s;
+            z-index: 1; pointer-events: none;
+        }
+        .product-card:hover::before { left: 100%; }
+
+        .product-card-image {
+            position: relative; height: 220px; overflow: hidden;
+            background: var(--bg-tertiary);
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+        .product-card-image img {
+            width: 100%; height: 100%; object-fit: cover;
+            transition: transform var(--transition-slow);
+        }
+        .product-card:hover .product-card-image img { transform: scale(1.08); }
+
+        .product-badges {
+            position: absolute; top: 12px; right: 12px;
+            display: flex; flex-direction: column; gap: 6px; z-index: 2;
+        }
+        .badge {
+            padding: 4px 12px; border-radius: var(--radius-full);
+            font-size: 0.68rem; font-weight: 700;
+            backdrop-filter: blur(8px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            color: #fff; letter-spacing: 0.3px;
+        }
+        .badge-new { background: linear-gradient(135deg, #22c55e, #16a34a); }
+        .badge-sale {
+            background: var(--accent-gradient);
+            animation: badgePulse 2s infinite;
+        }
+        .badge-frameless { background: linear-gradient(135deg, #06b6d4, #0891b2); }
+        .badge-curved { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
+        .badge-gaming { background: linear-gradient(135deg, #f59e0b, #d97706); }
+        .badge-monitor { background: #22c55e; }
+
+        @keyframes badgePulse {
+            0%,100% { box-shadow: 0 0 0 0 rgba(230,57,70,0.4); }
+            50% { box-shadow: 0 0 0 10px rgba(230,57,70,0); }
+        }
+
+        .product-quick-actions {
+            position: absolute; top: 12px; left: 12px;
+            display: flex; flex-direction: column; gap: 6px;
+            opacity: 0; transform: translateX(-12px);
+            transition: all var(--transition-med); z-index: 2;
+        }
+        .product-card:hover .product-quick-actions { opacity: 1; transform: translateX(0); }
+
+        .quick-action-btn {
+            width: 34px; height: 34px; border-radius: 50%;
+            border: 1px solid rgba(255,255,255,0.25);
+            background: rgba(0,0,0,0.5); backdrop-filter: blur(8px);
+            color: #fff; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.8rem;
+            transition: all var(--transition-fast);
+        }
+        .quick-action-btn:hover { background: var(--accent); border-color: var(--accent); }
+        .quick-action-btn.active { background: #ef4444; border-color: #ef4444; }
+
+        .product-card-body {
+            padding: 18px; flex-grow: 1;
+            display: flex; flex-direction: column; gap: 8px;
+            position: relative; z-index: 2;
+        }
+        .product-card-body .brand {
+            color: var(--text-muted); font-size: 0.75rem;
+            font-weight: 500; text-transform: uppercase; letter-spacing: 1px;
+        }
+        .product-card-body h3 { font-size: 1rem; font-weight: 700; line-height: 1.35; }
+
+        .specs-pills { display: flex; flex-wrap: wrap; gap: 4px; }
+        .spec-pill {
+            background: var(--bg-tertiary);
+            padding: 3px 8px; border-radius: var(--radius-full);
+            font-size: 0.68rem; color: var(--text-secondary);
+            border: 1px solid var(--border-light);
+        }
+
+        .product-price-row {
+            display: flex; align-items: baseline; gap: 8px;
+            margin-top: auto; padding-top: 6px;
+        }
+        .product-price { font-size: 1.35rem; font-weight: 900; color: var(--accent); }
+        .product-price-old { font-size: 0.78rem; color: var(--text-muted); text-decoration: line-through; }
+        .product-discount { font-size: 0.7rem; color: var(--green); font-weight: 700; }
+
+        .add-to-cart-btn {
+            width: 100%; padding: 10px; border-radius: var(--radius-sm);
+            background: var(--accent-gradient); color: #fff;
+            border: none; cursor: pointer;
+            font-weight: 700; font-family: inherit; font-size: 0.85rem;
+            transition: all var(--transition-fast);
+            display: flex; align-items: center; justify-content: center; gap: 6px;
+            margin-top: 6px; position: relative; overflow: hidden;
+        }
+        .add-to-cart-btn:hover { transform: translateY(-2px); box-shadow: var(--shadow-glow); }
+        .add-to-cart-btn:active { transform: scale(0.97); }
+        .add-to-cart-btn.in-cart { background: var(--green); }
+
+        /* ===== 🏷️ MONITOR FILTER TABS ===== */
+        .filter-tabs {
+            display: flex; justify-content: center; gap: 6px;
+            margin-bottom: 28px; flex-wrap: wrap;
+        }
+        .filter-tab {
+            padding: 7px 18px; border-radius: var(--radius-full);
+            cursor: pointer; font-weight: 600; font-size: 0.82rem;
+            font-family: var(--font-main);
+            border: 1.5px solid var(--border-color);
+            background: transparent;
+            color: var(--text-secondary);
+            transition: all var(--transition-fast);
+            -webkit-tap-highlight-color: transparent;
+        }
+        .filter-tab:hover { border-color: var(--accent); color: var(--text-primary); }
+        .filter-tab.active {
+            border-color: var(--accent); color: #fff;
+            background: var(--accent-gradient);
+            box-shadow: 0 4px 16px var(--accent-glow);
+        }
+
+        /* ===== 🛠️ PC BUILDER ===== */
+        .pc-builder-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 28px; align-items: start;
+        }
+        .pc-components { display: flex; flex-direction: column; gap: 8px; }
+        .pc-select {
+            background: var(--bg-card);
+            border: 1.5px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 14px; cursor: pointer;
+            transition: all var(--transition-fast);
+            display: flex; align-items: center; gap: 12px;
+        }
+        .pc-select:hover { border-color: var(--accent); box-shadow: 0 4px 16px var(--accent-glow); }
+        .pc-select.selected { border-color: var(--green); background: var(--green-soft); }
+        .pc-select .pc-icon {
+            width: 40px; height: 40px; border-radius: 50%;
+            background: var(--bg-tertiary);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.1rem; transition: var(--transition-fast);
+            flex-shrink: 0;
+        }
+        .pc-select.selected .pc-icon { background: var(--green); color: #fff; }
+        .pc-options {
+            display: none;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            overflow: hidden; max-height: 240px; overflow-y: auto;
+        }
+        .pc-option {
+            padding: 10px 14px; cursor: pointer;
+            display: flex; justify-content: space-between;
+            border-bottom: 1px solid var(--border-light);
+            font-size: 0.82rem; transition: background var(--transition-fast);
+        }
+        .pc-option:hover { background: var(--accent-soft); }
+        .pc-option:last-child { border-bottom: none; }
+        .pc-option .option-price { color: var(--accent); font-weight: 700; }
+
+        .pc-summary-card {
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            position: sticky; top: calc(var(--nav-height) + 20px);
+            box-shadow: var(--shadow-md);
+            backdrop-filter: blur(12px);
+        }
+        .pc-summary-card h3 { margin-bottom: 16px; font-size: 1.1rem; }
+        .pc-summary-list { list-style: none; }
+        .pc-summary-list li {
+            display: flex; justify-content: space-between;
+            padding: 8px 0; border-bottom: 1px solid var(--border-light);
+            font-size: 0.85rem;
+        }
+        .pc-total {
+            font-size: 1.6rem; font-weight: 900; text-align: center;
+            color: var(--accent); padding: 16px 0;
+            border-top: 2px solid var(--border-color); margin-top: 8px;
+        }
+
+        /* ===== 🪟 PRODUCT MODAL ===== */
+        .modal-overlay {
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.75);
+            z-index: 5000;
+            display: none; align-items: center; justify-content: center;
+            padding: 16px;
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+        }
+        .modal-overlay.open { display: flex; }
+
+        .modal-content {
+            background: var(--bg-card);
+            border-radius: var(--radius-xl);
+            width: 100%; max-width: 880px;
+            max-height: 90dvh;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--shadow-lg);
+            animation: modalSlideUp 0.4s var(--bounce);
+            position: relative;
+            overflow: hidden;
+        }
+        @keyframes modalSlideUp {
+            from { opacity: 0; transform: translateY(40px) scale(0.96); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .modal-close {
+            position: absolute; top: 12px; left: 12px; z-index: 10;
+            width: 34px; height: 34px; border-radius: 50%;
+            background: rgba(0,0,0,0.5); backdrop-filter: blur(8px);
+            border: 2px solid rgba(255,255,255,0.25);
+            color: #fff; cursor: pointer;
+            font-size: 1.1rem;
+            display: flex; align-items: center; justify-content: center;
+            transition: all var(--transition-fast);
+        }
+        .modal-close:hover { background: var(--accent); border-color: var(--accent); transform: rotate(90deg); }
+
+        .modal-image {
+            min-height: 340px;
+            background: var(--bg-tertiary);
+            display: flex; align-items: center; justify-content: center;
+            overflow: hidden; position: relative;
+        }
+        .modal-image img {
+            width: 100%; height: 100%;
+            object-fit: cover; position: absolute; inset: 0;
+        }
+        .modal-image .image-placeholder {
+            font-size: 3rem; color: var(--text-muted);
+        }
+
+        .modal-details {
+            padding: clamp(20px, 3vw, 32px);
+            display: flex; flex-direction: column; gap: 12px;
+            overflow-y: auto; max-height: 90dvh;
+        }
+        .modal-details .modal-brand {
+            color: var(--text-muted); font-size: 0.8rem;
+            text-transform: uppercase; letter-spacing: 1px;
+        }
+        .modal-details h2 { font-size: clamp(1.2rem, 2.5vw, 1.5rem); font-weight: 800; }
+        .modal-details .modal-price {
+            font-size: clamp(1.6rem, 3vw, 2rem); font-weight: 900;
+            color: var(--accent);
+        }
+        .modal-specs { display: flex; flex-wrap: wrap; gap: 5px; }
+        .modal-spec-tag {
+            background: var(--bg-tertiary);
+            padding: 4px 10px; border-radius: var(--radius-full);
+            font-size: 0.72rem; color: var(--text-secondary);
+            border: 1px solid var(--border-light);
+        }
+        .modal-actions { margin-top: auto; padding-top: 16px; border-top: 1px solid var(--border-light); }
+        .modal-actions-row { display: flex; gap: 8px; flex-wrap: wrap; }
+        .modal-actions-row .btn { flex: 1; justify-content: center; }
+
+        /* ===== 🔐 ADMIN LOGIN MODAL ===== */
+        .admin-overlay {
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.88);
+            z-index: 20000;
+            display: none; align-items: center; justify-content: center;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            padding: 16px;
+        }
+        .admin-overlay.open { display: flex; }
+
+        .admin-card {
+            background: var(--bg-card);
+            border-radius: 24px;
+            padding: 32px 24px;
+            text-align: center;
+            max-width: 380px; width: 100%;
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            animation: modalSlideUp 0.35s var(--bounce);
+        }
+        .admin-card .admin-icon {
+            width: 56px; height: 56px;
+            background: var(--accent-gradient);
+            border-radius: 16px;
+            display: inline-flex; align-items: center; justify-content: center;
+            font-size: 1.4rem; color: #fff; margin-bottom: 12px;
+            box-shadow: 0 8px 24px rgba(230,57,70,0.4);
+        }
+        .admin-card h3 { color: var(--text-primary); font-size: 1.15rem; margin-bottom: 16px; }
+        .admin-card .auth-step { display: none; }
+        .admin-card .auth-step.active { display: block; animation: fadeUp 0.3s ease; }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .telegram-btn {
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            width: 100%; padding: 12px;
+            border: 2px solid #0088cc; border-radius: 12px;
+            background: linear-gradient(135deg, #0088cc, #0099dd);
+            cursor: pointer; font-weight: 700; font-size: 0.88rem;
+            font-family: var(--font-main); color: #fff;
+            transition: all var(--transition-fast);
+        }
+        .telegram-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,136,204,0.4); }
+        .telegram-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+        .otp-group {
+            display: flex; gap: 6px; justify-content: center;
+            margin: 16px 0; direction: ltr;
+        }
+        .otp-input {
+            width: 42px; height: 48px; text-align: center;
+            font-size: 1.2rem; font-weight: 700;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            font-family: 'Courier New', monospace;
+            transition: border-color var(--transition-fast);
+            caret-color: var(--accent);
+        }
+        .otp-input:focus { border-color: #0088cc; outline: none; box-shadow: 0 0 0 3px rgba(0,136,204,0.15); }
+        .otp-input.filled { border-color: var(--green); background: var(--green-soft); }
+
+        .timer-text { color: var(--amber); font-size: 0.78rem; margin: 6px 0; font-variant-numeric: tabular-nums; }
+        .resend-link { color: #0088cc; cursor: pointer; font-size: 0.78rem; transition: opacity var(--transition-fast); }
+        .resend-link.disabled { opacity: 0.4; cursor: default; pointer-events: none; }
+        .error-text { color: #ef4444; font-size: 0.78rem; margin-top: 8px; display: none; }
+        .error-text.show { display: block; }
+        .success-text { color: var(--green); font-size: 0.78rem; margin-top: 8px; display: none; }
+        .success-text.show { display: block; }
+
+        .admin-close {
+            position: absolute; top: 12px; left: 12px;
+            background: rgba(255,255,255,0.08);
+            border: none; color: var(--text-secondary);
+            width: 30px; height: 30px; border-radius: 50%;
+            cursor: pointer; font-size: 1.1rem;
+            display: flex; align-items: center; justify-content: center;
+            transition: all var(--transition-fast);
+        }
+        .admin-close:hover { background: var(--accent); color: #fff; }
+
+        /* ===== 🦶 FOOTER ===== */
+        .footer {
+            background: #040812;
+            color: var(--text-muted);
+            padding: 50px 0 20px;
+            margin-top: 80px;
+        }
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 32px; margin-bottom: 32px;
+        }
+        .footer-col h4 { color: #fff; margin-bottom: 16px; font-size: 1rem; }
+        .footer-col a, .footer-col p {
+            color: var(--text-muted); text-decoration: none;
+            font-size: 0.84rem; display: block; margin-bottom: 8px;
+            transition: color var(--transition-fast);
+        }
+        .footer-col a:hover { color: #fff; }
+        .footer-bottom {
+            text-align: center; padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            font-size: 0.8rem;
+        }
+        .footer-bottom a { color: var(--accent); text-decoration: none; }
+
+        /* ===== 🍞 TOAST ===== */
+        .toast-container {
+            position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
+            z-index: 99999; display: flex; flex-direction: column; gap: 8px;
+            align-items: center; pointer-events: none;
+        }
+        .toast {
+            background: rgba(0,0,0,0.88); backdrop-filter: blur(12px);
+            color: #fff; padding: 10px 22px; border-radius: var(--radius-full);
+            font-size: 0.85rem; font-weight: 600;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+            animation: toastIn 0.3s ease, toastOut 0.3s ease 2.5s forwards;
+            pointer-events: auto;
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+        @keyframes toastIn {
+            from { opacity: 0; transform: translateY(20px) scale(0.9); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        @keyframes toastOut {
+            from { opacity: 1; } to { opacity: 0; transform: translateY(-10px); }
+        }
+
+        /* ===== 🤖 FAB ===== */
+        .fab {
+            position: fixed; bottom: 24px; left: 24px; z-index: 999;
+            background: var(--accent-gradient);
+            color: #fff; padding: 14px 20px;
+            border-radius: var(--radius-full);
+            text-decoration: none; font-weight: 700; font-size: 0.85rem;
+            box-shadow: 0 8px 24px rgba(230,57,70,0.45);
+            display: flex; align-items: center; gap: 8px;
+            transition: all var(--transition-med);
+            border: none; cursor: pointer;
+        }
+        .fab:hover { transform: translateY(-3px) scale(1.03); box-shadow: 0 12px 36px rgba(230,57,70,0.5); }
+        .fab:active { transform: scale(0.95); }
+
+        /* ===== 📱 RESPONSIVE ===== */
+        @media (max-width: 992px) {
+            .pc-builder-grid { grid-template-columns: 1fr; }
+            .pc-summary-card { position: static; }
+            .modal-content { max-width: 95vw; }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .hamburger { display: flex; }
+            .bottom-nav { display: block; }
+            body { padding-bottom: calc(60px + var(--safe-bottom)); }
+            .products-grid { grid-template-columns: repeat(auto-fill, minmax(min(240px, 100%), 1fr)); gap: 16px; }
+            .product-card-image { height: 180px; }
+            .modal-content { grid-template-columns: 1fr; border-radius: 20px; }
+            .modal-image { min-height: 220px; }
+            .section { padding: 40px 0; }
+            .hero { padding-top: calc(var(--nav-height) + 30px); padding-bottom: 50px; }
+            .fab { bottom: calc(68px + var(--safe-bottom)); padding: 12px 16px; font-size: 0.8rem; }
+            .fab span { display: none; }
+            .fab i { font-size: 1.1rem; }
+        }
+
+        @media (max-width: 480px) {
+            .products-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+            .product-card-image { height: 140px; }
+            .product-price { font-size: 1.1rem; }
+            .product-card-body { padding: 12px; }
+            .product-card-body h3 { font-size: 0.85rem; }
+            .spec-pill { font-size: 0.6rem; padding: 2px 6px; }
+            .add-to-cart-btn { padding: 8px; font-size: 0.75rem; }
+            .filter-tab { padding: 5px 12px; font-size: 0.72rem; }
+            .otp-input { width: 36px; height: 42px; font-size: 1rem; }
+            .modal-actions-row { flex-direction: column; }
+            .modal-actions-row .btn { width: 100%; }
+            .admin-card { padding: 24px 16px; }
+        }
+
+        @media (max-width: 360px) {
+            .products-grid { grid-template-columns: 1fr; }
+            .nav-logo .logo-text { display: none; }
+        }
+
+        @media (min-width: 769px) {
+            .nav-links a { padding: 6px 12px; font-size: 0.78rem; }
+        }
+
+        @media (hover: none) {
+            .product-quick-actions { opacity: 1; transform: translateX(0); }
+            .product-card:hover { transform: none; }
+            .btn:hover { transform: none; }
+        }
+
+        /* ===== 🎭 REDUCED MOTION ===== */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+            .hero::before, .hero::after { animation: none !important; }
+        }
+
+        /* ===== 💨 SKELETON LOADING ===== */
+        .skeleton {
+            background: linear-gradient(90deg, var(--bg-tertiary) 25%, var(--bg-elevated) 50%, var(--bg-tertiary) 75%);
+            background-size: 200% 100%;
+            animation: skeletonShimmer 1.5s infinite;
+            border-radius: 8px;
+        }
+        @keyframes skeletonShimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== 🔐 SECRET PROGRESS BAR ===== -->
+    <div class="secret-press-bar" id="secret-press-bar">
+        <div class="fill" id="secret-press-fill"></div>
+    </div>
+    <div class="secret-hint" id="secret-hint"></div>
+
+    <!-- ===== 🥨 TOAST CONTAINER ===== -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <!-- ===== 🧭 NAVBAR ===== -->
+    <nav class="navbar" role="navigation" aria-label="القائمة الرئيسية">
+        <div class="container">
+            <div class="nav-logo" id="secret-admin-trigger" role="button" tabindex="0" aria-label="الصفحة الرئيسية - اضغط مطولاً للدخول السري">
+                <span class="logo-icon"><i class="fas fa-microchip"></i></span>
+                <span class="logo-text">Dar3a Store</span>
+            </div>
+
+            <ul class="nav-links" role="menubar">
+                <li role="none"><a href="#home" class="active" role="menuitem">الرئيسية</a></li>
+                <li role="none"><a href="#monitors" role="menuitem">أفلام</a></li>
+                <li role="none"><a href="#laptops" role="menuitem">مسلسلات</a></li>
+                <li role="none"><a href="#pc-section" role="menuitem">برامج</a></li>
+                <li role="none"><a href="#builder" role="menuitem">التجميع</a></li>
+            </ul>
+
+            <div class="nav-actions">
+                <button class="nav-btn" id="theme-toggle" aria-label="تبديل الثيم">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <button class="nav-btn" id="wishlist-btn" aria-label="المفضلة">
+                    <i class="fas fa-heart"></i>
+                    <span class="badge-dot" id="wishlist-badge" style="display:none">0</span>
+                </button>
+                <button class="nav-btn" id="cart-nav-btn" aria-label="السلة">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="badge-dot" id="cart-badge" style="display:none">0</span>
+                </button>
+                <button class="hamburger" id="hamburger-btn" aria-label="القائمة">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ===== 📱 BOTTOM NAV (Mobile) ===== -->
+    <nav class="bottom-nav" role="navigation" aria-label="القائمة السفلية">
+        <div class="bottom-nav-inner">
+            <a href="#home" class="bottom-nav-link active" data-section="home">
+                <i class="fas fa-house"></i>
+                <span>الرئيسية</span>
+            </a>
+            <a href="#monitors" class="bottom-nav-link" data-section="monitors">
+                <i class="fas fa-film"></i>
+                <span>أفلام</span>
+            </a>
+            <a href="#laptops" class="bottom-nav-link" data-section="laptops">
+                <i class="fas fa-tv"></i>
+                <span>مسلسلات</span>
+            </a>
+            <a href="#pc-section" class="bottom-nav-link" data-section="pc-section">
+                <i class="fas fa-cube"></i>
+                <span>برامج</span>
+            </a>
+            <a href="#builder" class="bottom-nav-link" data-section="builder">
+                <i class="fas fa-microchip"></i>
+                <span>تجميع</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- ===== 🎬 HERO ===== -->
+    <section class="hero" id="home">
+        <div class="container">
+            <h1>
+                <span class="accent-text">Dar3a</span> Store
+                <br>أفلام - مسلسلات - برامج
+            </h1>
+            <p>أحدث الأفلام والمسلسلات عالية الدقة، والبرامج الهندسية المفعلة بأفضل الأسعار</p>
+            <div class="hero-btns">
+                <a href="#monitors" class="btn btn-primary">
+                    <i class="fas fa-film"></i> تصفح الأفلام
+                </a>
+                <a href="#builder" class="btn btn-outline">
+                    <i class="fas fa-microchip"></i> تجميع PC
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== 🎥 MOVIES SECTION ===== -->
+    <section id="monitors" class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2><i class="fas fa-film"></i> أفلام</h2>
+                <p>أفلام عالية الدقة - أجنبية، عربية، وأنمي</p>
+                <div class="section-line"></div>
+            </div>
+            <div class="filter-tabs" id="monitor-tabs" role="tablist">
+                <button class="filter-tab active" data-filter="all" role="tab">الكل</button>
+                <button class="filter-tab" data-filter="monitor" role="tab">أجنبي</button>
+                <button class="filter-tab" data-filter="frameless" role="tab">عربي</button>
+                <button class="filter-tab" data-filter="gaming" role="tab">أنمي</button>
+            </div>
+            <div class="products-grid" id="monitors-grid" role="list"></div>
+        </div>
+    </section>
+
+    <!-- ===== 📺 SERIES SECTION ===== -->
+    <section id="laptops" class="section section-alt">
+        <div class="container">
+            <div class="section-header">
+                <h2><i class="fas fa-tv"></i> مسلسلات</h2>
+                <p>أحدث المسلسلات العربية والأجنبية</p>
+                <div class="section-line"></div>
+            </div>
+            <div class="products-grid" id="laptops-grid" role="list"></div>
+        </div>
+    </section>
+
+    <!-- ===== 💻 SOFTWARE SECTION ===== -->
+    <section id="pc-section" class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2><i class="fas fa-cube"></i> برامج هندسية</h2>
+                <p>برامج هندسية حديثة مفعلة ✅</p>
+                <div class="section-line"></div>
+            </div>
+            <div class="products-grid" id="pc-grid" role="list"></div>
+        </div>
+    </section>
+
+    <!-- ===== 🔧 PC BUILDER ===== -->
+    <section id="builder" class="section section-alt">
+        <div class="container">
+            <div class="section-header">
+                <h2><i class="fas fa-microchip"></i> تجميع الكمبيوتر</h2>
+                <p>اختر كل قطعة وشاهد السعر الإجمالي</p>
+                <div class="section-line"></div>
+            </div>
+            <div class="pc-builder-grid">
+                <div class="pc-components" id="pc-builder-components"></div>
+                <div class="pc-summary-card" id="pc-summary">
+                    <h3>📋 ملخص التجميعة</h3>
+                    <ul class="pc-summary-list" id="pc-summary-list"></ul>
+                    <div class="pc-total" id="pc-total-price">₨ 0</div>
+                    <button class="btn btn-primary" id="add-pc-to-cart" style="width:100%;">
+                        <i class="fas fa-cart-plus"></i> إضافة للسلة
+                    </button>
+                    <button class="btn btn-ghost" id="reset-builder" style="width:100%;margin-top:8px;">
+                        <i class="fas fa-rotate"></i> إعادة تعيين
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== 🪟 PRODUCT MODAL ===== -->
+    <div class="modal-overlay" id="product-modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close" id="modal-close-btn" aria-label="إغلاق">&times;</button>
+            <div class="modal-image" id="modal-product-image">
+                <div class="image-placeholder"><i class="fas fa-image"></i></div>
+            </div>
+            <div class="modal-details" id="modal-product-details"></div>
+        </div>
+    </div>
+
+    <!-- ===== 🔐 ADMIN LOGIN MODAL ===== -->
+    <div class="admin-overlay" id="admin-login-overlay">
+        <div class="admin-card">
+            <button class="admin-close" id="admin-login-close" aria-label="إغلاق">&times;</button>
+            <div class="admin-icon"><i class="fas fa-shield-halved"></i></div>
+            <h3>🔐 دخول المسؤول</h3>
+
+            <!-- Step 1: Request OTP -->
+            <div class="auth-step active" id="admin-step-request">
+                <p style="color:var(--text-muted);font-size:0.8rem;margin-bottom:16px;">
+                    سيتم إرسال رمز تحقق عبر Telegram
+                </p>
+                <button class="telegram-btn" id="admin-request-code-btn">
+                    <i class="fab fa-telegram-plane"></i> طلب كود التحقق
+                </button>
+                <div class="error-text" id="admin-step1-error"></div>
+                <div class="success-text" id="admin-step1-success">✅ تم الإرسال</div>
+            </div>
+
+            <!-- Step 2: Verify OTP -->
+            <div class="auth-step" id="admin-step-verify">
+                <p style="color:var(--text-muted);font-size:0.8rem;">أدخل الكود المكون من 6 أرقام</p>
+                <div class="otp-group">
+                    <input type="text" class="otp-input" maxlength="1" id="admin-otp-1" inputmode="numeric" autocomplete="one-time-code">
+                    <input type="text" class="otp-input" maxlength="1" id="admin-otp-2" inputmode="numeric">
+                    <input type="text" class="otp-input" maxlength="1" id="admin-otp-3" inputmode="numeric">
+                    <input type="text" class="otp-input" maxlength="1" id="admin-otp-4" inputmode="numeric">
+                    <input type="text" class="otp-input" maxlength="1" id="admin-otp-5" inputmode="numeric">
+                    <input type="text" class="otp-input" maxlength="1" id="admin-otp-6" inputmode="numeric">
+                </div>
+                <div class="timer-text" id="admin-timer-display"></div>
+                <span class="resend-link disabled" id="admin-resend-link">إعادة الإرسال</span>
+                <div class="error-text" id="admin-step2-error"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== 🦶 FOOTER ===== -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4>عن المتجر</h4>
+                    <p>متجر درعة ستور يقدم أفضل الأفلام والمسلسلات والبرامج الهندسية بأفضل الأسعار</p>
+                </div>
+                <div class="footer-col">
+                    <h4>روابط سريعة</h4>
+                    <a href="#home">الرئيسية</a>
+                    <a href="#monitors">أفلام</a>
+                    <a href="#laptops">مسلسلات</a>
+                    <a href="#builder">تجميع PC</a>
+                </div>
+                <div class="footer-col">
+                    <h4>اتصل بنا</h4>
+                    <p>📍 مول البستان - القاهرة</p>
+                    <p>📞 0922265656</p>
+                </div>
+                <div class="footer-col">
+                    <h4>خدمات</h4>
+                    <a href="#">المساعدة</a>
+                    <a href="#">سياسة الخصوصية</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Dar3a Store</p>
+                <p>Designed by <a href="https://me-one-blue.vercel.app/about.html">Mr.Developer</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ===== 🤖 FAB ===== -->
+    <a href="#" class="fab" aria-label="المساعدة">
+        <i class="fas fa-robot"></i>
+        <span>المساعدة</span>
+    </a>
+
+    <script>
+        (function() {
+            'use strict';
+
+            /* ============================================================
+               🧩 CONFIG
+               ============================================================ */
+            const CONFIG = {
+                WHATSAPP_NUMBER: '0922265656',
+                ADMIN_URL: 'admin.html',
+                TELEGRAM_BOT_TOKEN: '8723447348:AAGtKoujIGCtbLXuPUWAR-B-oweiOdcDCKk',
+                TELEGRAM_CHAT_ID: '6776057443',
+                OTP_KEY: 'telegram_otp_data',
+                LONG_PRESS_MS: 3000,
+                STORAGE_PRODUCTS: 'store_all_products',
+                STORAGE_CART: 'azzam_cart_v3',
+                STORAGE_WISHLIST: 'azzam_wishlist_v1',
+                STORAGE_THEME: 'azzam_theme',
+            };
+
+            /* ============================================================
+               🛠️ DOM SHORTCUTS
+               ============================================================ */
+            const $ = (sel, ctx = document) => ctx.querySelector(sel);
+            const $$ = (sel, ctx = document) => [...ctx.querySelectorAll(sel)];
+            const on = (el, ev, fn) => { if (el) el.addEventListener(ev, fn); };
+
+            /* ============================================================
+               📦 STATE
+               ============================================================ */
+            let data = loadProducts();
+            let cart = JSON.parse(localStorage.getItem(CONFIG.STORAGE_CART) || '[]');
+            let wishlist = JSON.parse(localStorage.getItem(CONFIG.STORAGE_WISHLIST) || '[]');
+            let builder = {};
+            let currentTheme = localStorage.getItem(CONFIG.STORAGE_THEME) || 'dark';
+            let currentMonitorFilter = 'all';
+            let otpTimer = null;
+            let otpTimeLeft = 0;
+
+            /* ============================================================
+               📂 PRODUCT DATA LOADER
+               ============================================================ */
+            function loadProducts() {
+                try {
+                    const raw = localStorage.getItem(CONFIG.STORAGE_PRODUCTS);
+                    if (!raw) return defaultProducts();
+
+                    const all = JSON.parse(raw);
+                    
+                    /* Build PC components */
+                    const pcComponents = {
+                        cpu:     { label: 'المعالج',     icon: 'fa-microchip',     options: [] },
+                        motherboard: { label: 'اللوحة الأم', icon: 'fa-server',       options: [] },
+                        gpu:     { label: 'كرت الشاشة',  icon: 'fa-tv',            options: [] },
+                        ram:     { label: 'الذاكرة',     icon: 'fa-memory',        options: [] },
+                        storage: { label: 'التخزين',     icon: 'fa-hdd',           options: [] },
+                        psu:     { label: 'مزود الطاقة', icon: 'fa-bolt',          options: [] },
+                        case:    { label: 'الصندوق',     icon: 'fa-desktop',       options: [] },
+                        monitor: { label: 'الشاشة',      icon: 'fa-desktop',       options: [] },
+                        cooling: { label: 'التبريد',     icon: 'fa-snowflake',     options: [] },
+                        keyboard:{ label: 'لوحة مفاتيح', icon: 'fa-keyboard',      options: [] },
+                        mouse:   { label: 'فأرة',        icon: 'fa-mouse-pointer', options: [] },
+                        headset: { label: 'سماعة',       icon: 'fa-headphones',    options: [] },
+                        speakers:{ label: 'سماعات خارجية',icon: 'fa-volume-high',   options: [] },
+                        wifi_card:{label: 'كارت شبكة',   icon: 'fa-wifi',          options: [] },
+                    };
+
+                    (all.filter(p => p.type === 'component') || []).forEach(c => {
+                        if (pcComponents[c.componentType]) {
+                            pcComponents[c.componentType].options.push({
+                                name: c.name, price: c.price,
+                                image: c.image || '', id: c.id
+                            });
+                        }
+                    });
+
+                    return {
+                        laptops:    all.filter(p => p.type === 'laptop'),
+                        monitors:   all.filter(p => p.type === 'monitor'),
+                        frameless:  all.filter(p => p.type === 'frameless'),
+                        curved:     all.filter(p => p.type === 'curved'),
+                        gaming:     all.filter(p => p.type === 'gaming'),
+                        prebuiltPCs:all.filter(p => p.type === 'pc'),
+                        pcComponents,
+                        _all: all,
+                    };
+                } catch(e) {
+                    console.warn('Failed to load products, using defaults:', e);
+                    return defaultProducts();
+                }
+            }
+
+            /* Default fallback dataset */
+            function defaultProducts() {
+                const pcComponents = {
+                    cpu:     { label: 'المعالج',     icon: 'fa-microchip',     options: [
+                        { name: 'Intel Core i5-13400F', price: 8500, image: '', id: 'cpu1' },
+                        { name: 'Intel Core i7-13700K', price: 16500, image: '', id: 'cpu2' },
+                        { name: 'AMD Ryzen 5 7600',    price: 9200, image: '', id: 'cpu3' },
+                        { name: 'AMD Ryzen 7 7800X3D', price: 22000, image: '', id: 'cpu4' },
+                    ]},
+                    motherboard: { label: 'اللوحة الأم', icon: 'fa-server', options: [
+                        { name: 'ASUS B760M-A', price: 4200, image: '', id: 'mb1' },
+                        { name: 'MSI B650 Tomahawk', price: 5800, image: '', id: 'mb2' },
+                        { name: 'Gigabyte Z790 UD', price: 7200, image: '', id: 'mb3' },
+                    ]},
+                    gpu:     { label: 'كرت الشاشة', icon: 'fa-tv', options: [
+                        { name: 'NVIDIA RTX 4060', price: 14000, image: '', id: 'gpu1' },
+                        { name: 'NVIDIA RTX 4070', price: 23000, image: '', id: 'gpu2' },
+                        { name: 'AMD RX 7800 XT', price: 21000, image: '', id: 'gpu3' },
+                    ]},
+                    ram:     { label: 'الذاكرة', icon: 'fa-memory', options: [
+                        { name: '16GB DDR5 5600MHz', price: 3200, image: '', id: 'ram1' },
+                        { name: '32GB DDR5 6000MHz', price: 5800, image: '', id: 'ram2' },
+                        { name: '16GB DDR4 3200MHz', price: 1800, image: '', id: 'ram3' },
+                    ]},
+                    storage: { label: 'التخزين', icon: 'fa-hdd', options: [
+                        { name: 'SSD 512GB NVMe', price: 1500, image: '', id: 'st1' },
+                        { name: 'SSD 1TB NVMe', price: 2800, image: '', id: 'st2' },
+                        { name: 'HDD 2TB', price: 1200, image: '', id: 'st3' },
+                    ]},
+                    psu:     { label: 'مزود الطاقة', icon: 'fa-bolt', options: [
+                        { name: '650W 80+ Bronze', price: 2200, image: '', id: 'psu1' },
+                        { name: '750W 80+ Gold', price: 3800, image: '', id: 'psu2' },
+                        { name: '850W 80+ Gold Full Modular', price: 5200, image: '', id: 'psu3' },
+                    ]},
+                    case:    { label: 'الصندوق', icon: 'fa-desktop', options: [
+                        { name: 'Cooler Master MB520', price: 1800, image: '', id: 'case1' },
+                        { name: 'NZXT H5 Flow', price: 3200, image: '', id: 'case2' },
+                        { name: 'Lian Li O11 Dynamic', price: 4800, image: '', id: 'case3' },
+                    ]},
+                };
+
+                return {
+                    laptops: [
+                        { id: 'lp1', type: 'laptop', name: 'سلسلة الاختبار 1', brand: 'Netflix', price: 15, image: 'https://picsum.photos/seed/series1/400/260', specs: { الجودة: '4K', الموسم: '1' } },
+                        { id: 'lp2', type: 'laptop', name: 'سلسلة الاختبار 2', brand: 'Shahid', price: 12, image: 'https://picsum.photos/seed/series2/400/260', specs: { الجودة: 'HD', الحلقات: '24' } },
+                        { id: 'lp3', type: 'laptop', name: 'سلسلة الاختبار 3', brand: 'Disney+', price: 20, image: 'https://picsum.photos/seed/series3/400/260', specs: { الجودة: '4K HDR', الموسم: '2' } },
+                    ],
+                    monitors: [
+                        { id: 'm1', type: 'monitor', name: 'فيلم أجنبي 1', brand: 'Action', price: 10, image: 'https://picsum.photos/seed/movie1/400/260', specs: { الجودة: 'Full HD', المدة: '2h 15m' } },
+                        { id: 'm2', type: 'monitor', name: 'فيلم أجنبي 2', brand: 'Drama', price: 10, image: 'https://picsum.photos/seed/movie2/400/260', specs: { الجودة: '4K', المدة: '2h 30m' } },
+                        { id: 'm3', type: 'monitor', name: 'فيلم أجنبي 3', brand: 'Comedy', price: 8, image: 'https://picsum.photos/seed/movie3/400/260', specs: { الجودة: 'HD', المدة: '1h 45m' } },
+                    ],
+                    frameless: [
+                        { id: 'ar1', type: 'frameless', name: 'فيلم عربي 1', brand: 'مصري', price: 8, image: 'https://picsum.photos/seed/arab1/400/260', specs: { الجودة: 'HD', السنة: '2024' } },
+                        { id: 'ar2', type: 'frameless', name: 'فيلم عربي 2', brand: 'مصري', price: 10, image: 'https://picsum.photos/seed/arab2/400/260', specs: { الجودة: 'Full HD', السنة: '2025' } },
+                    ],
+                    curved: [],
+                    gaming: [
+                        { id: 'an1', type: 'gaming', name: 'فيلم أنمي 1', brand: 'Studio Ghibli', price: 12, image: 'https://picsum.photos/seed/anime1/400/260', specs: { الجودة: '4K', المدة: '2h' } },
+                        { id: 'an2', type: 'gaming', name: 'فيلم أنمي 2', brand: 'Crunchyroll', price: 10, image: 'https://picsum.photos/seed/anime2/400/260', specs: { الجودة: 'HD', المدة: '1h 50m' } },
+                    ],
+                    prebuiltPCs: [
+                        { id: 'sw1', type: 'pc', name: 'AutoCAD 2025', brand: 'Autodesk', price: 350, image: 'https://picsum.photos/seed/autocad/400/260', specs: { الإصدار: '2025', التفعيل: 'مدى الحياة' } },
+                        { id: 'sw2', type: 'pc', name: 'SolidWorks 2024', brand: 'Dassault', price: 450, image: 'https://picsum.photos/seed/solidworks/400/260', specs: { الإصدار: '2024', التفعيل: 'سنوي' } },
+                        { id: 'sw3', type: 'pc', name: 'MATLAB R2024a', brand: 'MathWorks', price: 400, image: 'https://picsum.photos/seed/matlab/400/260', specs: { الإصدار: 'R2024a', التفعيل: 'مدى الحياة' } },
+                    ],
+                    pcComponents,
+                    _all: [],
+                };
+            }
+
+            /* ============================================================
+               💰 FORMATTING
+               ============================================================ */
+            function formatPrice(p) {
+                return p.toLocaleString('en-US') + ' ج.م';
+            }
+
+            /* ============================================================
+               🍞 TOAST SYSTEM
+               ============================================================ */
+            function showToast(msg, type = 'success', duration = 2800) {
+                const container = document.getElementById('toast-container');
+                if (!container) return;
+                const toast = document.createElement('div');
+                toast.className = 'toast';
+                toast.textContent = msg;
+                container.appendChild(toast);
+                setTimeout(() => { if (toast.parentNode) toast.remove(); }, duration);
+            }
+
+            /* ============================================================
+               🏷️ BADGE HELPERS
+               ============================================================ */
+            function getTypeBadge(type) {
+                const map = {
+                    monitor: 'badge-monitor',
+                    frameless: 'badge-frameless',
+                    curved: 'badge-curved',
+                    gaming: 'badge-gaming',
+                };
+                return map[type] || '';
+            }
+            function getTypeLabel(type) {
+                const map = {
+                    monitor: 'أجنبي',
+                    frameless: 'عربي',
+                    curved: 'Curved',
+                    gaming: 'أنمي',
+                };
+                return map[type] || type;
+            }
+
+            /* ============================================================
+               🃏 PRODUCT CARD
+               ============================================================ */
+            function createProductCard(p) {
+                const inWish = wishlist.some(w => w.id === p.id);
+                const inCart = cart.find(i => i.id === p.id);
+
+                const card = document.createElement('article');
+                card.className = 'product-card';
+                card.setAttribute('role', 'listitem');
+
+                const badgeHtml = p.type ? `<span class="badge ${getTypeBadge(p.type)}">${getTypeLabel(p.type)}</span>` : '';
+                const saleHtml = p.discount ? `<span class="badge badge-sale">-${p.discount}%</span>` : '';
+
+                const specsHtml = p.specs
+                    ? Object.entries(p.specs).slice(0, 3).map(([k, v]) =>
+                        `<span class="spec-pill">${k}: ${v}</span>`
+                      ).join('')
+                    : '';
+
+                const oldPriceHtml = p.oldPrice
+                    ? `<span class="product-price-old">${formatPrice(p.oldPrice)}</span>`
+                    : '';
+                const discountHtml = p.discount
+                    ? `<span class="product-discount">وفر ${p.discount}%</span>`
+                    : '';
+
+                card.innerHTML = `
+                    <div class="product-card-image">
+                        <img src="${p.image || 'https://via.placeholder.com/400x260?text=No+Image'}" alt="${p.name}" loading="lazy">
+                        <div class="product-badges">${badgeHtml}${saleHtml}</div>
+                        <div class="product-quick-actions">
+                            <button class="quick-action-btn ${inWish ? 'active' : ''}" data-action="wishlist" data-id="${p.id}" aria-label="المفضلة">
+                                <i class="fas fa-heart"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="product-card-body">
+                        <div class="brand">${p.brand || 'Dar3a'}</div>
+                        <h3>${p.name}</h3>
+                        ${specsHtml ? `<div class="specs-pills">${specsHtml}</div>` : ''}
+                        <div class="product-price-row">
+                            <span class="product-price">${formatPrice(p.price)}</span>
+                            ${oldPriceHtml}${discountHtml}
+                        </div>
+                        <button class="add-to-cart-btn ${inCart ? 'in-cart' : ''}" data-id="${p.id}">
+                            ${inCart ? '✓ في السلة' : 'إضافة للسلة'}
+                        </button>
+                    </div>
+                `;
+
+                /* Add to cart */
+                card.querySelector('.add-to-cart-btn').addEventListener('click', e => {
+                    e.stopPropagation();
+                    addToCart(p);
+                });
+
+                /* Quick wishlist */
+                card.querySelectorAll('.quick-action-btn').forEach(btn => {
+                    btn.addEventListener('click', e => {
+                        e.stopPropagation();
+                        toggleWishlist(p, btn);
+                    });
+                });
+
+                /* Open modal */
+                card.addEventListener('click', e => {
+                    if (!e.target.closest('button')) openModal(p);
+                });
+
+                return card;
+            }
+
+            /* ============================================================
+               📋 RENDER HELPERS
+               ============================================================ */
+            function renderGrid(id, arr) {
+                const grid = document.getElementById(id);
+                if (!grid) return;
+                grid.innerHTML = '';
+                if (!arr || arr.length === 0) {
+                    grid.innerHTML = `<div style="text-align:center;padding:60px;color:var(--text-muted);grid-column:1/-1;">
+                        <i class="fas fa-inbox" style="font-size:2rem;margin-bottom:12
+$$</i>
+                        <p>لا توجد منتجات</p>
+                    </div>`;
+                    return;
+                }
+                arr.forEach(p => grid.appendChild(createProductCard(p)));
+            }
+
+            function renderMonitors(filter) {
+                if (filter !== undefined) currentMonitorFilter = filter;
+                let arr = [];
+                const f = currentMonitorFilter;
+                if (f === 'all') arr = [...data.monitors, ...data.frameless, ...data.curved, ...data.gaming];
+                else if (f === 'monitor') arr = data.monitors;
+                else if (f === 'frameless') arr = data.frameless;
+                else if (f === 'curved') arr = data.curved;
+                else if (f === 'gaming') arr = data.gaming;
+
+                renderGrid('monitors-grid', arr);
+                $$('.filter-tab').forEach(t => {
+                    t.classList.toggle('active', t.dataset.filter === currentMonitorFilter);
+                });
+            }
+
+            function renderAll() {
+                renderMonitors(currentMonitorFilter);
+                renderGrid('laptops-grid', data.laptops);
+                renderGrid('pc-grid', data.prebuiltPCs);
+                renderBuilder();
+                updateAllBadges();
+                updateCartUI();
+            }
+
+            /* ============================================================
+               🪟 PRODUCT MODAL
+               ============================================================ */
+            function openModal(p) {
+                const overlay = document.getElementById('product-modal-overlay');
+                const imageDiv = document.getElementById('modal-product-image');
+                const detailsDiv = document.getElementById('modal-product-details');
+                const inWish = wishlist.some(w => w.id === p.id);
+                const inCart = cart.find(i => i.id === p.id);
+
+                imageDiv.innerHTML = `<img src="${p.image || 'https://via.placeholder.com/600x400?text=No+Image'}" alt="${p.name}" loading="lazy">`;
+
+                const specs = p.specs
+                    ? Object.entries(p.specs).map(([k, v]) =>
+                        `<span class="modal-spec-tag">${k}: ${v}</span>`
+                      ).join('')
+                    : '';
+
+                const oldPrice = p.oldPrice ? `<div style="color:var(--text-muted);text-decoration:line-through;">${formatPrice(p.oldPrice)}</div>` : '';
+                const discount = p.discount ? `<div style="color:var(--green);font-weight:700;">🔥 خصم ${p.discount}%</div>` : '';
+                const desc = p.description ? `<p style="color:var(--text-secondary);font-size:0.9rem;">${p.description}</p>` : '';
+
+                detailsDiv.innerHTML = `
+                    <div class="modal-brand">${p.brand || 'Dar3a Store'}</div>
+                    <h2>${p.name}</h2>
+                    <div class="modal-price">${formatPrice(p.price)}</div>
+                    ${oldPrice}${discount}
+                    ${desc}
+                    ${specs ? `<div class="modal-specs">${specs}</div>` : ''}
+                    <div class="modal-actions">
+                        <div class="modal-actions-row">
+                            <button class="btn btn-primary" id="modal-add-cart">
+                                <i class="fas fa-cart-plus"></i> ${inCart ? '✓ في السلة' : 'إضافة للسلة'}
+                            </button>
+                            <button class="btn btn-whatsapp" id="modal-buy-now">
+                                <i class="fab fa-whatsapp"></i> شراء مباشر
+                            </button>
+                        </div>
+                        <div class="modal-actions-row">
+                            <button class="btn btn-outline" id="modal-wishlist" style="flex:1;">
+                                <i class="${inWish ? 'fas' : 'far'} fa-heart"></i> ${inWish ? 'في المفضلة' : 'أضف للمفضلة'}
+                            </button>
+                        </div>
+                    </div>
+                `;
+
+                /* Bind modal button events */
+                document.getElementById('modal-add-cart').addEventListener('click', () => {
+                    addToCart(p);
+                    closeModal();
+                });
+                document.getElementById('modal-buy-now').addEventListener('click', () => {
+                    window.open(
+                        `https://wa.me/${CONFIG.WHATSAPP_NUMBER}?text=${encodeURIComponent(
+                            `🛒 طلب شراء:\n📦 ${p.name}\n💰 ${formatPrice(p.price)}`
+                        )}`,
+                        '_blank'
+                    );
+                });
+                document.getElementById('modal-wishlist').addEventListener('click', () => {
+                    toggleWishlist(p);
+                    closeModal();
+                });
+
+                overlay.classList.add('open');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeModal() {
+                document.getElementById('product-modal-overlay').classList.remove('open');
+                document.body.style.overflow = '';
+            }
+
+            /* ============================================================
+               🛒 CART
+               ============================================================ */
+            function addToCart(p) {
+                const ex = cart.find(i => i.id === p.id);
+                if (ex) {
+                    ex.quantity = (ex.quantity || 1) + 1;
+                } else {
+                    cart.push({ ...p, quantity: 1 });
+                }
+                saveCart();
+                renderAll();
+                showToast('✓ تمت الإضافة للسلة');
+            }
+
+            function saveCart() {
+                localStorage.setItem(CONFIG.STORAGE_CART, JSON.stringify(cart));
+                updateCartUI();
+            }
+
+            function updateCartUI() {
+                const total = cart.reduce((s, i) => s + (i.quantity || 1), 0);
+                const badge = document.getElementById('cart-badge');
+                if (badge) {
+                    badge.style.display = total ? 'flex' : 'none';
+                    badge.textContent = total;
+                }
+            }
+
+            /* ============================================================
+               ❤️ WISHLIST
+               ============================================================ */
+            function toggleWishlist(p, btn) {
+                const idx = wishlist.findIndex(w => w.id === p.id);
+                if (idx === -1) {
+                    wishlist.push(p);
+                    if (btn) btn.classList.add('active');
+                    showToast('❤️ أضيف للمفضلة');
+                } else {
+                    wishlist.splice(idx, 1);
+                    if (btn) btn.classList.remove('active');
+                    showToast('تمت الإزالة من المفضلة');
+                }
+                localStorage.setItem(CONFIG.STORAGE_WISHLIST, JSON.stringify(wishlist));
+                updateAllBadges();
+            }
+
+            function updateAllBadges() {
+                const wishBadge = document.getElementById('wishlist-badge');
+                if (wishBadge) {
+                    wishBadge.style.display = wishlist.length ? 'flex' : 'none';
+                    wishBadge.textContent = wishlist.length;
+                }
+            }
+
+            /* ============================================================
+               🔧 PC BUILDER
+               ============================================================ */
+            function renderBuilder() {
+                const container = document.getElementById('pc-builder-components');
+                if (!container) return;
+                container.innerHTML = '';
+
+                const hasAny = Object.values(data.pcComponents).some(comp => comp.options.length > 0);
+                if (!hasAny) {
+                    container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-muted);">لا توجد مكونات متاحة حالياً</div>';
+                    updateSummary();
+                    return;
+                }
+
+                Object.entries(data.pcComponents).forEach(([key, comp]) => {
+                    if (!comp.options.length) return;
+                    const sel = builder[key];
+
+                    const wrapper = document.createElement('div');
+                    wrapper.style.marginBottom = '6px';
+                    wrapper.innerHTML = `
+                        <div class="pc-select ${sel ? 'selected' : ''}" data-comp="${key}">
+                            <div class="pc-icon"><i class="fas ${comp.icon}"></i></div>
+                            <div style="flex:1;min-width:0;">
+                                <div style="font-weight:700;font-size:0.9rem;">${comp.label}</div>
+                                <div style="font-size:0.78rem;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                                    ${sel ? sel.name : 'اختر...'}
+                                </div>
+                            </div>
+                            <div style="font-weight:700;color:var(--accent);font-size:0.85rem;flex-shrink:0;">
+                                ${sel ? formatPrice(sel.price) : ''}
+                            </div>
+                        </div>
+                        <div class="pc-options" id="opts-${key}"></div>
+                    `;
+
+                    const selectEl = wrapper.querySelector('.pc-select');
+                    const optsEl = wrapper.querySelector('.pc-options');
+
+                    /* Populate options */
+                    comp.options.forEach(o => {
+                        const opt = document.createElement('div');
+                        opt.className = 'pc-option';
+                        opt.innerHTML = `
+                            <span>${o.name}</span>
+                            <span class="option-price">${formatPrice(o.price)}</span>
+                        `;
+                        opt.addEventListener('click', e => {
+                            e.stopPropagation();
+                            builder[key] = { ...o };
+                            renderBuilder();
+                            updateSummary();
+                        });
+                        optsEl.appendChild(opt);
+                    });
+
+                    /* Toggle options panel */
+                    selectEl.addEventListener('click', e => {
+                        e.stopPropagation();
+                        const isOpen = optsEl.style.display === 'block';
+                        $$('.pc-options').forEach(el => el.style.display = 'none');
+                        optsEl.style.display = isOpen ? 'none' : 'block';
+                    });
+
+                    container.appendChild(wrapper);
+                });
+
+                updateSummary();
+            }
+
+            function updateSummary() {
+                const list = document.getElementById('pc-summary-list');
+                const totalEl = document.getElementById('pc-total-price');
+                if (!list || !totalEl) return;
+
+                let total = 0;
+                list.innerHTML = '';
+
+                Object.entries(data.pcComponents).forEach(([key, comp]) => {
+                    const sel = builder[key];
+                    const li = document.createElement('li');
+                    if (sel) {
+                        total += sel.price;
+                        li.innerHTML = `
+                            <span>${comp.label}: <strong>${sel.name}</strong></span>
+                            <span style="color:var(--accent);font-weight:700;">${formatPrice(sel.price)}</span>
+                        `;
+                    } else {
+                        li.innerHTML = `
+                            <span style="color:var(--text-muted);">${comp.label}: <em>اختر...</em></span>
+                            <span style="color:var(--text-muted);">-</span>
+                        `;
+                    }
+                    list.appendChild(li);
+                });
+
+                totalEl.textContent = `₨ ${total.toLocaleString('en-US')}`;
+            }
+
+            /* ============================================================
+               🔐 SECRET ADMIN ACCESS (Long Press + Keyboard Shortcut)
+               ============================================================ */
+            const secretTrigger = document.getElementById('secret-admin-trigger');
+            const pressBar = document.getElementById('secret-press-bar');
+            const pressFill = document.getElementById('secret-press-fill');
+            const secretHint = document.getElementById('secret-hint');
+            let pressStart = 0;
+            let pressInterval = null;
+            let isPressing = false;
+
+            if (secretTrigger) {
+                /* Mouse events */
+                secretTrigger.addEventListener('mousedown', startSecretPress);
+                secretTrigger.addEventListener('mouseup', cancelSecretPress);
+                secretTrigger.addEventListener('mouseleave', cancelSecretPress);
+
+                /* Touch events */
+                secretTrigger.addEventListener('touchstart', startSecretPress);
+                secretTrigger.addEventListener('touchend', cancelSecretPress);
+                secretTrigger.addEventListener('touchcancel', cancelSecretPress);
+
+                /* Prevent drag */
+                secretTrigger.addEventListener('dragstart', e => e.preventDefault());
+
+                /* Keyboard activation (Enter/Space on the logo) */
+                secretTrigger.addEventListener('keydown', e => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        /* If the user presses Enter, ask if they want admin */
+                        if (confirm('🔐 فتح لوحة التحكم؟')) {
+                            openAdminLogin();
+                        }
+                    }
+                });
+            }
+
+            function startSecretPress(e) {
+                if (e.type === 'touchstart') e.preventDefault();
+                if (isPressing) return;
+                isPressing = true;
+                pressStart = Date.now();
+                pressBar.classList.add('active');
+                pressFill.style.width = '0%';
+                pressFill.style.transition = 'none';
+
+                pressInterval = setInterval(() => {
+                    const elapsed = Date.now() - pressStart;
+                    const progress = Math.min((elapsed / CONFIG.LONG_PRESS_MS) * 100, 100);
+                    pressFill.style.width = progress + '%';
+
+                    if (elapsed > 1000 && elapsed < 1200) showSecretHint('🔍 جاري التحقق...');
+                    else if (elapsed > 2000 && elapsed < 2200) showSecretHint('🔥 تقريباً...');
+
+                    if (elapsed >= CONFIG.LONG_PRESS_MS) {
+                        cancelSecretPress();
+                        showSecretHint('✅ تم الفتح!', 1500);
+
+                        /* Visual feedback on logo */
+                        const icon = secretTrigger.querySelector('.logo-icon');
+                        if (icon) {
+                            icon.style.transform = 'scale(1.3)';
+                            icon.style.boxShadow = '0 0 30px rgba(34,197,94,0.8)';
+                        }
+                        setTimeout(() => {
+                            if (icon) {
+                                icon.style.transform = '';
+                                icon.style.boxShadow = '';
+                            }
+                        }, 800);
+
+                        setTimeout(() => openAdminLogin(), 400);
+                    }
+                }, 30);
+            }
+
+            function cancelSecretPress() {
+                if (!isPressing && !pressInterval) return;
+                isPressing = false;
+                clearInterval(pressInterval);
+                pressInterval = null;
+                pressBar.classList.remove('active');
+                if (pressFill) {
+                    pressFill.style.transition = 'width 0.3s ease';
+                    pressFill.style.width = '0%';
+                }
+                secretHint.classList.remove('show');
+            }
+
+            function showSecretHint(msg, duration = 1500) {
+                secretHint.textContent = msg;
+                secretHint.classList.add('show');
+                clearTimeout(secretHint._timer);
+                if (duration > 0) {
+                    secretHint._timer = setTimeout(() => secretHint.classList.remove('show'), duration);
+                }
+            }
+
+            /* Keyboard shortcut: Ctrl+Shift+A */
+            document.addEventListener('keydown', e => {
+                if (e.ctrlKey && e.shiftKey && (e.key === 'A' || e.key === 'a')) {
+                    e.preventDefault();
+                    showSecretHint('⌨️ اختصار الدخول', 1500);
+                    setTimeout(() => openAdminLogin(), 400);
+                }
+            });
+
+            /* URL param: ?admin */
+            if (new URL(location.href).searchParams.has('admin')) {
+                setTimeout(() => openAdminLogin(), 600);
+            }
+
+            /* ============================================================
+               🔐 ADMIN LOGIN (Telegram OTP)
+               ============================================================ */
+            function openAdminLogin() {
+                const overlay = document.getElementById('admin-login-overlay');
+                overlay.classList.add('open');
+                showAdminStep('request');
+                document.getElementById('admin-step1-success').classList.remove('show');
+                document.getElementById('admin-step1-error').classList.remove('show');
+                document.getElementById('admin-step1-error').textContent = '';
+            }
+
+            function closeAdminLogin() {
+                document.getElementById('admin-login-overlay').classList.remove('open');
+                clearInterval(otpTimer);
+                /* Clear OTP inputs */
+                for (let i = 1; i <= 6; i++) {
+                    const inp = document.getElementById('admin-otp-' + i);
+                    if (inp) inp.value = '';
+                }
+            }
+
+            function showAdminStep(step) {
+                $$('.admin-card .auth-step').forEach(s => s.classList.remove('active'));
+                const el = document.getElementById('admin-step-' + step);
+                if (el) el.classList.add('active');
+                $$('.admin-card .error-text').forEach(e => {
+                    e.textContent = '';
+                    e.classList.remove('show');
+                });
+            }
+
+            function showAdminError(elId, msg) {
+                const el = document.getElementById(elId);
+                if (el) {
+                    el.textContent = msg;
+                    el.classList.add('show');
+                }
+            }
+
+            /* Request OTP via Telegram */
+            async function adminRequestOTP() {
+                const btn = document.getElementById('admin-request-code-btn');
+                if (btn) {
+                    btn.disabled = true;
+                    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الإرسال...';
+                }
+
+                const otp = Math.floor(100000 + Math.random() * 900000).toString();
+                sessionStorage.setItem(CONFIG.OTP_KEY, JSON.stringify({
+                    code: otp,
+                    expires: Date.now() + 300000,
+                    attempts: 0
+                }));
+
+                const msg = `🔐 *رمز تحقق لوحة التحكم*\n\n🔢 الرمز: *${otp}*\n⏰ ${new Date().toLocaleString('ar-EG')}\n\n_صالح لمدة 5 دقائق_`;
+
+                try {
+                    const res = await fetch(
+                        `https://api.telegram.org/bot${CONFIG.TELEGRAM_BOT_TOKEN}/sendMessage`,
+                        {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                chat_id: CONFIG.TELEGRAM_CHAT_ID,
+                                text: msg,
+                                parse_mode: 'Markdown'
+                            })
+                        }
+                    );
+                    const data = await res.json();
+
+                    if (data.ok) {
+                        const successEl = document.getElementById('admin-step1-success');
+                        successEl.classList.add('show');
+                        successEl.textContent = '✅ تم الإرسال إلى Telegram';
+
+                        setTimeout(() => {
+                            showAdminStep('verify');
+                            startAdminTimer(300);
+                            document.getElementById('admin-otp-1')?.focus();
+                        }, 600);
+                    } else {
+                        showAdminError('admin-step1-error', '❌ فشل الإرسال: ' + (data.description || ''));
+                    }
+                } catch (err) {
+                    showAdminError('admin-step1-error', '❌ فشل الاتصال بالخادم');
+                } finally {
+                    if (btn) {
+                        btn.disabled = false;
+                        btn.innerHTML = '<i class="fab fa-telegram-plane"></i> طلب كود التحقق';
+                    }
+                }
+            }
+
+            /* Verify OTP */
+            function adminVerifyOTP() {
+                const digits = [];
+                for (let i = 1; i <= 6; i++) {
+                    digits.push(document.getElementById('admin-otp-' + i)?.value || '');
+                }
+                const entered = digits.join('');
+
+                if (entered.length !== 6) {
+                    showAdminError('admin-step2-error', '❌ أدخل 6 أرقام كاملة');
+                    return;
+                }
+
+                const otpData = JSON.parse(sessionStorage.getItem(CONFIG.OTP_KEY) || '{}');
+                if (!otpData.code) {
+                    showAdminError('admin-step2-error', '❌ الكود منتهي، اطلب واحداً جديداً');
+                    return;
+                }
+                if (Date.now() > otpData.expires) {
+                    showAdminError('admin-step2-error', '❌ انتهت صلاحية الكود');
+                    return;
+                }
+                if (otpData.attempts >= 5) {
+                    showAdminError('admin-step2-error', '❌ تم تجاوز الحد الأقصى من المحاولات');
+                    return;
+                }
+                otpData.attempts++;
+
+                if (entered === otpData.code) {
+                    sessionStorage.removeItem(CONFIG.OTP_KEY);
+                    clearInterval(otpTimer);
+                    sessionStorage.setItem('admin_verified', 'true');
+
+                    /* Trigger file download as admin authentication artifact */
+                    const blob = new Blob([JSON.stringify({
+                        authenticated: true,
+                        timestamp: Date.now(),
+                        userAgent: navigator.userAgent
+                    }, null, 2)], { type: 'application/json' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'admin_session.json';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+
+                    showToast('✅ تم التحقق بنجاح! جاري التوجيه...');
+                    setTimeout(() => {
+                        window.location.href = CONFIG.ADMIN_URL;
+                    }, 800);
+                } else {
+                    showAdminError('admin-step2-error',
+                        `❌ رمز خطأ - المتبقي ${5 - otpData.attempts} محاولات`
+                    );
+                    for (let i = 1; i <= 6; i++) {
+                        document.getElementById('admin-otp-' + i).value = '';
+                    }
+                    document.getElementById('admin-otp-1')?.focus();
+                    sessionStorage.setItem(CONFIG.OTP_KEY, JSON.stringify(otpData));
+                }
+            }
+
+            /* Timer for OTP */
+            function startAdminTimer(seconds) {
+                otpTimeLeft = seconds;
+                updateAdminTimerDisplay();
+                clearInterval(otpTimer);
+                const rl = document.getElementById('admin-resend-link');
+                if (rl) rl.classList.add('disabled');
+
+                otpTimer = setInterval(() => {
+                    otpTimeLeft--;
+                    updateAdminTimerDisplay();
+                    if (otpTimeLeft <= 0) {
+                        clearInterval(otpTimer);
+                        const rl2 = document.getElementById('admin-resend-link');
+                        if (rl2) rl2.classList.remove('disabled');
+                    }
+                }, 1000);
+            }
+
+            function updateAdminTimerDisplay() {
+                const m = Math.floor(otpTimeLeft / 60);
+                const s = otpTimeLeft % 60;
+                const d = document.getElementById('admin-timer-display');
+                if (d) {
+                    d.textContent = `⏰ ${m}:${s.toString().padStart(2, '0')}`;
+                }
+            }
+
+            /* ============================================================
+               🎯 BIND ADMIN EVENTS
+               ============================================================ */
+            on(document.getElementById('admin-login-close'), 'click', closeAdminLogin);
+            on(document.getElementById('admin-login-overlay'), 'click', function(e) {
+                if (e.target === this) closeAdminLogin();
+            });
+            on(document.getElementById('admin-request-code-btn'), 'click', adminRequestOTP);
+            on(document.getElementById('admin-resend-link'), 'click', function() {
+                if (otpTimeLeft > 0) return;
+                sessionStorage.removeItem(CONFIG.OTP_KEY);
+                clearInterval(otpTimer);
+                for (let i = 1; i <= 6; i++) {
+                    document.getElementById('admin-otp-' + i).value = '';
+                }
+                showAdminStep('request');
+            });
+
+            /* OTP input auto-advance, paste support, validation */
+            for (let i = 1; i <= 6; i++) {
+                const inp = document.getElementById('admin-otp-' + i);
+                if (!inp) continue;
+
+                inp.addEventListener('input', function() {
+                    this.value = this.value.replace(/[^0-9]/g, '');
+                    this.classList.toggle('filled', this.value.length === 1);
+                    if (this.value.length === 1 && i < 6) {
+                        document.getElementById('admin-otp-' + (i + 1))?.focus();
+                    }
+                    /* Auto-verify when last digit entered */
+                    if (i === 6 && this.value.length === 1) {
+                        setTimeout(adminVerifyOTP, 200);
+                    }
+                });
+
+                inp.addEventListener('keydown', function(e) {
+                    if (e.key === 'Backspace' && this.value.length === 0 && i > 1) {
+                        document.getElementById('admin-otp-' + (i - 1))?.focus();
+                    }
+                    if (e.key === 'Enter') adminVerifyOTP();
+                });
+
+                inp.addEventListener('paste', function(e) {
+                    e.preventDefault();
+                    const pasted = (e.clipboardData || window.clipboardData).getData('text').replace(/[^0-9]/g, '');
+                    if (pasted.length === 6) {
+                        for (let j = 0; j < 6; j++) {
+                            const el = document.getElementById('admin-otp-' + (j + 1));
+                            if (el) {
+                                el.value = pasted[j];
+                                el.classList.toggle('filled', pasted[j].length === 1);
+                            }
+                        }
+                        setTimeout(adminVerifyOTP, 200);
+                    }
+                });
+            }
+
+            /* ============================================================
+               🎯 EVENT BINDINGS
+               ============================================================ */
+
+            /* Modal close */
+            on(document.getElementById('modal-close-btn'), 'click', closeModal);
+            on(document.getElementById('product-modal-overlay'), 'click', function(e) {
+                if (e.target === this) closeModal();
+            });
+            document.addEventListener('keydown', e => {
+                if (e.key === 'Escape') closeModal();
+                if (e.key === 'Escape') closeAdminLogin();
+            });
+
+            /* Filter tabs */
+            $$('.filter-tab').forEach(tab => {
+                on(tab, 'click', () => renderMonitors(tab.dataset.filter));
+            });
+
+            /* Theme toggle */
+            on(document.getElementById('theme-toggle'), 'click', () => {
+                currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                document.documentElement.setAttribute('data-theme', currentTheme);
+                localStorage.setItem(CONFIG.STORAGE_THEME, currentTheme);
+                const icon = document.getElementById('theme-toggle').querySelector('i');
+                if (icon) {
+                    icon.className = currentTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+                }
+            });
+
+            /* PC Builder actions */
+            on(document.getElementById('add-pc-to-cart'), 'click', () => {
+                const selected = Object.entries(builder).filter(([, o]) => o);
+                if (selected.length < 3) {
+                    showToast('⚠️ اختر 3 مكونات على الأقل');
+                    return;
+                }
+                let total = 0;
+                const specs = {};
+                selected.forEach(([k, o]) => {
+                    total += o.price;
+                    if (data.pcComponents[k]) {
+                        specs[data.pcComponents[k].label] = o.name;
+                    }
+                });
+                addToCart({
+                    id: 'build_' + Date.now(),
+                    name: '🖥️ تجميعة PC مخصصة',
+                    brand: 'Dar3a Custom',
+                    price: total,
+                    image: 'https://picsum.photos/seed/pcbuild' + Date.now() + '/400/260',
+                    specs,
+                });
+                builder = {};
+                renderBuilder();
+                showToast('✅ تمت إضافة التجميعة للسلة');
+            });
+
+            on(document.getElementById('reset-builder'), 'click', () => {
+                builder = {};
+                renderBuilder();
+                showToast('🔄 تم إعادة تعيين التجميعة');
+            });
+
+            /* Close PC options when clicking outside */
+            document.addEventListener('click', e => {
+                if (!e.target.closest('.pc-select') && !e.target.closest('.pc-options')) {
+                    $$('.pc-options').forEach(o => o.style.display = 'none');
+                }
+            });
+
+            /* Bottom nav active state */
+            $$('.bottom-nav-link').forEach(link => {
+                on(link, 'click', function() {
+                    $$('.bottom-nav-link').forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+
+            /* Hamburger menu toggle for mobile */
+            on(document.getElementById('hamburger-btn'), 'click', () => {
+                const links = document.querySelector('.nav-links');
+                if (links) {
+                    links.style.display = links.style.display === 'flex' ? 'none' : 'flex';
+                }
+            });
+
+            /* Handle storage changes from other tabs */
+            window.addEventListener('storage', e => {
+                if (e.key === CONFIG.STORAGE_PRODUCTS) {
+                    data = loadProducts();
+                    renderAll();
+                    updateSummary();
+                }
+                if (e.key === CONFIG.STORAGE_CART) {
+                    cart = JSON.parse(e.newValue || '[]');
+                    updateCartUI();
+                }
+                if (e.key === CONFIG.STORAGE_WISHLIST) {
+                    wishlist = JSON.parse(e.newValue || '[]');
+                    updateAllBadges();
+                }
+            });
+
+            /* ============================================================
+               🚀 INIT
+               ============================================================ */
+            document.documentElement.setAttribute('data-theme', currentTheme);
+            const themeIcon = document.querySelector('#theme-toggle i');
+            if (themeIcon) {
+                themeIcon.className = currentTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+            }
+
+            renderAll();
+            updateAllBadges();
+            updateCartUI();
+
+            console.log('🔐 Dar3a Store initialized');
+            console.log('💡 اضغط مطولاً على الشعار للدخول السري');
+            console.log('⌨️ Ctrl+Shift+A لفتح لوحة التحكم');
+
+        })();
+    </script>
+
+</body>
+</html>
