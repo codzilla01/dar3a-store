@@ -3,12 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Azzam Technology | المساعد الذكي</title>
+    <title>Dar3a Store | المساعد الذكي - باللهجة السودانية</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🤖</text></svg>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #e63946;
+            --primary-light: #ff4757;
             --dark: #1a1a2e;
             --bg: #f8fafc;
             --card: #ffffff;
@@ -17,6 +19,7 @@
             --border: #e2e8f0;
             --radius: 20px;
             --shadow: 0 20px 60px rgba(0,0,0,0.3);
+            --gold: #f59e0b;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -30,9 +33,9 @@
         }
         .chat-container {
             width: 100%;
-            max-width: 750px;
-            height: 90vh;
-            max-height: 700px;
+            max-width: 850px;
+            height: 92vh;
+            max-height: 800px;
             background: var(--card);
             border-radius: var(--radius);
             box-shadow: var(--shadow);
@@ -41,109 +44,179 @@
             overflow: hidden;
             border: 1px solid rgba(255,255,255,0.1);
         }
+        
         .chat-header {
             background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
             color: #fff;
-            padding: 16px 20px;
+            padding: 14px 20px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 12px;
+            flex-wrap: wrap;
         }
-        .chat-header .brand {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            text-decoration: none;
-            color: #fff;
-        }
+        .chat-header .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: #fff; }
         .chat-header .brand-icon {
-            width: 42px;
-            height: 42px;
+            width: 42px; height: 42px;
             background: var(--primary);
             border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            display: flex; align-items: center; justify-content: center;
             font-size: 1.2rem;
             box-shadow: 0 4px 15px rgba(230,57,70,0.3);
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%,100% { box-shadow: 0 4px 15px rgba(230,57,70,0.3); }
+            50% { box-shadow: 0 4px 25px rgba(230,57,70,0.6); }
         }
         .chat-header .brand-text h3 { margin: 0; font-size: 1rem; font-weight: 800; }
         .chat-header .brand-text p { margin: 0; font-size: 0.7rem; opacity: 0.7; }
-        .chat-header .actions { display: flex; gap: 8px; }
-        .chat-header .actions a,
+        .chat-header .status { display: flex; align-items: center; gap: 6px; font-size: 0.7rem; opacity: 0.8; }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #22c55e; animation: statusPulse 2s infinite; }
+        @keyframes statusPulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
+        
+        .user-level-badge {
+            display: flex; align-items: center; gap: 6px;
+            background: rgba(255,255,255,0.1); padding: 6px 12px;
+            border-radius: 20px; font-size: 0.75rem; font-weight: 700;
+        }
+        .level-bar { width: 60px; height: 4px; background: rgba(255,255,255,0.2); border-radius: 2px; overflow: hidden; }
+        .level-bar-fill { height: 100%; background: linear-gradient(90deg, #22c55e, #f59e0b, #e63946); transition: width 0.5s ease; border-radius: 2px; }
+        
+        .chat-header .actions { display: flex; gap: 6px; }
         .chat-header .actions button {
-            width: 36px; height: 36px; border-radius: 50%;
+            width: 34px; height: 34px; border-radius: 50%;
             background: rgba(255,255,255,0.1); border: none; color: #fff;
             cursor: pointer; display: flex; align-items: center; justify-content: center;
-            font-size: 0.9rem; transition: 0.2s; text-decoration: none;
+            font-size: 0.85rem; transition: 0.2s;
         }
-        .chat-header .actions a:hover,
-        .chat-header .actions button:hover { background: var(--primary); }
+        .chat-header .actions button:hover { background: var(--primary); transform: scale(1.1); }
+        
+        .stats-bar {
+            display: flex; gap: 6px; padding: 8px 14px;
+            background: #fff; border-bottom: 1px solid var(--border);
+            font-size: 0.68rem; color: var(--muted); overflow-x: auto; flex-wrap: wrap;
+        }
+        .stat-item {
+            display: flex; align-items: center; gap: 4px;
+            white-space: nowrap; padding: 4px 10px;
+            background: #f8fafc; border-radius: 15px; cursor: pointer; transition: 0.2s;
+        }
+        .stat-item:hover { background: #e2e8f0; }
+        .stat-item i { color: var(--primary); }
+        .stat-item .count { font-weight: 700; color: var(--text); }
+        
         .chat-body {
-            flex: 1; overflow-y: auto; padding: 16px; background: var(--bg);
-            display: flex; flex-direction: column; gap: 10px;
+            flex: 1; overflow-y: auto; padding: 16px;
+            background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+            display: flex; flex-direction: column; gap: 12px;
         }
         .chat-body::-webkit-scrollbar { width: 5px; }
-        .chat-body::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .chat-body::-webkit-scrollbar-thumb { background: linear-gradient(180deg, var(--primary), var(--primary-light)); border-radius: 10px; }
+        
         .msg {
-            max-width: 80%; padding: 10px 14px; border-radius: 18px;
-            font-size: 0.88rem; line-height: 1.6; animation: msgIn 0.3s ease; word-wrap: break-word;
+            max-width: 85%; padding: 12px 16px; border-radius: 18px;
+            font-size: 0.88rem; line-height: 1.7;
+            animation: msgIn 0.3s ease; word-wrap: break-word; position: relative;
         }
-        @keyframes msgIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes msgIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
         .msg.bot {
-            background: #fff; align-self: flex-start; border-bottom-right-radius: 4px;
-            color: #1e293b; border: 1px solid #e2e8f0; white-space: pre-line;
+            background: #fff; align-self: flex-start;
+            border-bottom-right-radius: 4px; color: #1e293b;
+            border: 1px solid #e2e8f0; box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
-        .msg.user { background: var(--primary); color: #fff; align-self: flex-end; border-bottom-left-radius: 4px; }
-        .msg .highlight { color: var(--primary); font-weight: 700; }
-        .typing {
-            display: flex; gap: 4px; padding: 10px 14px; background: #fff;
-            border-radius: 18px; align-self: flex-start; border: 1px solid #e2e8f0;
+        .msg.user {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: #fff; align-self: flex-end;
+            border-bottom-left-radius: 4px; box-shadow: 0 4px 12px rgba(230,57,70,0.3);
         }
-        .typing span {
-            width: 7px; height: 7px; background: #94a3b8; border-radius: 50%;
-            animation: dot 1.3s infinite;
+        .msg .highlight { color: var(--primary); font-weight: 700; background: rgba(230,57,70,0.1); padding: 1px 6px; border-radius: 4px; }
+        .msg .price-tag { display: inline-block; background: rgba(34,197,94,0.1); color: #16a34a; padding: 2px 8px; border-radius: 12px; font-weight: 700; font-size: 0.85rem; }
+        .msg .category-tag { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 0.7rem; font-weight: 700; margin: 2px; }
+        .tag-movies { background: rgba(59,130,246,0.1); color: #3b82f6; }
+        .tag-series { background: rgba(139,92,246,0.1); color: #8b5cf6; }
+        .tag-programs { background: rgba(245,158,11,0.1); color: #f59e0b; }
+        .tag-component { background: rgba(34,197,94,0.1); color: #16a34a; }
+        
+        .sentiment-indicator { display: inline-block; font-size: 0.7rem; padding: 2px 6px; border-radius: 10px; margin-top: 4px; }
+        .sentiment-positive { background: rgba(34,197,94,0.1); color: #16a34a; }
+        .sentiment-negative { background: rgba(239,68,68,0.1); color: #dc2626; }
+        .sentiment-neutral { background: rgba(148,163,184,0.1); color: #64748b; }
+        
+        .xp-toast {
+            position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+            background: linear-gradient(135deg, #f59e0b, #e63946); color: #fff;
+            padding: 8px 20px; border-radius: 25px; font-size: 0.8rem; font-weight: 700;
+            z-index: 9999; animation: xpSlideDown 0.5s ease, xpSlideUp 0.5s ease 2s forwards;
+            box-shadow: 0 8px 25px rgba(245,158,11,0.4);
         }
+        @keyframes xpSlideDown { from { opacity: 0; transform: translateX(-50%) translateY(-30px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
+        @keyframes xpSlideUp { from { opacity: 1; transform: translateX(-50%) translateY(0); } to { opacity: 0; transform: translateX(-50%) translateY(-30px); } }
+        
+        .typing { display: flex; gap: 4px; padding: 12px 16px; background: #fff; border-radius: 18px; align-self: flex-start; border: 1px solid #e2e8f0; }
+        .typing span { width: 8px; height: 8px; background: #94a3b8; border-radius: 50%; animation: dot 1.4s infinite; }
         .typing span:nth-child(2) { animation-delay: 0.2s; }
         .typing span:nth-child(3) { animation-delay: 0.4s; }
-        @keyframes dot { 0%,60%,100% { opacity: 0.3; } 30% { opacity: 1; } }
-        .quick-chips { display: flex; flex-wrap: wrap; gap: 6px; padding: 4px 0; }
+        @keyframes dot { 0%,60%,100% { opacity: 0.2; transform: scale(0.8); } 30% { opacity: 1; transform: scale(1.2); } }
+        
+        .quick-chips { display: flex; flex-wrap: wrap; gap: 8px; padding: 8px 0; }
         .quick-chip {
-            background: #fff; border: 1.5px solid var(--primary); color: var(--primary);
-            padding: 6px 14px; border-radius: 20px; font-size: 0.78rem; cursor: pointer;
-            font-weight: 600; transition: 0.2s; font-family: 'Tajawal', sans-serif; white-space: nowrap;
+            background: #fff; border: 2px solid var(--primary); color: var(--primary);
+            padding: 8px 16px; border-radius: 25px; font-size: 0.8rem;
+            cursor: pointer; font-weight: 600; transition: all 0.3s;
+            font-family: 'Tajawal', sans-serif; white-space: nowrap;
+            display: flex; align-items: center; gap: 6px;
         }
-        .quick-chip:hover { background: var(--primary); color: #fff; }
-        .chat-input-area {
-            display: flex; gap: 8px; padding: 12px 16px;
-            border-top: 1px solid var(--border); background: #fff;
+        .quick-chip:hover { background: var(--primary); color: #fff; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(230,57,70,0.3); }
+        .quick-chip:active { transform: scale(0.95); }
+        
+        .recommendation-card {
+            background: linear-gradient(135deg, #fff, #fef2f2); border: 2px solid var(--primary);
+            border-radius: 16px; padding: 16px; margin: 8px 0; animation: recGlow 2s infinite;
         }
+        @keyframes recGlow { 0%,100% { box-shadow: 0 0 0 0 rgba(230,57,70,0.2); } 50% { box-shadow: 0 0 0 10px rgba(230,57,70,0); } }
+        .rec-badge { display: inline-block; background: linear-gradient(135deg, var(--primary), var(--primary-light)); color: #fff; padding: 4px 12px; border-radius: 15px; font-size: 0.7rem; font-weight: 700; margin-bottom: 8px; }
+        
+        .product-card-mini {
+            background: #fff; border: 1px solid var(--border); border-radius: 12px;
+            padding: 12px; margin: 4px 0; display: flex; align-items: center;
+            gap: 10px; transition: 0.2s; cursor: pointer;
+        }
+        .product-card-mini:hover { border-color: var(--primary); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .product-card-mini img { width: 50px; height: 50px; border-radius: 8px; object-fit: cover; }
+        .product-card-mini .info { flex: 1; }
+        .product-card-mini .name { font-weight: 700; font-size: 0.85rem; }
+        .product-card-mini .price { color: var(--primary); font-weight: 700; }
+        
+        .chat-input-area { display: flex; gap: 10px; padding: 14px 16px; border-top: 1px solid var(--border); background: #fff; }
         .chat-input-area input {
-            flex: 1; padding: 10px 16px; border: 1.5px solid var(--border);
-            border-radius: 25px; font-size: 0.9rem; font-family: 'Tajawal', sans-serif;
-            outline: none; transition: 0.2s;
+            flex: 1; padding: 12px 18px; border: 2px solid var(--border);
+            border-radius: 30px; font-size: 0.9rem; font-family: 'Tajawal', sans-serif;
+            outline: none; transition: 0.3s; background: #f8fafc;
         }
-        .chat-input-area input:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(230,57,70,0.1);
-        }
+        .chat-input-area input:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(230,57,70,0.1); background: #fff; }
         .chat-input-area button {
-            width: 44px; height: 44px; border-radius: 50%; background: var(--primary);
+            width: 48px; height: 48px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
             border: none; color: #fff; cursor: pointer; font-size: 1.1rem;
-            transition: 0.2s; display: flex; align-items: center; justify-content: center;
+            transition: all 0.3s; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 12px rgba(230,57,70,0.3);
         }
-        .chat-input-area button:hover { transform: scale(1.05); }
-        .chat-footer {
-            text-align: center; padding: 8px; font-size: 0.7rem;
-            color: var(--muted); background: #f1f5f9; border-top: 1px solid var(--border);
-        }
-        .chat-footer a { color: var(--primary); text-decoration: none; font-weight: 600; }
+        .chat-input-area button:hover { transform: scale(1.05) rotate(5deg); box-shadow: 0 6px 20px rgba(230,57,70,0.4); }
+        .chat-input-area button:active { transform: scale(0.95); }
+        .chat-input-area button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        
+        .chat-footer { text-align: center; padding: 10px; font-size: 0.72rem; color: var(--muted); background: #f1f5f9; border-top: 1px solid var(--border); }
+        .chat-footer a { color: var(--primary); text-decoration: none; font-weight: 600; transition: 0.2s; }
+        .chat-footer a:hover { color: var(--primary-light); }
+        
         @media (max-width: 600px) {
             .chat-container { height: 100vh; max-height: 100vh; border-radius: 0; }
             .chat-body { padding: 12px; }
-            .msg { font-size: 0.82rem; max-width: 90%; }
+            .msg { font-size: 0.82rem; max-width: 90%; padding: 10px 12px; }
             .chat-input-area { padding: 10px 12px; }
+            .quick-chip { padding: 6px 12px; font-size: 0.72rem; }
+            .user-level-badge { display: none; }
         }
     </style>
 </head>
@@ -151,49 +224,45 @@
     <div class="chat-container">
         <div class="chat-header">
             <a href="index.html" class="brand">
-                <div class="brand-icon"><i class="fas fa-microchip"></i></div>
+                <div class="brand-icon"><i class="fas fa-robot"></i></div>
                 <div class="brand-text">
-                    <h3>Azzam Technology</h3>
-                    <p>المساعد الذكي • متصل بقاعدة البيانات</p>
+                    <h3>Dar3a Store</h3>
+                    <p>المساعد الذكي - سوداني أصلي 🇸🇩</p>
                 </div>
             </a>
+            <div class="user-level-badge" id="userLevelBadge">
+                <span id="levelIcon">🟢</span>
+                <span id="levelText">مستوى 1</span>
+                <div class="level-bar"><div class="level-bar-fill" id="levelBarFill" style="width:0%"></div></div>
+                <span id="xpText">0 XP</span>
+            </div>
+            <div class="status"><span class="status-dot"></span><span>متصل</span></div>
             <div class="actions">
-                <button id="refreshChatBtn" title="تحديث المحادثة"><i class="fas fa-sync-alt"></i></button>
-                <a href="index.html" title="العودة للمتجر"><i class="fas fa-home"></i></a>
+                <button id="voiceBtn" title="بحث صوتي"><i class="fas fa-microphone"></i></button>
+                <button id="recommendBtn" title="توصية"><i class="fas fa-magic"></i></button>
+                <button id="refreshChatBtn" title="تحديث"><i class="fas fa-sync-alt"></i></button>
+                <a href="index.html" title="المتجر" style="width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;color:#fff;text-decoration:none;font-size:0.85rem;"><i class="fas fa-home"></i></a>
             </div>
         </div>
 
-        <div class="chat-body" id="chatBody">
-            <div class="msg bot">
-                👋 مرحباً بك في <span class="highlight">Azzam Technology</span>!
-                
-                أنا المساعد الذكي، أقدر أساعدك في:
-                • 💻 أسعار ومواصفات اللابتوبات
-                • 🖥️ أسعار ومواصفات الشاشات
-                • 🔧 تجميع جهاز PC
-                • 📊 مقارنة بين المنتجات
-                • 🛡️ الضمان والتوصيل
-                
-                اسألني أي سؤال!
-            </div>
-            <div class="quick-chips" id="initialChips">
-                <button class="quick-chip" data-q="أسعار اللابتوبات">💻 اللابتوبات</button>
-                <button class="quick-chip" data-q="الشاشات المتاحة">🖥️ الشاشات</button>
-                <button class="quick-chip" data-q="كيف أجمع PC">🔧 تجميع PC</button>
-                <button class="quick-chip" data-q="عايز أقارن بين منتجين">📊 مقارنة</button>
-                <button class="quick-chip" data-q="الضمان">🛡️ الضمان</button>
-                <button class="quick-chip" data-q="أرخص منتج عندكم">💰 أرخص منتج</button>
-            </div>
+        <div class="stats-bar" id="statsBar">
+            <span class="stat-item"><i class="fas fa-box"></i> <span class="count" id="totalProducts">0</span> حاجة</span>
+            <span class="stat-item"><i class="fas fa-film"></i> <span class="count" id="moviesCount">0</span> أفلام</span>
+            <span class="stat-item"><i class="fas fa-tv"></i> <span class="count" id="seriesCount">0</span> مسلسلات</span>
+            <span class="stat-item"><i class="fas fa-cube"></i> <span class="count" id="programsCount">0</span> برامج</span>
+            <span class="stat-item" id="popularQueryStat" style="display:none;"><i class="fas fa-fire"></i> <span id="popularQuery"></span></span>
         </div>
+
+        <div class="chat-body" id="chatBody"></div>
 
         <div class="chat-input-area">
-            <input type="text" id="chatInput" placeholder="اكتب سؤالك هنا... مثال: أسعار اللابتوبات" autocomplete="off">
-            <button id="sendBtn"><i class="fas fa-paper-plane"></i></button>
+            <input type="text" id="chatInput" placeholder="💬 اسألني باللهجة السودانية... مثال: أسعار الأفلام كم؟" autocomplete="off">
+            <button id="sendBtn" title="إرسال"><i class="fas fa-paper-plane"></i></button>
         </div>
 
         <div class="chat-footer">
-            📞 واتساب: <a href="https://wa.me/201025555207">01025555207</a> | 
-            📍 مول البستان - القاهرة | 
+            📞 واتساب: <a href="https://wa.me/0922265656">0922265656</a> | 
+            📍 السودان - امدرمان | 
             <a href="index.html">العودة للمتجر</a>
         </div>
     </div>
@@ -204,133 +273,401 @@
             const chatInput = document.getElementById('chatInput');
             const sendBtn = document.getElementById('sendBtn');
             const refreshBtn = document.getElementById('refreshChatBtn');
-            const STORAGE_KEY = 'store_all_products';
-            const CHATBOT_KEY = 'chatbot_data';
+            const voiceBtn = document.getElementById('voiceBtn');
+            const recommendBtn = document.getElementById('recommendBtn');
 
-            function getAllProducts() {
-                try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
-                catch(e) { return []; }
+            const STORAGE_KEY = 'dar3a_store_products';
+            const CHATBOT_KEY = 'dar3a_chatbot_data';
+            const SITE_SETTINGS_KEY = 'dar3a_site_settings';
+            const HISTORY_KEY = 'dar3a_chat_history';
+            const USER_DATA_KEY = 'dar3a_user_data';
+            const WHATSAPP_NUMBER = '0922265656';
+
+            let products = [];
+            let chatbotData = null;
+            let siteSettings = {};
+            let chatHistory = [];
+            let isProcessing = false;
+            let userData = loadUserData();
+
+            // ===== 🎮 USER DATA =====
+            function loadUserData() {
+                try {
+                    const stored = localStorage.getItem(USER_DATA_KEY);
+                    return stored ? JSON.parse(stored) : { xp: 0, level: 1, messagesCount: 0, viewedProducts: [], cartItems: [], joinedDate: new Date().toISOString(), achievements: [] };
+                } catch(e) { return { xp: 0, level: 1, messagesCount: 0, viewedProducts: [], cartItems: [], joinedDate: new Date().toISOString(), achievements: [] }; }
             }
+            function saveUserData() { localStorage.setItem(USER_DATA_KEY, JSON.stringify(userData)); }
 
-            function getChatbotData() {
-                try { return JSON.parse(localStorage.getItem(CHATBOT_KEY)) || null; }
-                catch(e) { return null; }
-            }
-
-            function detectIntent(msg) {
-                const m = msg.toLowerCase().trim();
-                const products = getAllProducts();
-                if (/^(مرحبا|السلام|اهلا|هلا|صباح|مساء)/i.test(m)) return { type: 'greeting' };
-                if (/شكرا|شكراً|تسلم|يعطيك/i.test(m)) return { type: 'thanks' };
-                if (/ضمان|استبدال|صيانة/i.test(m)) return { type: 'warranty' };
-                if (/شحن|توصيل|دليفري/i.test(m)) return { type: 'delivery' };
-                if (/اتصال|رقم|هاتف|عنوان/i.test(m)) return { type: 'contact' };
-                if (/مقارن|قارن|ايهما|الفرق/i.test(m)) {
-                    const prods = products.filter(p => p.name && m.includes(p.name.split(' ')[0].toLowerCase()));
-                    return { type: 'compare', products: prods };
+            function addXP(amount) {
+                userData.xp += amount;
+                const newLevel = Math.floor(userData.xp / 100) + 1;
+                if (newLevel > userData.level) {
+                    userData.level = newLevel;
+                    showXPToast(`🎉 مبروك! وصلت للمستوى ${newLevel}!`);
+                    checkAchievements();
+                    showLevelUpMessage(newLevel);
                 }
-                if (/تجميع|build|راكب|قطع/i.test(m)) return { type: 'build_pc' };
-                if (/ارخص|أرخص|اقل|رخيص/i.test(m)) return { type: 'cheapest' };
-                if (/لابتوب|لاب|لاب توب/i.test(m)) return { type: 'laptop' };
-                if (/شاشة|شاشات|monitor/i.test(m)) return { type: 'monitor' };
-                if (/\bpc\b|كمبيوتر|desktop/i.test(m)) return { type: 'pc' };
-                if (/كل|جميع|عندكم|منتجات/i.test(m)) return { type: 'all_products' };
-                if (/سعر|بكام|اسعار|تكلفة/i.test(m)) return { type: 'price_general' };
-                const found = products.filter(p => p.name && p.name.toLowerCase().includes(m));
-                if (found.length > 0) return { type: 'search', products: found };
-                return { type: 'unknown' };
+                saveUserData();
+                updateLevelDisplay();
             }
 
-            function getResponse(intent, userMsg) {
-                const chatbotData = getChatbotData();
-                const products = getAllProducts();
-                const m = userMsg.toLowerCase().trim();
+            function updateLevelDisplay() {
+                const xpInLevel = userData.xp % 100;
+                const icons = ['🟢', '🔵', '🟣', '🟡', '🔴', '⭐', '💎', '👑', '🚀', '🔥'];
+                const levelIcon = document.getElementById('levelIcon');
+                const levelText = document.getElementById('levelText');
+                const levelBarFill = document.getElementById('levelBarFill');
+                const xpText = document.getElementById('xpText');
+                if (levelIcon) levelIcon.textContent = icons[Math.min(userData.level - 1, icons.length - 1)];
+                if (levelText) levelText.textContent = `مستوى ${userData.level}`;
+                if (levelBarFill) levelBarFill.style.width = xpInLevel + '%';
+                if (xpText) xpText.textContent = `${xpInLevel}/100 XP`;
+            }
 
+            function showXPToast(message) {
+                const toast = document.createElement('div');
+                toast.className = 'xp-toast';
+                toast.textContent = message;
+                document.body.appendChild(toast);
+                setTimeout(() => toast.remove(), 2500);
+            }
+
+            function showLevelUpMessage(newLevel) {
+                const features = { 2: '🔓 توصيات شخصية', 3: '🔓 مقارنة متقدمة', 4: '🔓 تحليل المشاعر', 5: '🔓 خصم 5%', 10: '🔓 شحن مجاني' };
+                const feature = features[newLevel];
+                if (feature) setTimeout(() => addMessage(`🎉 *مبروك المستوى ${newLevel}!*\n\n${feature}\n\nواصل عشان تكسب مميزات أكتر!`, 'bot'), 1500);
+            }
+
+            function checkAchievements() {
+                const achievements = [
+                    { id: 'first_message', name: 'أول رسالة', icon: '💬', condition: () => userData.messagesCount >= 1 },
+                    { id: 'chatty', name: 'كلامو كتير', icon: '🗣️', condition: () => userData.messagesCount >= 50 },
+                    { id: 'explorer', name: 'مستكشف', icon: '🔍', condition: () => userData.viewedProducts.length >= 10 },
+                    { id: 'level5', name: 'محترف', icon: '⭐', condition: () => userData.level >= 5 },
+                    { id: 'level10', name: 'أسطورة', icon: '👑', condition: () => userData.level >= 10 }
+                ];
+                achievements.forEach(a => {
+                    if (!userData.achievements.includes(a.id) && a.condition()) {
+                        userData.achievements.push(a.id);
+                        saveUserData();
+                        setTimeout(() => { addMessage(`🏆 *إنجاز جديد:* ${a.icon} ${a.name}!\n\n+50 XP زيادة!`, 'bot'); }, 2000);
+                        addXP(50);
+                    }
+                });
+            }
+
+            // ===== 📊 DATA =====
+            function loadProducts() { try { products = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); } catch(e) { products = []; } updateStats(); }
+            function loadChatbotData() { try { chatbotData = JSON.parse(localStorage.getItem(CHATBOT_KEY) || 'null'); } catch(e) { chatbotData = null; } }
+            function loadSiteSettings() { try { siteSettings = JSON.parse(localStorage.getItem(SITE_SETTINGS_KEY) || '{}'); } catch(e) { siteSettings = {}; } }
+            function loadChatHistory() { try { chatHistory = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]'); } catch(e) { chatHistory = []; } }
+            function saveChatHistory() { if (chatHistory.length > 100) chatHistory = chatHistory.slice(-100); localStorage.setItem(HISTORY_KEY, JSON.stringify(chatHistory)); }
+
+            function updateStats() {
+                document.getElementById('totalProducts').textContent = products.length;
+                document.getElementById('moviesCount').textContent = products.filter(p => p.type === 'movies').length;
+                document.getElementById('seriesCount').textContent = products.filter(p => p.type === 'series').length;
+                document.getElementById('programsCount').textContent = products.filter(p => p.type === 'programs').length;
+                updatePopularQuery();
+            }
+
+            function updatePopularQuery() {
+                if (chatHistory.length < 5) return;
+                const userMessages = chatHistory.filter(m => m.type === 'user');
+                const wordCounts = {};
+                userMessages.forEach(msg => { const words = msg.text.split(/\s+/); words.forEach(word => { if (word.length > 2) wordCounts[word] = (wordCounts[word] || 0) + 1; }); });
+                const sorted = Object.entries(wordCounts).sort((a, b) => b[1] - a[1]);
+                if (sorted.length > 0) {
+                    const stat = document.getElementById('popularQueryStat');
+                    const query = document.getElementById('popularQuery');
+                    if (stat && query) { stat.style.display = 'flex'; query.textContent = sorted[0][0]; }
+                }
+            }
+
+            // ===== 🇸🇩 اللهجة السودانية - المعجم =====
+            const sudaneseDictionary = {
+                greetings: ['السلام', 'مرحبا', 'اهلا', 'هلا', 'كيفك', 'كيف حالك', 'عامل كيف', 'اخبارك', 'ازيك', 'hi', 'hello', 'هاي', 'صباح', 'مساء', 'صباحو', 'مساءو', 'عامل شنو', 'اخبارك شنو'],
+                thanks: ['شكرا', 'تسلم', 'مشكور', 'الله يخليك', 'بارك الله', 'جزاك الله', 'thanks', 'شكراً'],
+                farewell: ['مع السلامة', 'باي', 'سلام', 'سلامات', 'اشوفك', 'في امان الله', 'bye', 'goodbye'],
+                warranty: ['ضمان', 'استبدال', 'صيانة', 'تصليح', 'عطل', 'مكسور', 'تبديل', 'warranty'],
+                delivery: ['شحن', 'توصيل', 'توصل', 'دليفري', 'delivery', 'shipping', 'توصلو ليّ', 'توصلو لي'],
+                contact: ['اتصال', 'رقم', 'تليفون', 'موبايل', 'عنوان', 'contact', 'phone', 'وين مكانك', 'موقعك', 'رقمك', 'عنوانك'],
+                price: ['سعر', 'بكام', 'اسعار', 'كم', 'price', 'cost', 'غالي', 'رخيص', 'خصم', 'تخفيض', 'بكم'],
+                movies: ['فيلم', 'افلام', 'movie', 'film', 'اجنبي', 'سينما', 'انمي'],
+                series: ['مسلسل', 'مسلسلات', 'series', 'tv', 'حلقات', 'موسم', 'season'],
+                programs: ['برنامج', 'برامج', 'software', 'program', 'هندسة', 'engineering', 'autocad', 'matlab', 'برامج هندسية'],
+                comparison: ['مقارن', 'قارن', 'ايهما', 'الفرق', 'compare', 'قارن لي', 'الافضل'],
+                cheapest: ['ارخص', 'أرخص', 'اقل', 'رخيص', 'cheapest', 'ارخص حاجة', 'ارخص شي'],
+                mostExpensive: ['اغلى', 'أغلى', 'اعلى', 'غالي', 'expensive', 'اغلى حاجة'],
+                build: ['تجميع', 'build', 'راكب', 'قطع', 'تجميعة', 'كمبيوتر', 'pc', 'computer', 'desktop', 'جهاز'],
+                recommendation: ['ترشيح', 'رشح', 'recommend', 'suggest', 'افضل', 'أفضل', 'best', 'top', 'نصيحة', 'رشح لي', 'نصحني'],
+                help: ['مساعدة', 'help', 'ساعد', 'مش فاهم', 'اعمل ايه', 'guide', 'شرح', 'فهمني']
+            };
+
+            // ===== 🧠 تحليل المشاعر =====
+            const positiveWords = ['حلو', 'جميل', 'ممتاز', 'رائع', 'شكرا', 'يعجبني', 'awesome', 'great', 'nice', 'love', 'تمام', 'كفو', 'رهيب', 'جامد', 'ميه ميه', 'عظمة', 'تحفة'];
+            const negativeWords = ['سيء', 'غالي', 'مش حلو', 'زعلان', 'bad', 'terrible', 'hate', 'poor', 'ما عاجبني', 'خربان', 'تعبان', 'بطئ'];
+
+            function analyzeSentiment(message) {
+                const msg = message.toLowerCase();
+                let score = 0;
+                positiveWords.forEach(word => { if (msg.includes(word)) score++; });
+                negativeWords.forEach(word => { if (msg.includes(word)) score--; });
+                if (score > 0) return { type: 'positive', emoji: '😊', label: 'مبسوط' };
+                if (score < 0) return { type: 'negative', emoji: '😔', label: 'متضايق' };
+                return { type: 'neutral', emoji: '😐', label: 'عادي' };
+            }
+
+            // ===== 🧠 كشف النية =====
+            function detectIntent(message) {
+                const msg = message.toLowerCase().trim();
+                const sentiment = analyzeSentiment(message);
+                const matches = {};
+                for (const [intent, keywords] of Object.entries(sudaneseDictionary)) {
+                    const score = keywords.reduce((count, keyword) => count + (msg.includes(keyword) ? 1 : 0), 0);
+                    if (score > 0) matches[intent] = score;
+                }
                 if (chatbotData && chatbotData.qa) {
                     for (const qa of chatbotData.qa) {
-                        if (qa.keywords && qa.keywords.some(k => m.includes(k.toLowerCase()))) return qa.response;
+                        if (qa.keywords && qa.keywords.some(k => msg.includes(k.toLowerCase()))) return { type: 'custom_qa', response: qa.response, sentiment };
                     }
                 }
+                const sorted = Object.entries(matches).sort((a, b) => b[1] - a[1]);
+                const primaryIntent = sorted.length > 0 ? sorted[0][0] : 'unknown';
+                const foundProducts = products.filter(p => p.name && msg.split(/\s+/).some(word => p.name.toLowerCase().includes(word) && word.length > 2));
+                return { type: primaryIntent, products: foundProducts.length > 0 ? foundProducts : null, matches, sentiment };
+            }
+
+            function getCategoryTag(type) {
+                const tags = { movies: '<span class="category-tag tag-movies">🎬 فيلم</span>', series: '<span class="category-tag tag-series">📺 مسلسل</span>', programs: '<span class="category-tag tag-programs">💻 برنامج</span>', component: '<span class="category-tag tag-component">🔧 قطعة</span>' };
+                return tags[type] || '';
+            }
+
+            function getCurrency() { return siteSettings.currency || 'ج.س'; }
+            function formatPrice(price) { return price.toLocaleString('en-US') + ' ' + getCurrency(); }
+
+            function getGreeting() {
+                const hour = new Date().getHours();
+                if (hour < 12) return '🌅 صباح الخير! عامل كيف؟';
+                if (hour < 18) return '☀️ نهارك سعيد! كيف حالك؟';
+                return '🌙 مساء الخير! بخيت وعافية!';
+            }
+
+            // ===== 🌟 توصيات =====
+            function getPersonalizedRecommendations() {
+                const viewedTypes = userData.viewedProducts.map(id => { const p = products.find(pr => pr.id === id); return p ? p.type : null; }).filter(Boolean);
+                const allPreferences = [...viewedTypes];
+                const typeCounts = {};
+                allPreferences.forEach(type => { typeCounts[type] = (typeCounts[type] || 0) + 1; });
+                const sorted = Object.entries(typeCounts).sort((a, b) => b[1] - a[1]);
+                const favoriteType = sorted.length > 0 ? sorted[0][0] : null;
+                if (favoriteType) {
+                    const sameType = products.filter(p => p.type === favoriteType);
+                    if (sameType.length > 0) return sameType.sort(() => Math.random() - 0.5).slice(0, 2);
+                }
+                return products.sort(() => Math.random() - 0.5).slice(0, 3);
+            }
+
+            function generateRecommendationMessage(recs) {
+                if (recs.length === 0) return null;
+                const cards = recs.map(p => `<div class="product-card-mini"><img src="${p.image || 'https://via.placeholder.com/50'}" alt="${p.name}"><div class="info"><div class="name">${p.name}</div><div class="price">${formatPrice(p.price)}</div></div>${getCategoryTag(p.type)}</div>`).join('');
+                return `<div class="recommendation-card"><span class="rec-badge">🌟 ترشيحات مخصصة ليك</span><p style="font-size:0.8rem;color:var(--muted);margin-bottom:8px;">بناءً على الحاجات البتعجبك</p>${cards}</div>`;
+            }
+
+            // ===== 💬 توليد الرد باللهجة السودانية =====
+            function generateResponse(intent, message) {
+                const currency = getCurrency();
+                const storeName = siteSettings.name || 'Dar3a Store';
+                const sentimentTag = `<span class="sentiment-indicator sentiment-${intent.sentiment.type}">${intent.sentiment.emoji} ${intent.sentiment.label}</span>`;
 
                 switch (intent.type) {
+                    case 'custom_qa': return intent.response;
+
                     case 'greeting':
-                        const h = new Date().getHours();
-                        return `🌅 ${h < 12 ? 'صباح' : 'مساء'} الخير! كيف أقدر أساعدك؟`;
+                        const greeting = getGreeting();
+                        return `${greeting}\n\nأنا المساعد الذكي بتاع <span class="highlight">${storeName}</span>! 🚀\n\nالأقدر أساعدك فيه:\n• 🎬 تصفح الأفلام\n• 📺 المسلسلات الجديدة\n• 💻 البرامج الهندسية\n• 💰 أسعار وعروض\n• 🔍 بحث عن أي حاجة\n\n${sentimentTag}\n\nاتفضل، اسألني أي سؤال!`;
+
                     case 'thanks':
-                        return ['🙏 العفو!', '😊 تسلم!', '💖 بالخدمة!'][Math.floor(Math.random() * 3)];
+                        const thanks = ['🙏 العفو! أي خدمة', '😊 تحت أمرك طول', '💖 الشكر لله، أنا في خدمتك', '🌟 تسلم! في أي حاجة تانية؟', '🤗 العفو يا غالي!'];
+                        return thanks[Math.floor(Math.random() * thanks.length)] + `\n\n${sentimentTag}`;
+
+                    case 'farewell':
+                        const farewell = ['👋 مع السلامة!', '🙋‍♂️ في أمان الله', '💫 بالتوفيق يا غالي!', '👋 سلامات!'];
+                        return farewell[Math.floor(Math.random() * farewell.length)];
+
+                    case 'help':
+                        return `🤖 *كيف تستخدمني:*\n\n• "وريني الأفلام" 🎬\n• "المسلسلات المتاحة" 📺\n• "ارخص برنامج" 💰\n• "قارن لي بين حاجتين" 📊\n• "عايز أجمع PC" 🔧\n\n💡 *نصيحة:* اكتب اسم الحاجة عشان تدور عليها!`;
+
                     case 'warranty':
-                        return '🛡️ *الضمان:*\n• 🖥️ شاشات وPC: شهر (استبدال)\n• 💻 لابتوبات: 3 شهور\n• 🔋 بطارية وشاحن: شهر\n⚠️ الجهاز يُقبل بحالته المباع بها';
+                        return `🛡️ *الضمان في ${storeName}:*\n\n• 🎬 أفلام ومسلسلات: استرداد 24 ساعة لو ما اشتغلت\n• 💻 برامج هندسية: ضمان التفعيل سنة كاملة\n• 🔧 قطع تجميع: ضمان شهرين (استبدال)\n• 📦 كل المنتجات: فحص قبل التسليم\n\n⚠️ *ملاحظة:* لازم تبلغنا خلال 48 ساعة لو في مشكلة`;
+
                     case 'delivery':
-                        return '🚚 نوصل لكل مصر! مجاني فوق 5000 ج.م - 2-4 أيام';
+                        const phone = siteSettings.whatsapp || WHATSAPP_NUMBER;
+                        return `🚚 *خدمة التوصيل:*\n\n• ⚡ توصيل فوري للخرطوم وأمدرمان\n• 📦 شحن لباقي المدن (2-5 يوم)\n• 💰 التوصيل مجاني للطلبات فوق 500 ${currency}\n• 🏪 تقدر تستلم من الفرع\n\n📍 *العنوان:* ${siteSettings.address || 'السودان - امدرمان الشهداء - مول الشارقة'}\n📞 *للتواصل:* ${phone}`;
+
                     case 'contact':
-                        return '📞 واتساب: 01025555207 | 📍 مول البستان - القاهرة';
-                    case 'laptop':
-                        const laps = products.filter(p => p.type === 'laptop');
-                        return laps.length ? '💻 *اللابتوبات:*\n' + laps.slice(0,6).map((l,i) => `${i+1}. ${l.name}: ${l.price.toLocaleString()} ج.م`).join('\n') : '⚠️ لا توجد لابتوبات';
-                    case 'monitor':
-                        const mons = products.filter(p => p.type === 'monitor');
-                        return mons.length ? '🖥️ *الشاشات:*\n' + mons.slice(0,6).map((mo,i) => `${i+1}. ${mo.name}: ${mo.price.toLocaleString()} ج.م`).join('\n') : '⚠️ لا توجد شاشات';
-                    case 'pc':
-                        const pcs = products.filter(p => p.type === 'pc');
-                        return pcs.length ? '🖥️ *أجهزة PC:*\n' + pcs.slice(0,6).map((p,i) => `${i+1}. ${p.name}: ${p.price.toLocaleString()} ج.م`).join('\n') : '⚠️ لا توجد أجهزة PC';
-                    case 'cheapest':
-                        if (!products.length) return '⚠️ لا توجد منتجات';
-                        const cheap = products.reduce((a,b) => a.price < b.price ? a : b);
-                        return `💰 أرخص منتج: ${cheap.name} - ${cheap.price.toLocaleString()} ج.م`;
-                    case 'build_pc':
-                        const comps = products.filter(p => p.type === 'component');
-                        return `🔧 قطع التجميع: ${comps.length} قطعة. توجه لقسم تجميع PC!`;
-                    case 'compare':
+                        const cp = siteSettings.whatsapp || WHATSAPP_NUMBER;
+                        return `📞 *معلومات التواصل:*\n\n• 📱 واتساب: <span class="highlight">${cp}</span>\n• 📍 العنوان: ${siteSettings.address || 'السودان - امدرمان الشهداء'}\n• ⏰ ساعات العمل: ${siteSettings.hours || 'يومياً من 10 صباحاً لـ 10 مساءً'}\n\n💬 أنا متواجد 24/7 لأي استفسار!`;
+
+                    case 'price':
+                        if (intent.products && intent.products.length > 0) {
+                            const product = intent.products[0];
+                            userData.viewedProducts.push(product.id);
+                            saveUserData();
+                            return `💰 *سعر ${product.name}:*\n\n<span class="price-tag">${formatPrice(product.price)}</span>\n${getCategoryTag(product.type)}\n${product.description ? '\n📝 ' + product.description : ''}`;
+                        }
+                        return `💰 قول لي اسم الحاجة البتدور على سعرها`;
+
+                    case 'movies':
+                        const ml = products.filter(p => p.type === 'movies');
+                        if (ml.length === 0) return '🎬 والله ما في أفلام حالياً، تابعنا للتحديثات!';
+                        return `🎬 *الأفلام المتاحة (${ml.length}):*\n\n${ml.slice(0, 8).map((m, i) => `${i + 1}. <span class="highlight">${m.name}</span> ${getCategoryTag(m.type)} <span class="price-tag">${formatPrice(m.price)}</span>`).join('\n')}${ml.length > 8 ? '\n\n... وفي كمان! اكتب "كل الأفلام"' : ''}`;
+
+                    case 'series':
+                        const sl = products.filter(p => p.type === 'series');
+                        if (sl.length === 0) return '📺 والله ما في مسلسلات حالياً، تابعنا للتحديثات!';
+                        return `📺 *المسلسلات المتاحة (${sl.length}):*\n\n${sl.slice(0, 8).map((s, i) => `${i + 1}. <span class="highlight">${s.name}</span> ${getCategoryTag(s.type)} <span class="price-tag">${formatPrice(s.price)}</span>`).join('\n')}${sl.length > 8 ? '\n\n... وفي كمان!' : ''}`;
+
+                    case 'programs':
+                        const pl = products.filter(p => p.type === 'programs');
+                        if (pl.length === 0) return '💻 والله ما في برامج حالياً، تابعنا للتحديثات!';
+                        return `💻 *البرامج الهندسية (${pl.length}):*\n\n${pl.slice(0, 8).map((p, i) => `${i + 1}. <span class="highlight">${p.name}</span> ${getCategoryTag(p.type)} <span class="price-tag">${formatPrice(p.price)}</span>`).join('\n')}${pl.length > 8 ? '\n\n... وفي كمان!' : ''}`;
+
+                    case 'comparison':
                         if (intent.products && intent.products.length >= 2) {
                             const a = intent.products[0], b = intent.products[1];
-                            return `📊 ${a.name}: ${a.price.toLocaleString()} ج.م\n📊 ${b.name}: ${b.price.toLocaleString()} ج.م\n💡 الأوفر: ${a.price < b.price ? a.name : b.name}`;
+                            const cheaper = a.price < b.price ? a : b;
+                            const diff = Math.abs(a.price - b.price);
+                            return `📊 *مقارنة بين:*\n\n🔹 ${a.name}: ${formatPrice(a.price)}\n🔸 ${b.name}: ${formatPrice(b.price)}\n\n💰 *الأوفر:* ${cheaper.name}\n📈 *الفرق:* ${formatPrice(diff)}`;
                         }
-                        return '📊 أخبرني باسم المنتجين للمقارنة';
-                    case 'search':
-                        return '🔍 نتائج:\n' + intent.products.slice(0,5).map((p,i) => `${i+1}. ${p.name}: ${p.price.toLocaleString()} ج.م`).join('\n');
+                        return '📊 عشان أقارن ليك، اكتب اسم الحاجتين. مثال: "قارن لي بين فيلم X وفيلم Y"';
+
+                    case 'cheapest':
+                        if (products.length === 0) return '⚠️ ما في حاجات حالياً';
+                        const cheapest = products.reduce((min, p) => p.price < min.price ? p : min);
+                        return `💰 *أرخص حاجة عندنا:*\n\n<span class="highlight">${cheapest.name}</span>\n${getCategoryTag(cheapest.type)} <span class="price-tag">${formatPrice(cheapest.price)}</span>\n\n💡 وفر قروشك مع ${storeName}!`;
+
+                    case 'mostExpensive':
+                        if (products.length === 0) return '⚠️ ما في حاجات';
+                        const most = products.reduce((max, p) => p.price > max.price ? p : max);
+                        return `💎 *أغلى حاجة:*\n\n<span class="highlight">${most.name}</span>\n${getCategoryTag(most.type)} <span class="price-tag">${formatPrice(most.price)}</span>`;
+
+                    case 'recommendation':
+                        const recs = getPersonalizedRecommendations();
+                        const recMsg = generateRecommendationMessage(recs);
+                        return recMsg || '🌟 ما في ترشيحات حالياً، جرب تضيف حاجات للمفضلة!';
+
+                    case 'build':
+                        const comps = products.filter(p => p.type === 'component');
+                        if (comps.length === 0) return '🔧 ما في قطع تجميع حالياً، روح قسم التجميع في المتجر!';
+                        return `🔧 *قطع التجميع (${comps.length}):*\n\n${comps.slice(0, 6).map((c, i) => `${i + 1}. <span class="highlight">${c.name}</span> ${getCategoryTag(c.type)} <span class="price-tag">${formatPrice(c.price)}</span>`).join('\n')}`;
+
                     default:
-                        return '🤔 اسألني عن: اللابتوبات | الشاشات | تجميع PC | الضمان | الأسعار';
+                        if (intent.products && intent.products.length > 0) {
+                            return `🔍 *نتائج البحث:*\n\n${intent.products.slice(0, 8).map((p, i) => `${i + 1}. <span class="highlight">${p.name}</span> ${getCategoryTag(p.type)} <span class="price-tag">${formatPrice(p.price)}</span>`).join('\n')}`;
+                        }
+                        return `🤔 *ما فهمت قصدك*\n\nجرب تسأل:\n• "وريني الأفلام" 🎬\n• "المسلسلات" 📺\n• "البرامج الهندسية" 💻\n• "ارخص حاجة عندك" 💰\n• "معلومات الضمان" 🛡️`;
                 }
             }
 
+            // ===== UI =====
             function addMessage(text, type) {
                 const div = document.createElement('div');
                 div.className = `msg ${type}`;
-                div.innerHTML = text.replace(/\n/g, '<br>').replace(/\*(.*?)\*/g, '<span class="highlight">$1</span>');
+                div.innerHTML = text.replace(/\n/g, '<br>');
                 chatBody.appendChild(div);
                 chatBody.scrollTop = chatBody.scrollHeight;
+                if (type === 'bot' || type === 'user') { chatHistory.push({ text, type, time: Date.now() }); saveChatHistory(); }
             }
 
-            function showTyping() {
+            function showTyping() { const div = document.createElement('div'); div.className = 'typing'; div.innerHTML = '<span></span><span></span><span></span>'; chatBody.appendChild(div); chatBody.scrollTop = chatBody.scrollHeight; return div; }
+
+            function showQuickChips(chips) {
                 const div = document.createElement('div');
-                div.className = 'typing';
-                div.innerHTML = '<span></span><span></span><span></span>';
+                div.className = 'quick-chips';
+                chips.forEach(chip => { const btn = document.createElement('button'); btn.className = 'quick-chip'; btn.innerHTML = chip.icon + ' ' + chip.text; btn.addEventListener('click', () => sendMessage(chip.query)); div.appendChild(btn); });
                 chatBody.appendChild(div);
                 chatBody.scrollTop = chatBody.scrollHeight;
-                return div;
             }
 
+            function removeOldChips() { chatBody.querySelectorAll('.quick-chips').forEach(c => c.remove()); }
+
+            // ===== MESSAGE HANDLER =====
             async function sendMessage(text) {
-                if (!text.trim()) return;
-                const oldChips = chatBody.querySelector('.quick-chips');
-                if (oldChips) oldChips.remove();
+                if (!text.trim() || isProcessing) return;
+                isProcessing = true;
+                sendBtn.disabled = true;
+                removeOldChips();
                 addMessage(text, 'user');
                 chatInput.value = '';
+                userData.messagesCount++;
+                addXP(1 + Math.floor(Math.random() * 3));
+                checkAchievements();
                 const typing = showTyping();
-                await new Promise(r => setTimeout(r, 500 + Math.random() * 500));
+                await new Promise(r => setTimeout(r, 600 + Math.random() * 600));
                 typing.remove();
                 const intent = detectIntent(text);
-                addMessage(getResponse(intent, text), 'bot');
+                const response = generateResponse(intent, text);
+                addMessage(response, 'bot');
+                showQuickChips([
+                    { icon: '🎬', text: 'الأفلام', query: 'وريني الأفلام' },
+                    { icon: '📺', text: 'المسلسلات', query: 'المسلسلات المتاحة' },
+                    { icon: '💻', text: 'البرامج', query: 'البرامج الهندسية' },
+                    { icon: '💰', text: 'أرخص حاجة', query: 'ارخص حاجة عندك' },
+                    { icon: '🌟', text: 'رشح لي', query: 'رشح لي حاجة' },
+                    { icon: '📞', text: 'تواصل', query: 'رقم تليفونك' },
+                ]);
+                updatePopularQuery();
+                isProcessing = false;
+                sendBtn.disabled = false;
+                chatInput.focus();
             }
 
-            sendBtn.addEventListener('click', () => sendMessage(chatInput.value));
-            chatInput.addEventListener('keypress', e => { if (e.key === 'Enter') sendMessage(chatInput.value); });
-            refreshBtn.addEventListener('click', () => {
-                chatBody.innerHTML = '<div class="msg bot">👋 مرحباً بك مجدداً! اسألني أي سؤال.</div>';
-            });
-            document.querySelectorAll('.quick-chip').forEach(c => c.addEventListener('click', () => sendMessage(c.dataset.q)));
+            function startVoiceSearch() {
+                if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) { addMessage('⚠️ البحث الصوتي ما مدعوم في المتصفح دا. جرب Chrome.', 'bot'); return; }
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                const recognition = new SpeechRecognition();
+                recognition.lang = 'ar-SA';
+                recognition.onstart = () => { chatInput.placeholder = '🎤 اسمعك...'; };
+                recognition.onresult = (event) => { chatInput.value = event.results[0][0].transcript; chatInput.placeholder = '💬 اسألني...'; sendMessage(event.results[0][0].transcript); };
+                recognition.onerror = () => { chatInput.placeholder = '💬 اسألني...'; };
+                recognition.start();
+            }
+
+            function bindEvents() {
+                sendBtn.addEventListener('click', () => sendMessage(chatInput.value));
+                chatInput.addEventListener('keypress', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(chatInput.value); } });
+                refreshBtn.addEventListener('click', () => { chatBody.innerHTML = ''; chatHistory = []; localStorage.removeItem(HISTORY_KEY); loadProducts(); initChat(); });
+                voiceBtn.addEventListener('click', startVoiceSearch);
+                recommendBtn.addEventListener('click', () => sendMessage('رشح لي حاجة'));
+                document.addEventListener('keydown', e => { if (e.ctrlKey && e.key === 'k') { e.preventDefault(); chatInput.focus(); } if (e.key === 'Escape') chatInput.blur(); });
+            }
+
+            function initChat() {
+                loadProducts();
+                loadChatbotData();
+                loadSiteSettings();
+                loadChatHistory();
+                updateLevelDisplay();
+                if (chatHistory.length > 0) { chatHistory.slice(-15).forEach(msg => addMessage(msg.text, msg.type)); }
+                else {
+                    addMessage(`👋 ${getGreeting()}\n\nأنا المساعد الذكي بتاع <span class="highlight">${siteSettings.name || 'Dar3a Store'}</span>! 🇸🇩\n\n🎮 *مستواك:* ${userData.level} | ⭐ *XP:* ${userData.xp}\n\nالأقدر أساعدك فيه:\n• 🎬 الأفلام\n• 📺 المسلسلات\n• 💻 البرامج\n• 💰 الأسعار والمقارنات\n\n💡 *جرب تكتب:* "وريني الأفلام" أو "ارخص حاجة عندك"\n\nاتفضل، اسألني أي سؤال!`, 'bot');
+                    showQuickChips([
+                        { icon: '🎬', text: 'الأفلام', query: 'وريني الأفلام' },
+                        { icon: '📺', text: 'المسلسلات', query: 'المسلسلات المتاحة' },
+                        { icon: '💻', text: 'البرامج', query: 'البرامج الهندسية' },
+                        { icon: '💰', text: 'أرخص حاجة', query: 'ارخص حاجة عندك' },
+                        { icon: '🌟', text: 'رشح لي', query: 'رشح لي حاجة' },
+                        { icon: '🔧', text: 'تجميع PC', query: 'عايز أجمع PC' },
+                    ]);
+                }
+            }
+
+            bindEvents();
+            initChat();
             chatInput.focus();
-            console.log('✅ المساعد الذكي جاهز | المنتجات:', getAllProducts().length);
+            console.log('🤖 المساعد الذكي - سوداني أصلي 🇸🇩');
         })();
     </script>
 </body>
