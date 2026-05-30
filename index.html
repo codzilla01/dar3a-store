@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Dar3a Store — درعة ستور</title>
-    <meta name="description" content="متجر درعة ستور - أفضل الأفلام والمسلسلات والبرامج الهندسية">
+    <meta name="description" content="متجر درعة ستور - أفضل الأفلام والمسلسلات والبرامج الهندسية والألعاب">
     <meta name="theme-color" content="#0a0e17">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -219,23 +219,66 @@
         .success-text.show { display: block; }
         .back-btn { background: none; border: none; color: var(--text-muted); cursor: pointer; font-family: var(--font-main); font-size: 0.8rem; margin-top: 12px; }
 
-        /* ===== HERO ===== */
+        /* ===== HERO WITH BANNER IMAGE ===== */
         .hero {
-            background: var(--gradient-hero); color: #fff;
-            padding: clamp(70px, 12vw, 100px) 0; text-align: center;
-            position: relative; overflow: hidden;
+            position: relative;
+            min-height: 85vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            overflow: hidden;
+            color: #fff;
+        }
+        .hero-banner {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 0;
         }
         .hero::before {
-            content: ''; position: absolute; width: 600px; height: 600px;
-            background: radial-gradient(circle, rgba(230,57,70,0.08) 0%, transparent 70%);
-            top: -200px; right: -200px; border-radius: 50%;
-            pointer-events: none; animation: float 8s ease-in-out infinite;
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.4) 100%);
+            z-index: 1;
         }
-        @keyframes float { 0%,100% { transform: translate(0, 0); } 50% { transform: translate(-30px, 30px); } }
-        .hero h1 { font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 900; margin-bottom: 14px; line-height: 1.2; }
-        .hero h1 span { background: var(--gradient-accent); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-        .hero p { font-size: 1.1rem; opacity: 0.85; max-width: 600px; margin: 0 auto 32px; }
-        .hero-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+        .hero .container {
+            position: relative;
+            z-index: 2;
+        }
+        .hero h1 {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 900;
+            margin-bottom: 16px;
+            line-height: 1.2;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+        .hero h1 span {
+            background: var(--gradient-accent);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero p {
+            font-size: 1.2rem;
+            opacity: 0.95;
+            max-width: 700px;
+            margin: 0 auto 32px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        .hero-btns {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
 
         /* ===== BUTTONS ===== */
         .btn {
@@ -248,7 +291,7 @@
         }
         .btn-primary { background: var(--gradient-accent); color: #fff; box-shadow: 0 4px 20px var(--accent-glow); }
         .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 8px 30px rgba(230,57,70,0.5); }
-        .btn-outline { background: transparent; color: #fff; border: 2px solid rgba(255,255,255,0.25); }
+        .btn-outline { background: transparent; color: #fff; border: 2px solid rgba(255,255,255,0.25); backdrop-filter: blur(4px); }
         .btn-outline:hover { border-color: #fff; background: rgba(255,255,255,0.08); }
         .btn-whatsapp { background: #25D366; color: #fff; }
         .btn-whatsapp:hover { background: #1ebe57; }
@@ -262,16 +305,44 @@
         .section-header p { color: var(--text-muted); font-size: 0.95rem; margin-top: 6px; }
         .section-line { width: 60px; height: 3.5px; background: var(--gradient-accent); border-radius: 3px; margin: 12px auto 0; }
 
-        /* ===== FILTER TABS ===== */
-        .filter-tabs { display: flex; justify-content: center; gap: 6px; margin-bottom: 24px; flex-wrap: wrap; }
-        .filter-tab {
-            padding: 7px 18px; border-radius: var(--radius-full);
-            cursor: pointer; font-weight: 600; font-size: 0.82rem;
-            font-family: var(--font-main); border: 1.5px solid var(--border-color);
-            background: transparent; color: var(--text-secondary); transition: var(--transition);
+        /* ===== GAMES DOUBLE SECTION ===== */
+        .games-double-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
         }
-        .filter-tab:hover { border-color: var(--accent); color: var(--text-primary); }
-        .filter-tab.active { border-color: var(--accent); color: #fff; background: var(--gradient-accent); box-shadow: 0 4px 16px var(--accent-glow); }
+        .games-col {
+            background: var(--bg-glass);
+            backdrop-filter: blur(12px);
+            border-radius: var(--radius-xl);
+            border: 1px solid var(--glass-border);
+            padding: 24px;
+        }
+        .games-col-header {
+            text-align: center;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid var(--gradient-accent);
+        }
+        .games-col-header h3 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .games-col-header h3 i {
+            background: var(--gradient-accent);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .games-products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
 
         /* ===== PRODUCTS GRID ===== */
         .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; }
@@ -382,25 +453,32 @@
         .fab-btn { position: fixed; bottom: 24px; left: 24px; z-index: 999; background: var(--gradient-accent); color: #fff; padding: 12px 20px; border-radius: var(--radius-full); text-decoration: none; font-weight: 700; font-size: 0.85rem; box-shadow: 0 8px 24px rgba(230,57,70,0.4); display: flex; align-items: center; gap: 8px; transition: var(--transition); }
         .fab-btn:hover { transform: translateY(-3px); box-shadow: 0 12px 36px rgba(230,57,70,0.5); }
 
-        @media (max-width: 992px) { .pc-builder-grid { grid-template-columns: 1fr; } .pc-summary { position: static; } }
+        @media (max-width: 992px) { .pc-builder-grid { grid-template-columns: 1fr; } .pc-summary { position: static; } .games-double-grid { grid-template-columns: 1fr; gap: 24px; } }
         @media (max-width: 768px) {
             .nav-links { display: none; } .hamburger { display: flex; }
             .products-grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; }
+            .games-products-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
             .product-card-image { height: 170px; }
             .modal-content { grid-template-columns: 1fr; } .modal-image { min-height: 220px; }
-            .hero h1 { font-size: 1.6rem; } .section { padding: 40px 0; }
+            .hero { min-height: 60vh; }
+            .hero h1 { font-size: 1.8rem; }
+            .hero p { font-size: 0.95rem; }
+            .section { padding: 40px 0; }
             .fab-btn { bottom: 16px; left: 16px; padding: 10px 16px; } .fab-btn span { display: none; }
             .cart-drawer { max-width: 100%; }
             .otp-input { width: 40px; height: 46px; font-size: 1.1rem; }
         }
         @media (max-width: 480px) {
             .products-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+            .games-products-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
             .product-card-image { height: 140px; } .product-price { font-size: 1.1rem; }
             .product-card-body { padding: 12px; } .product-card-body h3 { font-size: 0.85rem; }
             .add-to-cart-btn { padding: 8px; font-size: 0.75rem; }
             .filter-tab { padding: 5px 12px; font-size: 0.72rem; }
             .modal-actions-row { flex-direction: column; }
             .admin-card { padding: 24px 16px; }
+            .games-col { padding: 16px; }
+            .games-col-header h3 { font-size: 1.2rem; }
         }
     </style>
 </head>
@@ -419,9 +497,10 @@
             </div>
             <ul class="nav-links">
                 <li><a href="#home" class="active">الرئيسية</a></li>
-                <li><a href="#monitors">🎬 أفلام</a></li>
-                <li><a href="#laptops">📺 مسلسلات</a></li>
-                <li><a href="#pc-section">💻 برامج</a></li>
+                <li><a href="#movies">🎬 أفلام</a></li>
+                <li><a href="#series">📺 مسلسلات</a></li>
+                <li><a href="#software">💻 برامج</a></li>
+                <li><a href="#games-section">🎮 ألعاب</a></li>
                 <li><a href="#builder">🔧 تجميع</a></li>
             </ul>
             <div class="nav-actions">
@@ -433,23 +512,104 @@
         </div>
     </nav>
 
-    <!-- ===== HERO ===== -->
+    <!-- ===== HERO WITH BANNER ===== -->
     <section class="hero" id="home">
+        <img src="images/Banner.png" alt="Dar3a Store Banner - Where Every Game Begins" class="hero-banner" id="hero-banner-img">
         <div class="container">
             <h1><span>Dar3a</span> Store</h1>
-            <p>أفلام • مسلسلات • برامج هندسية — كل ما تحتاجه في مكان واحد</p>
+            <p>أفلام • مسلسلات • برامج هندسية • ألعاب — كل ما تحتاجه في مكان واحد</p>
             <div class="hero-btns">
-                <a href="#monitors" class="btn btn-primary"><i class="fas fa-film"></i> تصفح الأفلام</a>
-                <a href="#builder" class="btn btn-outline"><i class="fas fa-microchip"></i> تجميع PC</a>
+                <a href="#movies" class="btn btn-primary"><i class="fas fa-film"></i> تصفح الأفلام</a>
+                <a href="#games-section" class="btn btn-outline"><i class="fas fa-gamepad"></i> تصفح الألعاب</a>
             </div>
         </div>
     </section>
 
-    <!-- ===== SECTIONS (أفلام، مسلسلات، برامج، تجميع) ===== -->
-    <section id="monitors" class="section"><div class="container"><div class="section-header"><h2><i class="fas fa-film"></i> أفلام</h2><p>أفلام عالية الدقة</p><div class="section-line"></div></div><div class="filter-tabs" id="monitor-tabs"><button class="filter-tab active" data-filter="all">الكل</button><button class="filter-tab" data-filter="monitor">أجنبي</button><button class="filter-tab" data-filter="frameless">عربي</button><button class="filter-tab" data-filter="gaming">أنمي</button></div><div class="products-grid" id="monitors-grid"></div></div></section>
-    <section id="laptops" class="section section-alt"><div class="container"><div class="section-header"><h2><i class="fas fa-tv"></i> مسلسلات</h2><p>أحدث المسلسلات</p><div class="section-line"></div></div><div class="products-grid" id="laptops-grid"></div></div></section>
-    <section id="pc-section" class="section"><div class="container"><div class="section-header"><h2><i class="fas fa-cube"></i> برامج هندسية</h2><p>برامج هندسية حديثة مفعلة</p><div class="section-line"></div></div><div class="products-grid" id="pc-grid"></div></div></section>
-    <section id="builder" class="section section-alt"><div class="container"><div class="section-header"><h2><i class="fas fa-microchip"></i> تجميع الكمبيوتر</h2><p>اختر كل قطعة</p><div class="section-line"></div></div><div class="pc-builder-grid"><div class="pc-components" id="pc-builder-components"></div><div class="pc-summary" id="pc-summary"><h3>📋 ملخص التجميعة</h3><ul id="pc-summary-list"></ul><div class="pc-total" id="pc-total-price">0 ج.م</div><button class="btn btn-primary" id="add-pc-to-cart" style="width:100%;">إضافة للسلة</button><button class="btn btn-outline" id="reset-builder" style="width:100%;margin-top:8px;border-color:var(--accent);color:var(--accent);">إعادة تعيين</button></div></div></div></section>
+    <!-- ===== MOVIES SECTION ===== -->
+    <section id="movies" class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2><i class="fas fa-film"></i> أفلام</h2>
+                <p>أفلام عالية الدقة</p>
+                <div class="section-line"></div>
+            </div>
+            <div class="products-grid" id="movies-grid"></div>
+        </div>
+    </section>
+
+    <!-- ===== SERIES SECTION ===== -->
+    <section id="series" class="section section-alt">
+        <div class="container">
+            <div class="section-header">
+                <h2><i class="fas fa-tv"></i> مسلسلات</h2>
+                <p>أحدث المسلسلات</p>
+                <div class="section-line"></div>
+            </div>
+            <div class="products-grid" id="series-grid"></div>
+        </div>
+    </section>
+
+    <!-- ===== SOFTWARE SECTION ===== -->
+    <section id="software" class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2><i class="fas fa-cube"></i> برامج هندسية</h2>
+                <p>برامج هندسية حديثة مفعلة</p>
+                <div class="section-line"></div>
+            </div>
+            <div class="products-grid" id="software-grid"></div>
+        </div>
+    </section>
+
+    <!-- ===== GAMES SECTION (PC + PS double section) ===== -->
+    <section id="games-section" class="section section-alt">
+        <div class="container">
+            <div class="section-header">
+                <h2><i class="fas fa-gamepad"></i> ألعاب</h2>
+                <p>أفضل الألعاب لجميع المنصات</p>
+                <div class="section-line"></div>
+            </div>
+            <div class="games-double-grid">
+                <!-- PC Games Column -->
+                <div class="games-col">
+                    <div class="games-col-header">
+                        <h3><i class="fas fa-desktop"></i> PC Games</h3>
+                        <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">ألعاب الكمبيوتر</p>
+                    </div>
+                    <div class="games-products-grid" id="pcgames-grid"></div>
+                </div>
+                <!-- PlayStation Games Column -->
+                <div class="games-col">
+                    <div class="games-col-header">
+                        <h3><i class="fab fa-playstation"></i> PS Games</h3>
+                        <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">ألعاب بلايستيشن</p>
+                    </div>
+                    <div class="games-products-grid" id="psgames-grid"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== PC BUILDER SECTION ===== -->
+    <section id="builder" class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2><i class="fas fa-microchip"></i> تجميع الكمبيوتر</h2>
+                <p>اختر كل قطعة</p>
+                <div class="section-line"></div>
+            </div>
+            <div class="pc-builder-grid">
+                <div class="pc-components" id="pc-builder-components"></div>
+                <div class="pc-summary" id="pc-summary">
+                    <h3>📋 ملخص التجميعة</h3>
+                    <ul id="pc-summary-list"></ul>
+                    <div class="pc-total" id="pc-total-price">0 ج.م</div>
+                    <button class="btn btn-primary" id="add-pc-to-cart" style="width:100%;">إضافة للسلة</button>
+                    <button class="btn btn-outline" id="reset-builder" style="width:100%;margin-top:8px;border-color:var(--accent);color:var(--accent);">إعادة تعيين</button>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <!-- ===== PRODUCT MODAL ===== -->
     <div class="modal-overlay" id="product-modal-overlay"><div class="modal-content"><button class="modal-close" id="modal-close-btn">&times;</button><div class="modal-image" id="modal-product-image"></div><div class="modal-details" id="modal-product-details"></div></div></div>
@@ -461,7 +621,7 @@
     <div class="admin-overlay" id="admin-login-overlay"><div class="admin-card"><button class="admin-close" id="admin-login-close">&times;</button><div class="admin-icon"><i class="fas fa-shield-halved"></i></div><h3>🔐 دخول المسؤول</h3><p class="subtitle">تحقق سريع عبر Telegram</p><div class="auth-step active" id="admin-step-request"><button class="telegram-btn" id="admin-request-code-btn"><i class="fab fa-telegram-plane"></i> طلب كود التحقق</button><div class="error-text" id="admin-step1-error"></div><div class="success-text" id="admin-step1-success">✅ تم الإرسال</div></div><div class="auth-step" id="admin-step-verify"><p style="color:var(--success);">تم إرسال الكود</p><div class="otp-group"><input type="text" class="otp-input" maxlength="1" id="admin-otp-1" inputmode="numeric"><input type="text" class="otp-input" maxlength="1" id="admin-otp-2" inputmode="numeric"><input type="text" class="otp-input" maxlength="1" id="admin-otp-3" inputmode="numeric"><input type="text" class="otp-input" maxlength="1" id="admin-otp-4" inputmode="numeric"><input type="text" class="otp-input" maxlength="1" id="admin-otp-5" inputmode="numeric"><input type="text" class="otp-input" maxlength="1" id="admin-otp-6" inputmode="numeric"></div><div class="timer-text" id="admin-timer-display"></div><span class="resend-link disabled" id="admin-resend-link">إعادة الإرسال</span><div class="error-text" id="admin-step2-error"></div><button class="back-btn" id="admin-back-btn">العودة</button></div></div></div>
 
     <!-- ===== FOOTER ===== -->
-    <footer class="footer"><div class="container"><div class="footer-grid"><div class="footer-col"><h4>عن المتجر</h4><p>متجر درعة ستور</p></div><div class="footer-col"><h4>روابط</h4><a href="#home">الرئيسية</a><a href="#monitors">أفلام</a></div><div class="footer-col"><h4>اتصل بنا</h4><p>📞 0922265656</p></div><div class="footer-col"><h4>خدمات</h4><a href="chat-bot.html">المساعد الذكي</a></div></div><div class="footer-bottom"><p>&copy; 2026 Dar3a Store</p><p>Designed by <a href="https://me-one-blue.vercel.app">Mr.Developer</a></p></div></div></footer>
+    <footer class="footer"><div class="container"><div class="footer-grid"><div class="footer-col"><h4>عن المتجر</h4><p>متجر درعة ستور</p></div><div class="footer-col"><h4>روابط</h4><a href="#home">الرئيسية</a><a href="#movies">أفلام</a><a href="#series">مسلسلات</a><a href="#software">برامج</a><a href="#games-section">ألعاب</a></div><div class="footer-col"><h4>اتصل بنا</h4><p>📞 0922265656</p></div><div class="footer-col"><h4>خدمات</h4><a href="chat-bot.html">المساعد الذكي</a></div></div><div class="footer-bottom"><p>&copy; 2026 Dar3a Store</p><p>Designed by <a href="https://me-one-blue.vercel.app">Mr.Developer</a></p></div></div></footer>
     <a href="chat-bot.html" class="fab-btn"><i class="fas fa-robot"></i> <span>المساعدة</span></a>
 
     <script>
@@ -478,7 +638,7 @@
             const $ = s => document.querySelector(s), $$ = s => document.querySelectorAll(s);
 
             let data = loadProducts(), cart = loadCart(), wishlist = loadWishlist(), builder = {};
-            let currentTheme = localStorage.getItem('dar3a_theme') || 'dark', currentFilter = 'all';
+            let currentTheme = localStorage.getItem('dar3a_theme') || 'dark';
             let otpTimer = null, otpTimeLeft = 0;
             let siteSettings = { name: 'Dar3a Store', currency: 'ج.م', whatsapp: '0922265656', primaryColor: '#e63946', logoIcon: 'fa-shield-halved', mainLogo: '', favicon: '', developerName: 'Mr.Developer', developerUrl: 'https://me-one-blue.vercel.app/about.html' };
 
@@ -495,10 +655,22 @@
                     const all = JSON.parse(stored);
                     const pc = { cpu:{label:'🧠 المعالج',icon:'fa-microchip',options:[]}, motherboard:{label:'📟 اللوحة الأم',icon:'fa-server',options:[]}, gpu:{label:'🎮 كرت الشاشة',icon:'fa-tv',options:[]}, ram:{label:'🧮 الذاكرة',icon:'fa-memory',options:[]}, storage:{label:'💾 التخزين',icon:'fa-hdd',options:[]}, psu:{label:'⚡ مزود الطاقة',icon:'fa-bolt',options:[]}, case:{label:'📦 الصندوق',icon:'fa-desktop',options:[]} };
                     all.filter(p => p.type === 'component').forEach(c => { if (pc[c.componentType]) pc[c.componentType].options.push({ name: c.name, price: c.price, image: c.image || '', id: c.id }); });
-                    return { laptops: all.filter(p => p.type === 'series'), monitors: all.filter(p => p.type === 'movies'), frameless: all.filter(p => p.type === 'frameless') || [], curved: all.filter(p => p.type === 'curved') || [], gaming: all.filter(p => p.type === 'gaming') || [], prebuiltPCs: all.filter(p => p.type === 'programs'), pcComponents: pc };
+                    return {
+                        movies: all.filter(p => p.type === 'movies'),
+                        series: all.filter(p => p.type === 'series'),
+                        software: all.filter(p => p.type === 'programs'),
+                        pcgames: all.filter(p => p.type === 'pcgames'),
+                        psgames: all.filter(p => p.type === 'playstation'),
+                        pcComponents: pc
+                    };
                 } catch(e) { return defaultProducts(); }
             }
-            function defaultProducts() { return { laptops:[], monitors:[], frameless:[], curved:[], gaming:[], prebuiltPCs:[], pcComponents:{ cpu:{label:'🧠 المعالج',icon:'fa-microchip',options:[]}, motherboard:{label:'📟 اللوحة الأم',icon:'fa-server',options:[]}, gpu:{label:'🎮 كرت الشاشة',icon:'fa-tv',options:[]}, ram:{label:'🧮 الذاكرة',icon:'fa-memory',options:[]}, storage:{label:'💾 التخزين',icon:'fa-hdd',options:[]}, psu:{label:'⚡ مزود الطاقة',icon:'fa-bolt',options:[]}, case:{label:'📦 الصندوق',icon:'fa-desktop',options:[]} } }; }
+            function defaultProducts() { 
+                return { 
+                    movies: [], series: [], software: [], pcgames: [], psgames: [],
+                    pcComponents: { cpu:{label:'🧠 المعالج',icon:'fa-microchip',options:[]}, motherboard:{label:'📟 اللوحة الأم',icon:'fa-server',options:[]}, gpu:{label:'🎮 كرت الشاشة',icon:'fa-tv',options:[]}, ram:{label:'🧮 الذاكرة',icon:'fa-memory',options:[]}, storage:{label:'💾 التخزين',icon:'fa-hdd',options:[]}, psu:{label:'⚡ مزود الطاقة',icon:'fa-bolt',options:[]}, case:{label:'📦 الصندوق',icon:'fa-desktop',options:[]} } 
+                }; 
+            }
 
             function formatPrice(p) { return p.toLocaleString('en-US') + ' ' + siteSettings.currency; }
             function showToast(msg) { const c = $('#toast-container'); if (!c) return; const t = document.createElement('div'); t.className = 'toast'; t.textContent = msg; c.appendChild(t); setTimeout(() => { if (t.parentNode) t.remove(); }, 2800); }
@@ -547,8 +719,7 @@
             }
 
             function renderGrid(id, arr) { const g = document.getElementById(id); if (!g) return; g.innerHTML = ''; if (!arr || arr.length === 0) { g.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-muted);grid-column:1/-1;">لا توجد منتجات</div>'; return; } arr.forEach(p => g.appendChild(createProductCard(p))); }
-            function renderAll() { renderMonitors(currentFilter); renderGrid('laptops-grid', data.laptops); renderGrid('pc-grid', data.prebuiltPCs); renderBuilder(); updateCartUI(); updateWishlistBadge(); }
-            function renderMonitors(filter) { if (filter !== undefined) currentFilter = filter; let arr = []; const f = currentFilter; if (f === 'all') arr = [...data.monitors, ...data.frameless, ...data.curved, ...data.gaming]; else if (f === 'monitor') arr = data.monitors; else if (f === 'frameless') arr = data.frameless; else if (f === 'gaming') arr = data.gaming; renderGrid('monitors-grid', arr); $$('.filter-tab').forEach(t => t.classList.toggle('active', t.dataset.filter === currentFilter)); }
+            function renderAll() { renderGrid('movies-grid', data.movies); renderGrid('series-grid', data.series); renderGrid('software-grid', data.software); renderGrid('pcgames-grid', data.pcgames); renderGrid('psgames-grid', data.psgames); renderBuilder(); updateCartUI(); updateWishlistBadge(); }
 
             function renderBuilder() {
                 const c = $('#pc-builder-components'); if (!c) return; c.innerHTML = '';
@@ -636,7 +807,6 @@
                 $('#cart-overlay').addEventListener('click', e => { if (e.target === e.currentTarget) closeCart(); });
                 $('#cart-checkout-btn').addEventListener('click', checkoutCart);
                 $('#wishlist-btn').addEventListener('click', () => showToast('❤️ ' + wishlist.length + ' منتجات'));
-                $$('.filter-tab').forEach(t => t.addEventListener('click', () => renderMonitors(t.dataset.filter)));
                 $('#theme-toggle').addEventListener('click', () => { currentTheme = currentTheme === 'dark' ? 'light' : 'dark'; document.documentElement.setAttribute('data-theme', currentTheme); localStorage.setItem('dar3a_theme', currentTheme); $('#theme-toggle').textContent = currentTheme === 'dark' ? '☀️' : '🌙'; });
                 $('#add-pc-to-cart').addEventListener('click', () => { const sel = Object.entries(builder).filter(([,o])=>o); if(sel.length<3){showToast('⚠️ اختر 3 مكونات');return;} let total=0; const specs={}; sel.forEach(([k,o])=>{total+=o.price;specs[data.pcComponents[k].label]=o.name;}); addToCart({id:'build_'+Date.now(),name:'🖥️ تجميعة PC',brand:'Dar3a Custom',price:total,image:'https://picsum.photos/seed/pcbuild/400/260',specs}); builder={}; renderBuilder(); });
                 $('#reset-builder').addEventListener('click', () => { builder = {}; renderBuilder(); });
@@ -644,6 +814,21 @@
                 window.addEventListener('storage', () => { data = loadProducts(); cart = loadCart(); wishlist = loadWishlist(); renderAll(); });
                 $('#hamburger-btn').addEventListener('click', () => { const l = document.querySelector('.nav-links'); if (l) l.style.display = l.style.display === 'flex' ? 'none' : 'flex'; });
                 bindAdminEvents();
+                
+                // Smooth scroll for navigation
+                document.querySelectorAll('.nav-links a, .hero-btns a').forEach(link => {
+                    link.addEventListener('click', function(e) {
+                        const href = this.getAttribute('href');
+                        if (href && href.startsWith('#')) {
+                            e.preventDefault();
+                            const target = document.querySelector(href);
+                            if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                            if (window.innerWidth <= 768) {
+                                document.querySelector('.nav-links').style.display = 'none';
+                            }
+                        }
+                    });
+                });
             }
 
             // ===== INIT =====
