@@ -65,7 +65,6 @@
             min-height: 100dvh;
         }
 
-        /* ===== SCROLLBAR ===== */
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: var(--bg-secondary); }
         ::-webkit-scrollbar-thumb {
@@ -73,7 +72,6 @@
             border-radius: 10px;
         }
         
-        /* ===== SCROLL PROGRESS BAR ===== */
         .scroll-progress {
             position: fixed;
             top: 0;
@@ -86,7 +84,6 @@
             box-shadow: 0 0 10px rgba(230,57,70,0.5);
         }
 
-        /* ===== FADE-IN ANIMATION ===== */
         .fade-up {
             opacity: 0;
             transform: translateY(30px);
@@ -99,7 +96,6 @@
 
         .container { width: 100%; max-width: 1320px; margin: 0 auto; padding: 0 clamp(16px, 4vw, 32px); }
 
-        /* ===== NAVBAR ===== */
         .navbar {
             position: sticky; top: 0; z-index: 1000;
             background: var(--nav-bg);
@@ -150,7 +146,6 @@
             border-radius: 12px;
         }
         
-        /* Logo text - hidden on mobile, visible on desktop */
         .logo-text {
             display: inline-block;
         }
@@ -164,7 +159,6 @@
             }
         }
 
-        /* Assistant Login Button Styles */
         .assistant-login-btn {
             background: linear-gradient(135deg, #4f46e5, #6366f1);
             border: none;
@@ -253,7 +247,6 @@
         }
         .badge-dot.show { display: flex; }
         
-        /* ===== MOBILE MENU ===== */
         .hamburger { display: none; background: none; border: none; color: var(--text-primary); font-size: 1.5rem; cursor: pointer; transition: transform 0.3s; }
         .hamburger:hover { transform: scale(1.1); color: var(--accent); }
         .mobile-menu {
@@ -323,7 +316,6 @@
             visibility: visible;
         }
 
-        /* ===== SECRET PRESS BAR ===== */
         .secret-press-bar {
             position: fixed; top: 3px; left: 0; right: 0; height: 4px;
             background: transparent; z-index: 10001;
@@ -352,7 +344,6 @@
         .logo-icon.success { background: var(--success) !important; animation: successPulse 0.5s ease; }
         @keyframes successPulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.3); } }
 
-        /* ===== ADMIN LOGIN MODAL (Dual Role) ===== */
         .admin-overlay {
             position: fixed; inset: 0; background: rgba(0,0,0,0.9);
             z-index: 20000; display: none; align-items: center; justify-content: center;
@@ -384,7 +375,6 @@
         }
         .admin-close:hover { background: var(--accent); color: #fff; transform: rotate(90deg); }
         
-        /* Role Selection Buttons */
         .role-selector {
             display: flex;
             gap: 12px;
@@ -440,7 +430,6 @@
         .success-text.show { display: block; }
         .back-btn { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 0.8rem; margin-top: 12px; }
 
-        /* ===== HERO WITH BANNER IMAGE ===== */
         .hero {
             position: relative;
             min-height: 85vh;
@@ -510,7 +499,6 @@
             flex-wrap: wrap;
         }
 
-        /* ===== BUTTONS ===== */
         .btn {
             display: inline-flex;
             align-items: center;
@@ -551,7 +539,6 @@
         .btn-whatsapp:hover { background: #1ebe57; }
         .btn-sm { padding: 8px 16px; font-size: 0.8rem; }
 
-        /* ===== SECTIONS ===== */
         .section { padding: 60px 0; }
         .section-alt { background: var(--bg-secondary); }
         .section-header { text-align: center; margin-bottom: 40px; }
@@ -559,7 +546,6 @@
         .section-header p { color: var(--text-muted); font-size: 0.9rem; margin-top: 6px; }
         .section-line { width: 60px; height: 3px; background: var(--gradient-accent); border-radius: 3px; margin: 12px auto 0; }
 
-        /* ===== GAMES DOUBLE SECTION ===== */
         .games-double-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -603,7 +589,6 @@
             gap: 16px;
         }
 
-        /* ===== PRODUCTS GRID ===== */
         .products-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
@@ -777,7 +762,6 @@
         }
         .add-to-cart-btn.in-cart { background: var(--success); }
 
-        /* ===== SKELETON LOADING ===== */
         .skeleton {
             background: linear-gradient(90deg, var(--bg-tertiary) 25%, var(--border-light) 50%, var(--bg-tertiary) 75%);
             background-size: 200% 100%;
@@ -790,7 +774,6 @@
         }
         .skeleton-card { height: 300px; width: 100%; }
 
-        /* ===== CART DRAWER ===== */
         .cart-overlay {
             position: fixed; inset: 0; background: rgba(0,0,0,0.7);
             z-index: 6000; display: none; align-items: center; justify-content: center;
@@ -913,7 +896,6 @@
         .cart-empty-state.show { display: block; }
         .cart-empty-state i { font-size: 2.5rem; display: block; margin-bottom: 12px; opacity: 0.3; }
 
-        /* ===== PC BUILDER ===== */
         .pc-builder-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -968,7 +950,6 @@
             border-top: 2px solid var(--border-color);
         }
 
-        /* ===== PRODUCT MODAL ===== */
         .modal-overlay {
             position: fixed;
             inset: 0;
@@ -1050,7 +1031,6 @@
         .modal-actions { margin-top: auto; padding-top: 16px; border-top: 1px solid var(--border-light); }
         .modal-actions-row { display: flex; gap: 8px; flex-wrap: wrap; }
 
-        /* ===== FOOTER ===== */
         .footer {
             background: linear-gradient(180deg, #0a0e17 0%, #05080f 100%);
             position: relative;
@@ -1210,7 +1190,6 @@
         .developer-credit { display: flex; align-items: center; gap: 5px; font-size: 0.7rem; }
         .developer-credit a { color: var(--accent); text-decoration: none; font-weight: 700; }
 
-        /* ===== BACK TO TOP ===== */
         .back-to-top {
             position: fixed;
             bottom: 80px;
@@ -1234,7 +1213,6 @@
         .back-to-top.show { opacity: 1; visibility: visible; }
         .back-to-top:hover { transform: translateY(-3px); }
 
-        /* ===== TOAST ===== */
         .toast-container {
             position: fixed;
             bottom: 24px;
@@ -1264,7 +1242,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* ===== FAB ===== */
         .fab-btn {
             position: fixed;
             bottom: 24px;
@@ -1285,7 +1262,6 @@
         }
         .fab-btn:hover { transform: translateY(-3px); box-shadow: 0 12px 36px rgba(230,57,70,0.5); }
 
-        /* ===== RESPONSIVE ===== */
         @media (max-width: 992px) {
             .pc-builder-grid { grid-template-columns: 1fr; }
             .pc-summary { position: static; margin-top: 20px; }
@@ -1362,7 +1338,7 @@
                 <li><a href="#builder" data-translate="builder">🔧 تجميع</a></li>
             </ul>
             <div class="nav-actions">
-                <button class="assistant-login-btn" id="assistant-login-btn" title="دخول المساعد"><i class="fas fa-user-friends"></i></button>
+                <!--<button class="assistant-login-btn" id="assistant-login-btn" title="دخول المساعد"><i class="fas fa-user-friends"></i></button>-->
                 <button class="nav-btn" id="lang-toggle" title="Switch Language">EN</button>
                 <button class="nav-btn" id="theme-toggle">🌙</button>
                 <button class="nav-btn" id="wishlist-btn"><i class="fas fa-heart"></i><span class="badge-dot" id="wishlist-badge">0</span></button>
@@ -1487,14 +1463,14 @@
     <div class="modal-overlay" id="product-modal-overlay"><div class="modal-content"><button class="modal-close" id="modal-close-btn">&times;</button><div class="modal-image" id="modal-product-image"></div><div class="modal-details" id="modal-product-details"></div></div></div>
     <div class="cart-overlay" id="cart-overlay"><div class="cart-drawer"><div class="cart-header"><h3><i class="fas fa-shopping-cart"></i> سلة التسوق</h3><button class="cart-close" id="cart-close-btn">&times;</button></div><div class="cart-items" id="cart-items"></div><div class="cart-empty-state" id="cart-empty-state"><i class="fas fa-shopping-cart"></i><p>السلة فارغة</p></div><div class="cart-footer" id="cart-footer"><div class="cart-total-row"><span>المجموع:</span><span id="cart-total-amount">0 ج.م</span></div><button class="btn btn-primary" id="cart-checkout-btn" style="width:100%;"><i class="fab fa-whatsapp"></i> إتمام الطلب</button></div></div></div>
     
-    <!-- ADMIN LOGIN MODAL (Dual Role) -->
+    <!-- ADMIN LOGIN MODAL (Dual Role with Paste Support) -->
     <div class="admin-overlay" id="admin-login-overlay"><div class="admin-card"><button class="admin-close" id="admin-login-close">&times;</button><div class="admin-icon" id="admin-login-icon"><i class="fas fa-shield-halved"></i></div><h3 id="admin-login-title">🔐 دخول المسؤول</h3><p class="subtitle" id="admin-login-subtitle">اختر نوع الدخول</p>
         <div class="role-selector" id="role-selector">
             <button class="role-btn" data-role="admin"><i class="fas fa-crown"></i> مدير</button>
             <button class="role-btn assistant" data-role="assistant"><i class="fas fa-user-friends"></i> مساعد</button>
         </div>
         <div class="auth-step active" id="admin-step-request"><button class="telegram-btn" id="admin-request-code-btn"><i class="fab fa-telegram-plane"></i> طلب كود التحقق</button><div class="error-text" id="admin-step1-error"></div><div class="success-text" id="admin-step1-success">✅ تم الإرسال</div></div>
-        <div class="auth-step" id="admin-step-verify"><p style="color:var(--success);">تم إرسال الكود</p><div class="otp-group"><input type="text" class="otp-input" maxlength="1" id="admin-otp-1" inputmode="numeric"><input type="text" class="otp-input" maxlength="1" id="admin-otp-2" inputmode="numeric"><input type="text" class="otp-input" maxlength="1" id="admin-otp-3" inputmode="numeric"><input type="text" class="otp-input" maxlength="1" id="admin-otp-4" inputmode="numeric"><input type="text" class="otp-input" maxlength="1" id="admin-otp-5" inputmode="numeric"><input type="text" class="otp-input" maxlength="1" id="admin-otp-6" inputmode="numeric"></div><div class="timer-text" id="admin-timer-display"></div><span class="resend-link disabled" id="admin-resend-link">إعادة الإرسال</span><div class="error-text" id="admin-step2-error"></div><button class="back-btn" id="admin-back-btn">العودة</button></div></div></div>
+        <div class="auth-step" id="admin-step-verify"><p style="color:var(--success);">تم إرسال الكود</p><div class="otp-group" id="admin-otp-group"><input type="text" class="otp-input" maxlength="1" id="admin-otp-1" inputmode="numeric"><input type="text" class="otp-input" maxlength="1" id="admin-otp-2" inputmode="numeric"><input type="text" class="otp-input" maxlength="1" id="admin-otp-3" inputmode="numeric"><input type="text" class="otp-input" maxlength="1" id="admin-otp-4" inputmode="numeric"><input type="text" class="otp-input" maxlength="1" id="admin-otp-5" inputmode="numeric"><input type="text" class="otp-input" maxlength="1" id="admin-otp-6" inputmode="numeric"></div><div class="timer-text" id="admin-timer-display"></div><span class="resend-link disabled" id="admin-resend-link">إعادة الإرسال</span><div class="error-text" id="admin-step2-error"></div><button class="back-btn" id="admin-back-btn">العودة</button></div></div></div>
 
     <!-- ===== FOOTER ===== -->
     <footer class="footer">
@@ -1563,7 +1539,7 @@
 
     <script>
         // ----------------------------------------------
-        // CONFIGURATION - CHANGE THESE VALUES
+        // CONFIGURATION
         // ----------------------------------------------
         const CONFIG = {
             STORAGE_KEY: 'dar3a_store_products',
@@ -1574,12 +1550,12 @@
             ADMIN_URL: 'admin.html',
             LONG_PRESS_MS: 3000,
             OTP_KEY: 'dar3a_telegram_otp',
-            // ----- MAIN ADMIN (First Manager) -----
+            // MAIN ADMIN
             TELEGRAM_BOT_TOKEN: '8723447348:AAGtKoujIGCtbLXuPUWAR-B-oweiOdcDCKk',
             TELEGRAM_CHAT_ID: '6776057443',
-            // ----- ASSISTANT ADMIN (Second Manager) -----
-            ASSISTANT_BOT_TOKEN: '8722670397:AAFvypmlj5ebYYFWxheXbgXorOkPgthbnWo',   // ضع توكن البوت الخاص بالمساعد هنا
-            ASSISTANT_CHAT_ID: '665454768'      // ضع معرف الدردشة الخاص بالمساعد هنا
+            // ASSISTANT ADMIN
+            ASSISTANT_BOT_TOKEN: '8722670397:AAFvypmlj5ebYYFWxheXbgXorOkPgthbnWo',
+            ASSISTANT_CHAT_ID: '665454768'
         };
 
         // ----------------------------------------------
@@ -1591,7 +1567,7 @@
         let currentTheme = localStorage.getItem('dar3a_theme') || 'dark';
         let currentLang = localStorage.getItem('dar3a_language') || 'ar';
         let otpTimer = null, otpTimeLeft = 0;
-        let currentLoginRole = 'admin'; // 'admin' or 'assistant'
+        let currentLoginRole = 'admin';
         let siteSettings = { name: 'Dar3a Store', currency: 'ج.م', whatsapp: '0922265656', primaryColor: '#e63946' };
 
         function loadCart() { try { return JSON.parse(localStorage.getItem(CONFIG.CART_KEY) || '[]'); } catch(e) { return []; } }
@@ -1668,8 +1644,38 @@
         function updateSummary() { const l = $('#pc-summary-list'), t = $('#pc-total-price'); if (!l || !t) return; let total = 0; l.innerHTML = ''; Object.entries(data.pcComponents).forEach(([key, comp]) => { const sel = builder[key]; const li = document.createElement('li'); li.style.cssText = 'display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border-light);font-size:0.75rem;'; if (sel) { total += sel.price; li.innerHTML = `<span>${comp.label}: <strong>${sel.name}</strong></span><span style="color:var(--accent);">${formatPrice(sel.price)}</span>`; } else { li.innerHTML = `<span style="color:var(--text-muted);">${comp.label}: اختر...</span><span>-</span>`; } l.appendChild(li); }); t.textContent = `المجموع: ${formatPrice(total)}`; }
 
         // ----------------------------------------------
-        // DUAL ADMIN LOGIN SYSTEM (Admin + Assistant)
+        // DUAL ADMIN LOGIN SYSTEM (With Paste Support)
         // ----------------------------------------------
+        
+        // Helper: Fill OTP fields from pasted text
+        function fillAdminOtpFields(code) {
+            const digits = code.replace(/\D/g, '').slice(0, 6);
+            for (let i = 0; i < digits.length; i++) {
+                const field = document.getElementById('admin-otp-' + (i + 1));
+                if (field) field.value = digits[i];
+            }
+            if (digits.length === 6) {
+                setTimeout(adminVerifyOTP, 100);
+            }
+        }
+
+        // Setup paste event on all OTP fields
+        function setupAdminOtpPaste() {
+            const otpGroup = document.getElementById('admin-otp-group');
+            if (!otpGroup) return;
+            // Add paste listener to each OTP input
+            for (let i = 1; i <= 6; i++) {
+                const inp = document.getElementById('admin-otp-' + i);
+                if (inp) {
+                    inp.addEventListener('paste', function(e) {
+                        e.preventDefault();
+                        const pastedText = (e.clipboardData || window.clipboardData).getData('text');
+                        fillAdminOtpFields(pastedText);
+                    });
+                }
+            }
+        }
+
         function openAdminLogin(role = 'admin') {
             currentLoginRole = role;
             const overlay = $('#admin-login-overlay');
@@ -1692,7 +1698,6 @@
             
             overlay.classList.add('open');
             showAdminStep('request');
-            // Clear any existing OTP
             sessionStorage.removeItem(CONFIG.OTP_KEY + '_' + role);
             for (let i = 1; i <= 6; i++) {
                 const inp = $('#admin-otp-' + i);
@@ -1730,7 +1735,6 @@
             
             const otp = Math.floor(100000 + Math.random() * 900000).toString();
             
-            // Determine which bot to use based on role
             let botToken, chatId;
             if (currentLoginRole === 'assistant') {
                 botToken = CONFIG.ASSISTANT_BOT_TOKEN;
@@ -1746,7 +1750,6 @@
                 chatId = CONFIG.TELEGRAM_CHAT_ID;
             }
             
-            // Store OTP with role
             sessionStorage.setItem(CONFIG.OTP_KEY + '_' + currentLoginRole, JSON.stringify({ code: otp, expires: Date.now() + 300000, attempts: 0 }));
             
             try {
@@ -1892,7 +1895,6 @@
                 trigger.addEventListener('touchcancel', cancelPress);
             }
             
-            // Keyboard shortcut: Ctrl+Shift+A for Admin
             document.addEventListener('keydown', e => {
                 if (e.ctrlKey && e.shiftKey && (e.key === 'A' || e.key === 'a')) {
                     e.preventDefault();
@@ -1900,7 +1902,6 @@
                 }
             });
             
-            // Assistant shortcut: Ctrl+Shift+S
             document.addEventListener('keydown', e => {
                 if (e.ctrlKey && e.shiftKey && (e.key === 'S' || e.key === 's')) {
                     e.preventDefault();
@@ -1951,6 +1952,9 @@
             $('#admin-resend-link')?.addEventListener('click', () => { if (otpTimeLeft > 0) return; sessionStorage.removeItem(CONFIG.OTP_KEY + '_' + currentLoginRole); clearInterval(otpTimer); for (let i=1;i<=6;i++) { const inp = $('#admin-otp-'+i); if(inp)inp.value=''; } showAdminStep('request'); });
             $('#admin-back-btn')?.addEventListener('click', () => { clearInterval(otpTimer); sessionStorage.removeItem(CONFIG.OTP_KEY + '_' + currentLoginRole); for (let i=1;i<=6;i++) { const inp = $('#admin-otp-'+i); if(inp)inp.value=''; } showAdminStep('request'); });
             
+            // Setup OTP paste support
+            setupAdminOtpPaste();
+            
             // Role selection buttons
             document.querySelectorAll('.role-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
@@ -1965,7 +1969,7 @@
                 assistantBtn.addEventListener('click', () => openAdminLogin('assistant'));
             }
             
-            // OTP inputs handler
+            // OTP inputs handler (individual digit entry)
             for (let i = 1; i <= 6; i++) {
                 const inp = $('#admin-otp-' + i);
                 if (!inp) continue;
@@ -2008,7 +2012,7 @@
             renderAll();
             updateCartUI();
             updateWishlistBadge();
-            console.log('🚀 Dar3a Store Ready with Dual Admin System!');
+            console.log('🚀 Dar3a Store Ready with Dual Admin System + Paste OTP Support!');
         }
         
         init();
