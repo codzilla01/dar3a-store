@@ -115,6 +115,8 @@
         .badge-movies { background: rgba(34,197,94,0.2); color: #4ade80; }
         .badge-programs { background: rgba(245,158,11,0.2); color: #fbbf24; }
         .badge-component { background: rgba(139,92,246,0.2); color: #a78bfa; }
+        .badge-pcgames { background: rgba(255,105,180,0.2); color: #ff85c1; }
+        .badge-playstation { background: rgba(30,144,255,0.2); color: #6cb2eb; }
 
         /* ===== COLOR PICKER ===== */
         .color-picker-group { display: flex; align-items: center; gap: 12px; }
@@ -220,7 +222,13 @@
                     <h2><i class="fas fa-boxes"></i> إدارة المحتوى</h2>
                     <div style="display:flex;gap:8px;flex-wrap:wrap;">
                         <select class="form-control" style="width:auto;" id="filter-type">
-                            <option value="all">الكل</option><option value="series">📺 مسلسلات</option><option value="movies">🎬 أفلام</option><option value="programs">💻 برامج</option><option value="component">🔧 قطع</option>
+                            <option value="all">الكل</option>
+                            <option value="series">📺 مسلسلات</option>
+                            <option value="movies">🎬 أفلام</option>
+                            <option value="programs">💻 برامج</option>
+                            <option value="component">🔧 قطع</option>
+                            <option value="pcgames">🖥️ ألعاب كمبيوتر</option>
+                            <option value="playstation">🎮 بلايستيشن</option>
                         </select>
                         <button class="btn btn-primary btn-sm" id="add-product-btn"><i class="fas fa-plus"></i> إضافة جديد</button>
                     </div>
@@ -241,7 +249,14 @@
                     <div class="form-grid">
                         <div class="form-group"><label>الاسم *</label><input type="text" id="prod-name" class="form-control" required></div>
                         <div class="form-group"><label>السعر *</label><input type="number" id="prod-price" class="form-control" required min="0"></div>
-                        <div class="form-group"><label>النوع *</label><select id="prod-type" class="form-control" required><option value="series">📺 مسلسلات</option><option value="movies">🎬 أفلام</option><option value="programs">💻 برامج</option><option value="component">🔧 قطعة</option></select></div>
+                        <div class="form-group"><label>النوع *</label><select id="prod-type" class="form-control" required>
+                            <option value="series">📺 مسلسلات</option>
+                            <option value="movies">🎬 أفلام</option>
+                            <option value="programs">💻 برامج</option>
+                            <option value="component">🔧 قطعة</option>
+                            <option value="pcgames">🖥️ ألعاب كمبيوتر</option>
+                            <option value="playstation">🎮 بلايستيشن</option>
+                        </select></div>
                         <div class="form-group" id="comp-type-group" style="display:none;"><label>نوع القطعة</label><select id="comp-type" class="form-control"><option value="cpu">معالج</option><option value="motherboard">لوحة أم</option><option value="gpu">كرت شاشة</option><option value="ram">ذاكرة</option><option value="storage">تخزين</option><option value="psu">مزود طاقة</option><option value="case">صندوق</option></select></div>
                         <div class="form-group"><label>الماركة</label><input type="text" id="prod-brand" class="form-control"></div>
                         <div class="form-group"><label>المخزون</label><input type="number" id="prod-stock" class="form-control" min="0" value="10"></div>
@@ -281,11 +296,10 @@
                 <div class="table-container"><table id="orders-table"><thead><tr><th>التاريخ</th><th>المنتجات</th><th>الإجمالي</th></tr></thead><tbody></tbody></table></div>
             </div>
 
-            <!-- SETTINGS (محسنة) -->
+            <!-- SETTINGS -->
             <div class="panel" id="panel-settings">
                 <div class="panel-header"><h2><i class="fas fa-cog"></i> إعدادات المتجر المتكاملة</h2></div>
                 
-                <!-- Settings Tabs -->
                 <div class="settings-tabs">
                     <button class="settings-tab active" data-stab="general"><i class="fas fa-store"></i> عام</button>
                     <button class="settings-tab" data-stab="appearance"><i class="fas fa-palette"></i> المظهر</button>
@@ -293,11 +307,10 @@
                     <button class="settings-tab" data-stab="developer"><i class="fas fa-code"></i> المطور</button>
                 </div>
 
-                <!-- General Settings -->
                 <div class="settings-section active" id="ss-general">
                     <div class="form-grid">
                         <div class="form-group"><label>اسم المتجر</label><input type="text" id="site-name" class="form-control" value="Dar3a Store"></div>
-                        <div class="form-group"><label>الشعار النصي</label><input type="text" id="site-tagline" class="form-control" placeholder="أفلام • مسلسلات • برامج"></div>
+                        <div class="form-group"><label>الشعار النصي</label><input type="text" id="site-tagline" class="form-control" placeholder="أفلام • مسلسلات • ألعاب"></div>
                         <div class="form-group"><label>العملة</label><select id="site-currency" class="form-control"><option value="ج.س">جنيه سوداني</option><option value="ج.م">جنيه مصري</option><option value="$">دولار</option></select></div>
                         <div class="form-group"><label>الهاتف</label><input type="text" id="store-phone" class="form-control" value="0922265656"></div>
                         <div class="form-group"><label>واتساب</label><input type="text" id="store-whatsapp" class="form-control" value="0922265656"></div>
@@ -307,7 +320,6 @@
                     </div>
                 </div>
 
-                <!-- Appearance Settings -->
                 <div class="settings-section" id="ss-appearance">
                     <div class="form-grid">
                         <div class="form-group">
@@ -328,7 +340,6 @@
                     </div>
                 </div>
 
-                <!-- Logos Settings -->
                 <div class="settings-section" id="ss-logos">
                     <div class="form-grid">
                         <div class="form-group">
@@ -366,7 +377,6 @@
                     </div>
                 </div>
 
-                <!-- Developer Settings -->
                 <div class="settings-section" id="ss-developer">
                     <div class="form-grid">
                         <div class="form-group"><label>اسم المطور</label><input type="text" id="dev-name" class="form-control" value="Mohamed Elnil"></div>
@@ -389,19 +399,17 @@
         </main>
     </div>
 
-    <!-- ===== DEVELOPER FOOTER ===== -->
     <div class="developer-footer" id="developer-footer">
         <span id="footer-copyright-text">© 2026 Dar3a Store</span>
         <span class="separator">|</span>
         <span>تطوير: <a href="https://me-one-blue.vercel.app/about.html" target="_blank" id="footer-dev-link">Mohamed Elnil</a></span>
         <span class="separator">|</span>
-        <span>🛡️ جميع الحقوق محفوظة</span>
+        <span>جميع الحقوق محفوظة</span>
     </div>
 
     <div class="toast" id="toast"></div>
 
     <script>
-        // ===== تهيئة =====
         const $ = s => document.querySelector(s);
         const $$ = s => document.querySelectorAll(s);
 
@@ -411,7 +419,7 @@
         let editingId = null;
 
         let siteSettings = {
-            name: 'Dar3a Store', tagline: 'أفلام • مسلسلات • برامج هندسية',
+            name: 'Dar3a Store', tagline: 'أفلام • مسلسلات • برامج • ألعاب',
             currency: 'ج.س', phone: '0922265656', whatsapp: '0922265656',
             address: 'السودان - امدرمان', hours: 'يومياً 10 ص - 10 م',
             website: 'https://dar3a-store.vercel.app',
@@ -433,23 +441,30 @@
         function formatPrice(p) { return p.toLocaleString('en-US') + ' ' + siteSettings.currency; }
         function escapeHtml(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
-        function getTypeLabel(t) { return { series:'📺 مسلسلات', movies:'🎬 أفلام', programs:'💻 برامج', component:'🔧 قطعة' }[t]||t; }
-        function getBadgeClass(t) { return { series:'badge-series', movies:'badge-movies', programs:'badge-programs', component:'badge-component' }[t]||''; }
+        function getTypeLabel(t) { 
+            return { 
+                series:'📺 مسلسلات', movies:'🎬 أفلام', programs:'💻 برامج', 
+                component:'🔧 قطعة', pcgames:'🖥️ ألعاب كمبيوتر', playstation:'🎮 بلايستيشن'
+            }[t]||t; 
+        }
+        function getBadgeClass(t) { 
+            return { 
+                series:'badge-series', movies:'badge-movies', programs:'badge-programs', 
+                component:'badge-component', pcgames:'badge-pcgames', playstation:'badge-playstation'
+            }[t]||''; 
+        }
 
         function saveProducts() { localStorage.setItem('dar3a_store_products', JSON.stringify(products)); window.dispatchEvent(new Event('storage')); }
         function saveCoupons() { localStorage.setItem('dar3a_store_coupons', JSON.stringify(coupons)); }
 
         if (!coupons.length) { coupons = [{ code:'WELCOME10', discount:10, type:'percent', active:true, minOrder:1000 }]; saveCoupons(); }
 
-        // ===== تطبيق الإعدادات =====
         function applyAllSettings() {
-            // اسم المتجر
             document.title = siteSettings.name + ' | لوحة التحكم';
             const storeNames = document.querySelectorAll('#sidebar-store-name, #login-store-name');
             storeNames.forEach(el => { if(el) el.textContent = siteSettings.name; });
             document.getElementById('site-name').value = siteSettings.name;
 
-            // الشعار
             const logoIcon = siteSettings.logoIcon || 'fa-shield-halved';
             const logoUrl = siteSettings.mainLogo;
             function setLogo(el, isMain) {
@@ -467,27 +482,22 @@
             setLogo(document.getElementById('sidebar-logo-icon-el'), true);
             setLogo(document.getElementById('login-logo-main'), false);
 
-            // الألوان
             if (siteSettings.primaryColor) document.documentElement.style.setProperty('--primary', siteSettings.primaryColor);
             if (siteSettings.secondaryColor) document.documentElement.style.setProperty('--primary-light', siteSettings.secondaryColor);
 
-            // Favicon
             if (siteSettings.favicon) {
                 let fl = document.querySelector('link[rel="icon"]');
                 if (!fl) { fl = document.createElement('link'); fl.rel = 'icon'; document.head.appendChild(fl); }
                 fl.href = siteSettings.favicon;
             }
 
-            // تأثير الخلفية
             const particles = document.getElementById('bg-particles');
             if (particles) particles.style.display = siteSettings.bgAnimation === 'particles' ? 'block' : 'none';
 
-            // الفوتر
             document.getElementById('footer-copyright-text').textContent = siteSettings.copyright;
             const devLink = document.getElementById('footer-dev-link');
             if (devLink) { devLink.textContent = siteSettings.developerName; devLink.href = siteSettings.developerUrl; }
 
-            // ملء حقول الإعدادات
             document.getElementById('site-tagline').value = siteSettings.tagline || '';
             document.getElementById('site-currency').value = siteSettings.currency;
             document.getElementById('store-phone').value = siteSettings.phone;
@@ -535,7 +545,6 @@
             showToast('✅ تم حفظ جميع الإعدادات بنجاح!');
         }
 
-        // ===== رفع الشعارات =====
         function initLogoUpload(areaId, fileId, urlId, previewId, settingKey) {
             const area = document.getElementById(areaId);
             const file = document.getElementById(fileId);
@@ -558,17 +567,20 @@
             });
         }
 
-        // ===== لوحة المعلومات =====
         function refreshDashboard() {
             const ts = products.filter(p => p.type==='series').length;
             const tm = products.filter(p => p.type==='movies').length;
             const tp = products.filter(p => p.type==='programs').length;
             const tc = products.filter(p => p.type==='component').length;
+            const tpcgames = products.filter(p => p.type==='pcgames').length;
+            const tps = products.filter(p => p.type==='playstation').length;
             $('#dashboard-stats').innerHTML = `
                 <div class="stat-card"><div class="stat-icon">📺</div><div class="stat-number">${ts}</div><div class="stat-label">مسلسلات</div></div>
                 <div class="stat-card"><div class="stat-icon">🎬</div><div class="stat-number">${tm}</div><div class="stat-label">أفلام</div></div>
                 <div class="stat-card"><div class="stat-icon">💻</div><div class="stat-number">${tp}</div><div class="stat-label">برامج</div></div>
-                <div class="stat-card"><div class="stat-icon">🔧</div><div class="stat-number">${tc}</div><div class="stat-label">قطع</div></div>`;
+                <div class="stat-card"><div class="stat-icon">🔧</div><div class="stat-number">${tc}</div><div class="stat-label">قطع PC</div></div>
+                <div class="stat-card"><div class="stat-icon">🖥️</div><div class="stat-number">${tpcgames}</div><div class="stat-label">ألعاب PC</div></div>
+                <div class="stat-card"><div class="stat-icon">🎮</div><div class="stat-number">${tps}</div><div class="stat-label">بلايستيشن</div></div>`;
         }
 
         function renderProductsTable(filter='all') {
@@ -606,7 +618,7 @@
             const nav=document.querySelector(`.sidebar-nav a[data-panel="${name}"]`);
             if(nav)nav.classList.add('active');
             if(name==='dashboard')refreshDashboard();
-            if(name==='products')renderProductsTable();
+            if(name==='products')renderProductsTable(document.getElementById('filter-type').value);
             if(name==='inventory')renderInventoryTable();
             if(name==='pc-components')renderComponentsTable();
             if(name==='orders')renderOrdersTable();
@@ -614,7 +626,7 @@
             if(window.innerWidth<992){document.getElementById('sidebar').classList.remove('open');document.getElementById('sidebar-overlay').classList.remove('show');}
         }
 
-        function refreshAll(){refreshDashboard();renderProductsTable();renderComponentsTable();renderInventoryTable();renderOrdersTable();document.getElementById('products-count').textContent=products.length;}
+        function refreshAll(){refreshDashboard();renderProductsTable(document.getElementById('filter-type').value);renderComponentsTable();renderInventoryTable();renderOrdersTable();document.getElementById('products-count').textContent=products.length;}
 
         function bindEvents(){
             $$('.sidebar-nav a').forEach(l=>l.addEventListener('click',function(e){e.preventDefault();const p=this.getAttribute('data-panel');if(p)switchPanel(p);}));
@@ -630,7 +642,6 @@
             document.getElementById('sidebar-overlay').addEventListener('click',function(){document.getElementById('sidebar').classList.remove('open');this.classList.remove('show');});
             document.getElementById('logout-btn').addEventListener('click',()=>{if(confirm('تسجيل الخروج؟')){localStorage.removeItem('dar3a_admin_auth');location.reload();}});
 
-            // Settings
             document.getElementById('save-all-settings-btn').addEventListener('click',saveAllSettings);
             document.querySelectorAll('.settings-tab').forEach(t=>t.addEventListener('click',function(){
                 document.querySelectorAll('.settings-tab').forEach(x=>x.classList.remove('active'));
@@ -642,11 +653,9 @@
             document.getElementById('primary-color').addEventListener('input',function(){document.getElementById('primary-color-text').value=this.value;});
             document.getElementById('secondary-color').addEventListener('input',function(){document.getElementById('secondary-color-text').value=this.value;});
 
-            // Logo uploads
             initLogoUpload('main-logo-area','main-logo-file','main-logo-url','main-logo-preview','mainLogo');
             initLogoUpload('favicon-area','favicon-file','favicon-url','favicon-preview','favicon');
 
-            // Export/Import
             document.getElementById('export-data-btn').addEventListener('click',()=>{const d={products,coupons,ordersLog,siteSettings};const b=new Blob([JSON.stringify(d)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='dar3a_backup.json';a.click();URL.revokeObjectURL(a.href);showToast('تم التصدير!');});
             document.getElementById('import-data-btn').addEventListener('click',()=>{const inp=document.createElement('input');inp.type='file';inp.accept='.json';inp.onchange=function(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=function(ev){try{const d=JSON.parse(ev.target.result);if(d.products)products=d.products;if(d.coupons)coupons=d.coupons;if(d.ordersLog)ordersLog=d.ordersLog;if(d.siteSettings)siteSettings={...siteSettings,...d.siteSettings};saveProducts();saveCoupons();localStorage.setItem('dar3a_site_settings',JSON.stringify(siteSettings));applyAllSettings();refreshAll();showToast('تم الاستيراد!');}catch(ex){showToast('ملف غير صالح',true);}};r.readAsText(f);};inp.click();});
             document.getElementById('reset-data-btn').addEventListener('click',()=>{if(confirm('حذف جميع البيانات؟')){products=[];coupons=[{code:'WELCOME10',discount:10,type:'percent',active:true,minOrder:1000}];ordersLog=[];saveProducts();saveCoupons();refreshAll();showToast('تم إعادة التعيين');}});
