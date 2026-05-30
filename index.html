@@ -164,6 +164,26 @@
             }
         }
 
+        /* Assistant Login Button Styles */
+        .assistant-login-btn {
+            background: linear-gradient(135deg, #4f46e5, #6366f1);
+            border: none;
+            color: #fff;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .assistant-login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4);
+        }
+
         .nav-links { display: flex; align-items: center; gap: 4px; list-style: none; }
         .nav-links a {
             text-decoration: none;
@@ -332,7 +352,7 @@
         .logo-icon.success { background: var(--success) !important; animation: successPulse 0.5s ease; }
         @keyframes successPulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.3); } }
 
-        /* ===== ADMIN LOGIN MODAL ===== */
+        /* ===== ADMIN LOGIN MODAL (Dual Role) ===== */
         .admin-overlay {
             position: fixed; inset: 0; background: rgba(0,0,0,0.9);
             z-index: 20000; display: none; align-items: center; justify-content: center;
@@ -363,6 +383,35 @@
             font-size: 1.1rem; transition: all 0.2s;
         }
         .admin-close:hover { background: var(--accent); color: #fff; transform: rotate(90deg); }
+        
+        /* Role Selection Buttons */
+        .role-selector {
+            display: flex;
+            gap: 12px;
+            margin: 20px 0;
+        }
+        .role-btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            font-family: inherit;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+        }
+        .role-btn i { font-size: 1.2rem; }
+        .role-btn:hover { border-color: var(--accent); background: rgba(230,57,70,0.1); }
+        .role-btn.selected { background: var(--gradient-accent); border-color: transparent; color: #fff; }
+        .role-btn.assistant { border-color: #4f46e5; }
+        .role-btn.assistant:hover, .role-btn.assistant.selected { background: linear-gradient(135deg, #4f46e5, #6366f1); }
+
         .auth-step { display: none; }
         .auth-step.active { display: block; }
         .telegram-btn {
@@ -1313,6 +1362,7 @@
                 <li><a href="#builder" data-translate="builder">🔧 تجميع</a></li>
             </ul>
             <div class="nav-actions">
+                <button class="assistant-login-btn" id="assistant-login-btn" title="دخول المساعد"><i class="fas fa-user-friends"></i></button>
                 <button class="nav-btn" id="lang-toggle" title="Switch Language">EN</button>
                 <button class="nav-btn" id="theme-toggle">🌙</button>
                 <button class="nav-btn" id="wishlist-btn"><i class="fas fa-heart"></i><span class="badge-dot" id="wishlist-badge">0</span></button>
@@ -1436,7 +1486,15 @@
     <!-- ===== MODALS ===== -->
     <div class="modal-overlay" id="product-modal-overlay"><div class="modal-content"><button class="modal-close" id="modal-close-btn">&times;</button><div class="modal-image" id="modal-product-image"></div><div class="modal-details" id="modal-product-details"></div></div></div>
     <div class="cart-overlay" id="cart-overlay"><div class="cart-drawer"><div class="cart-header"><h3><i class="fas fa-shopping-cart"></i> سلة التسوق</h3><button class="cart-close" id="cart-close-btn">&times;</button></div><div class="cart-items" id="cart-items"></div><div class="cart-empty-state" id="cart-empty-state"><i class="fas fa-shopping-cart"></i><p>السلة فارغة</p></div><div class="cart-footer" id="cart-footer"><div class="cart-total-row"><span>المجموع:</span><span id="cart-total-amount">0 ج.م</span></div><button class="btn btn-primary" id="cart-checkout-btn" style="width:100%;"><i class="fab fa-whatsapp"></i> إتمام الطلب</button></div></div></div>
-    <div class="admin-overlay" id="admin-login-overlay"><div class="admin-card"><button class="admin-close" id="admin-login-close">&times;</button><div class="admin-icon"><i class="fas fa-shield-halved"></i></div><h3>🔐 دخول المسؤول</h3><p class="subtitle">تحقق سريع عبر Telegram</p><div class="auth-step active" id="admin-step-request"><button class="telegram-btn" id="admin-request-code-btn"><i class="fab fa-telegram-plane"></i> طلب كود التحقق</button><div class="error-text" id="admin-step1-error"></div><div class="success-text" id="admin-step1-success">✅ تم الإرسال</div></div><div class="auth-step" id="admin-step-verify"><p style="color:var(--success);">تم إرسال الكود</p><div class="otp-group"><input type="text" class="otp-input" maxlength="1" id="admin-otp-1" inputmode="numeric"><input type="text" class="otp-input" maxlength="1" id="admin-otp-2" inputmode="numeric"><input type="text" class="otp-input" maxlength="1" id="admin-otp-3" inputmode="numeric"><input type="text" class="otp-input" maxlength="1" id="admin-otp-4" inputmode="numeric"><input type="text" class="otp-input" maxlength="1" id="admin-otp-5" inputmode="numeric"><input type="text" class="otp-input" maxlength="1" id="admin-otp-6" inputmode="numeric"></div><div class="timer-text" id="admin-timer-display"></div><span class="resend-link disabled" id="admin-resend-link">إعادة الإرسال</span><div class="error-text" id="admin-step2-error"></div><button class="back-btn" id="admin-back-btn">العودة</button></div></div></div>
+    
+    <!-- ADMIN LOGIN MODAL (Dual Role) -->
+    <div class="admin-overlay" id="admin-login-overlay"><div class="admin-card"><button class="admin-close" id="admin-login-close">&times;</button><div class="admin-icon" id="admin-login-icon"><i class="fas fa-shield-halved"></i></div><h3 id="admin-login-title">🔐 دخول المسؤول</h3><p class="subtitle" id="admin-login-subtitle">اختر نوع الدخول</p>
+        <div class="role-selector" id="role-selector">
+            <button class="role-btn" data-role="admin"><i class="fas fa-crown"></i> مدير</button>
+            <button class="role-btn assistant" data-role="assistant"><i class="fas fa-user-friends"></i> مساعد</button>
+        </div>
+        <div class="auth-step active" id="admin-step-request"><button class="telegram-btn" id="admin-request-code-btn"><i class="fab fa-telegram-plane"></i> طلب كود التحقق</button><div class="error-text" id="admin-step1-error"></div><div class="success-text" id="admin-step1-success">✅ تم الإرسال</div></div>
+        <div class="auth-step" id="admin-step-verify"><p style="color:var(--success);">تم إرسال الكود</p><div class="otp-group"><input type="text" class="otp-input" maxlength="1" id="admin-otp-1" inputmode="numeric"><input type="text" class="otp-input" maxlength="1" id="admin-otp-2" inputmode="numeric"><input type="text" class="otp-input" maxlength="1" id="admin-otp-3" inputmode="numeric"><input type="text" class="otp-input" maxlength="1" id="admin-otp-4" inputmode="numeric"><input type="text" class="otp-input" maxlength="1" id="admin-otp-5" inputmode="numeric"><input type="text" class="otp-input" maxlength="1" id="admin-otp-6" inputmode="numeric"></div><div class="timer-text" id="admin-timer-display"></div><span class="resend-link disabled" id="admin-resend-link">إعادة الإرسال</span><div class="error-text" id="admin-step2-error"></div><button class="back-btn" id="admin-back-btn">العودة</button></div></div></div>
 
     <!-- ===== FOOTER ===== -->
     <footer class="footer">
@@ -1504,225 +1562,456 @@
     <a href="chat-bot.html" class="fab-btn"><i class="fas fa-robot"></i> <span>المساعدة</span></a>
 
     <script>
-        // Newsletter System
-        (function() {
-            const NEWSLETTER_KEY = 'dar3a_newsletter_subscribers';
-            function getSubscribers() { try { return JSON.parse(localStorage.getItem(NEWSLETTER_KEY) || '[]'); } catch(e) { return []; } }
-            function saveSubscribers(s) { localStorage.setItem(NEWSLETTER_KEY, JSON.stringify(s)); }
-            function isValidEmail(e) { return /^[^\s@]+@([^\s@.,]+\.)+[^\s@.,]{2,}$/.test(e); }
-            function showNewsletterMessage(msg, type) {
-                const d = document.getElementById('newsletter-message');
-                if (!d) return;
-                const colors = { success: '#22c55e', error: '#ef4444', warning: '#f59e0b' };
-                d.style.cssText = `background:${colors[type]}20;border:1px solid ${colors[type]}40;color:${colors[type]};display:block;padding:6px 10px;border-radius:8px;margin-top:8px;font-size:0.7rem;`;
-                d.textContent = msg;
-                setTimeout(() => { d.style.display = 'none'; }, 5000);
-            }
-            window.subscribeNewsletter = function(email) {
-                if (!email) { showNewsletterMessage('❌ الرجاء إدخال بريدك الإلكتروني', 'error'); return false; }
-                if (!isValidEmail(email)) { showNewsletterMessage('❌ بريد إلكتروني غير صحيح', 'error'); return false; }
-                const subs = getSubscribers();
-                if (subs.some(s => s.email === email)) { showNewsletterMessage('📧 هذا البريد مسجل مسبقاً!', 'warning'); return false; }
-                subs.push({ email, date: new Date().toISOString(), status: 'active' });
-                saveSubscribers(subs);
-                showNewsletterMessage('✅ تم الاشتراك بنجاح! شكراً لك 🎉', 'success');
-                return true;
-            };
-            const btn = document.getElementById('newsletter-subscribe-btn'), inp = document.getElementById('newsletter-email');
-            if (btn && inp) {
-                btn.onclick = () => { if (window.subscribeNewsletter(inp.value.trim())) inp.value = ''; };
-                inp.onkeypress = (e) => { if (e.key === 'Enter') { e.preventDefault(); if (window.subscribeNewsletter(inp.value.trim())) inp.value = ''; } };
-            }
-            const backBtn = document.getElementById('backToTopBtn');
-            if (backBtn) {
-                window.onscroll = () => backBtn.classList.toggle('show', window.scrollY > 300);
-                backBtn.onclick = () => window.scrollTo({ top: 0, behavior: 'smooth' });
-            }
-        })();
+        // ----------------------------------------------
+        // CONFIGURATION - CHANGE THESE VALUES
+        // ----------------------------------------------
+        const CONFIG = {
+            STORAGE_KEY: 'dar3a_store_products',
+            CART_KEY: 'dar3a_cart',
+            WISHLIST_KEY: 'dar3a_wishlist',
+            SITE_SETTINGS_KEY: 'dar3a_site_settings',
+            WHATSAPP_NUMBER: '0922265656',
+            ADMIN_URL: 'admin.html',
+            LONG_PRESS_MS: 3000,
+            OTP_KEY: 'dar3a_telegram_otp',
+            // ----- MAIN ADMIN (First Manager) -----
+            TELEGRAM_BOT_TOKEN: '8723447348:AAGtKoujIGCtbLXuPUWAR-B-oweiOdcDCKk',
+            TELEGRAM_CHAT_ID: '6776057443',
+            // ----- ASSISTANT ADMIN (Second Manager) -----
+            ASSISTANT_BOT_TOKEN: '8722670397:AAFvypmlj5ebYYFWxheXbgXorOkPgthbnWo',   // ضع توكن البوت الخاص بالمساعد هنا
+            ASSISTANT_CHAT_ID: '665454768'      // ضع معرف الدردشة الخاص بالمساعد هنا
+        };
 
-        // Main Store Script
-        (function() {
-            const CONFIG = {
-                STORAGE_KEY: 'dar3a_store_products', CART_KEY: 'dar3a_cart',
-                WISHLIST_KEY: 'dar3a_wishlist', SITE_SETTINGS_KEY: 'dar3a_site_settings',
-                WHATSAPP_NUMBER: '0922265656',
-                TELEGRAM_BOT_TOKEN: '8723447348:AAGtKoujIGCtbLXuPUWAR-B-oweiOdcDCKk',
-                TELEGRAM_CHAT_ID: '6776057443', OTP_KEY: 'dar3a_telegram_otp',
-                ADMIN_URL: 'admin.html', LONG_PRESS_MS: 3000
-            };
-            const $ = s => document.querySelector(s), $$ = s => document.querySelectorAll(s);
+        // ----------------------------------------------
+        // CORE FUNCTIONS
+        // ----------------------------------------------
+        const $ = s => document.querySelector(s), $$ = s => document.querySelectorAll(s);
 
-            let data = loadProducts(), cart = loadCart(), wishlist = loadWishlist(), builder = {};
-            let currentTheme = localStorage.getItem('dar3a_theme') || 'dark';
-            let currentLang = localStorage.getItem('dar3a_language') || 'ar';
-            let otpTimer = null, otpTimeLeft = 0;
-            let siteSettings = { name: 'Dar3a Store', currency: 'ج.م', whatsapp: '0922265656', primaryColor: '#e63946' };
+        let data = loadProducts(), cart = loadCart(), wishlist = loadWishlist(), builder = {};
+        let currentTheme = localStorage.getItem('dar3a_theme') || 'dark';
+        let currentLang = localStorage.getItem('dar3a_language') || 'ar';
+        let otpTimer = null, otpTimeLeft = 0;
+        let currentLoginRole = 'admin'; // 'admin' or 'assistant'
+        let siteSettings = { name: 'Dar3a Store', currency: 'ج.م', whatsapp: '0922265656', primaryColor: '#e63946' };
 
-            function loadCart() { try { return JSON.parse(localStorage.getItem(CONFIG.CART_KEY) || '[]'); } catch(e) { return []; } }
-            function loadWishlist() { try { return JSON.parse(localStorage.getItem(CONFIG.WISHLIST_KEY) || '[]'); } catch(e) { return []; } }
-            function saveCart() { localStorage.setItem(CONFIG.CART_KEY, JSON.stringify(cart)); }
-            function saveWishlist() { localStorage.setItem(CONFIG.WISHLIST_KEY, JSON.stringify(wishlist)); }
+        function loadCart() { try { return JSON.parse(localStorage.getItem(CONFIG.CART_KEY) || '[]'); } catch(e) { return []; } }
+        function loadWishlist() { try { return JSON.parse(localStorage.getItem(CONFIG.WISHLIST_KEY) || '[]'); } catch(e) { return []; } }
+        function saveCart() { localStorage.setItem(CONFIG.CART_KEY, JSON.stringify(cart)); }
+        function saveWishlist() { localStorage.setItem(CONFIG.WISHLIST_KEY, JSON.stringify(wishlist)); }
+        
+        function loadProducts() {
+            const stored = localStorage.getItem(CONFIG.STORAGE_KEY);
+            if (!stored) return defaultProducts();
+            try {
+                const all = JSON.parse(stored);
+                const pc = { cpu:{label:'🧠 المعالج',icon:'fa-microchip',options:[]}, motherboard:{label:'📟 اللوحة الأم',icon:'fa-server',options:[]}, gpu:{label:'🎮 كرت الشاشة',icon:'fa-tv',options:[]}, ram:{label:'🧮 الذاكرة',icon:'fa-memory',options:[]}, storage:{label:'💾 التخزين',icon:'fa-hdd',options:[]}, psu:{label:'⚡ مزود الطاقة',icon:'fa-bolt',options:[]}, case:{label:'📦 الصندوق',icon:'fa-desktop',options:[]} };
+                all.filter(p => p.type === 'component').forEach(c => { if (pc[c.componentType]) pc[c.componentType].options.push({ name: c.name, price: c.price, image: c.image || '', id: c.id }); });
+                return { movies: all.filter(p => p.type === 'movies'), series: all.filter(p => p.type === 'series'), software: all.filter(p => p.type === 'programs'), pcgames: all.filter(p => p.type === 'pcgames'), psgames: all.filter(p => p.type === 'playstation'), pcComponents: pc };
+            } catch(e) { return defaultProducts(); }
+        }
+        
+        function defaultProducts() { return { movies: [], series: [], software: [], pcgames: [], psgames: [], pcComponents: { cpu:{label:'🧠 المعالج',icon:'fa-microchip',options:[]}, motherboard:{label:'📟 اللوحة الأم',icon:'fa-server',options:[]}, gpu:{label:'🎮 كرت الشاشة',icon:'fa-tv',options:[]}, ram:{label:'🧮 الذاكرة',icon:'fa-memory',options:[]}, storage:{label:'💾 التخزين',icon:'fa-hdd',options:[]}, psu:{label:'⚡ مزود الطاقة',icon:'fa-bolt',options:[]}, case:{label:'📦 الصندوق',icon:'fa-desktop',options:[]} } }; }
+
+        function formatPrice(p) { return p.toLocaleString('en-US') + ' ' + siteSettings.currency; }
+        function showToast(msg) { const c = $('#toast-container'); if (!c) return; const t = document.createElement('div'); t.className = 'toast'; t.textContent = msg; c.appendChild(t); setTimeout(() => t.remove(), 2800); }
+
+        // Cart Functions
+        function addToCart(p) { const ex = cart.find(i => i.id === p.id); if (ex) ex.quantity = (ex.quantity || 1) + 1; else cart.push({ ...p, quantity: 1 }); saveCart(); updateCartUI(); renderAll(); showToast('✓ تمت الإضافة للسلة'); }
+        function updateCartQty(i, d) { if (i < 0 || i >= cart.length) return; cart[i].quantity = (cart[i].quantity || 1) + d; if (cart[i].quantity <= 0) cart.splice(i, 1); saveCart(); updateCartUI(); renderCartItems(); renderAll(); }
+        function updateCartUI() { const t = cart.reduce((s, i) => s + (i.quantity || 1), 0); const b = $('#cart-badge'); if (b) b.classList.toggle('show', t > 0) && (b.textContent = t); }
+        function openCart() { $('#cart-overlay').classList.add('open'); renderCartItems(); }
+        function closeCart() { $('#cart-overlay').classList.remove('open'); }
+        function renderCartItems() {
+            const c = $('#cart-items'), e = $('#cart-empty-state'), f = $('#cart-footer'), t = $('#cart-total-amount');
+            if (!c) return;
+            if (cart.length === 0) { c.innerHTML = ''; e.classList.add('show'); f.style.display = 'none'; if (t) t.textContent = '0 ' + siteSettings.currency; }
+            else { e.classList.remove('show'); f.style.display = 'block'; c.innerHTML = cart.map((item, i) => `<div class="cart-item"><div class="cart-item-img"><img src="${item.image || 'https://via.placeholder.com/56'}" alt="${item.name}"></div><div class="cart-item-info"><h4>${item.name}</h4><div class="cart-item-price">${formatPrice(item.price)} × ${item.quantity || 1}</div><div style="color:var(--accent);font-weight:700;">${formatPrice(item.price * (item.quantity || 1))}</div></div><div class="cart-item-actions"><button class="qty-btn" onclick="window._q(${i},-1)">−</button><span>${item.quantity||1}</span><button class="qty-btn" onclick="window._q(${i},1)">+</button><button class="remove-cart-btn" onclick="window._r(${i})"><i class="fas fa-trash"></i></button></div></div>`).join(''); if (t) t.textContent = formatPrice(cart.reduce((s, i) => s + (i.price * (i.quantity || 1)), 0)); }
+        }
+        function checkoutCart() { if (cart.length === 0) { showToast('⚠️ السلة فارغة'); return; } let m = '🛒 *طلب جديد*\n\n'; cart.forEach(i => { m += `📦 ${i.name} (×${i.quantity||1}) — ${formatPrice(i.price*(i.quantity||1))}\n`; }); m += `\n💰 *الإجمالي: ${formatPrice(cart.reduce((s,i)=>s+(i.price*(i.quantity||1)),0))}*`; window.open(`https://wa.me/${siteSettings.whatsapp||CONFIG.WHATSAPP_NUMBER}?text=${encodeURIComponent(m)}`, '_blank'); }
+        window._q = updateCartQty; window._r = (i) => { cart.splice(i,1); saveCart(); updateCartUI(); renderCartItems(); renderAll(); };
+
+        // Wishlist Functions
+        function toggleWishlist(p, btn) { const idx = wishlist.findIndex(w => w.id === p.id); idx === -1 ? wishlist.push(p) : wishlist.splice(idx,1); if(btn) btn.classList.toggle('active', idx === -1); saveWishlist(); updateWishlistBadge(); renderAll(); showToast(idx === -1 ? '❤️ أضيف للمفضلة' : 'تمت الإزالة'); }
+        function updateWishlistBadge() { const b = $('#wishlist-badge'); if (b) b.classList.toggle('show', wishlist.length > 0) && (b.textContent = wishlist.length); }
+        function isInWishlist(id) { return wishlist.some(w => w.id === id); }
+        function isInCart(id) { return cart.some(i => i.id === id); }
+
+        // Modal
+        function openModal(p) {
+            $('#product-modal-overlay').classList.add('open');
+            $('#modal-product-image').innerHTML = `<img src="${p.image || 'https://via.placeholder.com/600x400'}" alt="${p.name}">`;
+            const specs = p.specs ? Object.entries(p.specs).map(([k,v]) => `<span class="modal-spec-tag">${k}: ${v}</span>`).join('') : '';
+            $('#modal-product-details').innerHTML = `<div class="modal-brand">${p.brand||'Dar3a Store'}</div><h2>${p.name}</h2><div class="modal-price">${formatPrice(p.price)}</div>${p.description?`<p>${p.description}</p>`:''}${specs?`<div class="modal-specs">${specs}</div>`:''}<div class="modal-actions"><div class="modal-actions-row"><button class="btn btn-primary" id="modal-add-cart" style="flex:1;"><i class="fas fa-cart-plus"></i> ${isInCart(p.id)?'✓ في السلة':'إضافة للسلة'}</button><button class="btn btn-whatsapp" id="modal-buy-now" style="flex:1;"><i class="fab fa-whatsapp"></i> شراء مباشر</button></div></div>`;
+            document.getElementById('modal-add-cart').onclick = () => { addToCart(p); closeModal(); };
+            document.getElementById('modal-buy-now').onclick = () => { window.open(`https://wa.me/${siteSettings.whatsapp||CONFIG.WHATSAPP_NUMBER}?text=${encodeURIComponent(`🛒 ${p.name}\n💰 ${formatPrice(p.price)}`)}`, '_blank'); };
+        }
+        function closeModal() { $('#product-modal-overlay').classList.remove('open'); }
+
+        // Product Card
+        function createProductCard(p) {
+            const card = document.createElement('div'); card.className = 'product-card';
+            card.innerHTML = `<div class="product-card-image"><img src="${p.image || 'https://via.placeholder.com/400x260'}" alt="${p.name}"><div class="product-badges">${p.discount?`<span class="badge badge-sale">-${p.discount}%</span>`:''}</div><div class="product-quick-actions"><button class="quick-action-btn ${isInWishlist(p.id)?'active':''}"><i class="fas fa-heart"></i></button></div></div><div class="product-card-body"><div class="brand">${p.brand||'Dar3a'}</div><h3>${p.name}</h3><div class="specs-pills">${p.specs?Object.entries(p.specs).slice(0,3).map(([k,v])=>`<span class="spec-pill">${k}:${v}</span>`).join(''):''}</div><div class="product-price-row"><span class="product-price">${formatPrice(p.price)}</span>${p.oldPrice?`<span class="product-price-old">${formatPrice(p.oldPrice)}</span>`:''}</div><button class="add-to-cart-btn ${isInCart(p.id)?'in-cart':''}">${isInCart(p.id)?'✓ في السلة':'إضافة للسلة'}</button></div>`;
+            card.querySelector('.add-to-cart-btn').addEventListener('click', e => { e.stopPropagation(); addToCart(p); });
+            card.querySelector('.quick-action-btn').addEventListener('click', e => { e.stopPropagation(); toggleWishlist(p, e.currentTarget); });
+            card.addEventListener('click', e => { if (!e.target.closest('button')) openModal(p); });
+            return card;
+        }
+
+        function renderGrid(id, arr) { const g = document.getElementById(id); if (!g) return; g.innerHTML = ''; if (!arr || arr.length === 0) { g.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-muted);grid-column:1/-1;">لا توجد منتجات</div>'; return; } arr.forEach(p => g.appendChild(createProductCard(p))); }
+        function renderAll() { renderGrid('movies-grid', data.movies); renderGrid('series-grid', data.series); renderGrid('software-grid', data.software); renderGrid('pcgames-grid', data.pcgames); renderGrid('psgames-grid', data.psgames); renderBuilder(); updateCartUI(); updateWishlistBadge(); }
+
+        function renderBuilder() {
+            const c = $('#pc-builder-components'); if (!c) return; c.innerHTML = '';
+            if (!Object.values(data.pcComponents).some(comp => comp.options.length > 0)) { c.innerHTML = '<div style="text-align:center;padding:40px;">لا توجد قطع</div>'; updateSummary(); return; }
+            Object.entries(data.pcComponents).forEach(([key, comp]) => { if (!comp.options.length) return; const sel = builder[key]; const w = document.createElement('div'); w.style.marginBottom = '6px'; w.innerHTML = `<div class="pc-select ${sel?'selected':''}" data-comp="${key}"><div class="circle"><i class="fas ${comp.icon}"></i></div><div style="flex:1"><div style="font-weight:700">${comp.label}</div><div style="font-size:0.75rem;color:var(--text-muted)">${sel?.name||'اختر...'}</div></div><div style="font-weight:700;color:var(--accent)">${sel?formatPrice(sel.price):''}</div></div><div class="pc-options" id="opts-${key}" style="display:none;"></div>`; c.appendChild(w); const opts = w.querySelector('.pc-options'); comp.options.forEach(o => { const opt = document.createElement('div'); opt.style.cssText = 'padding:8px 12px;cursor:pointer;display:flex;justify-content:space-between;border-bottom:1px solid var(--border-light);font-size:0.75rem;'; opt.innerHTML = `<span>${o.name}</span><span style="color:var(--accent);font-weight:700">${formatPrice(o.price)}</span>`; opt.addEventListener('click', e => { e.stopPropagation(); builder[key] = o; renderBuilder(); updateSummary(); }); opts.appendChild(opt); }); w.querySelector('.pc-select').addEventListener('click', e => { e.stopPropagation(); $$('.pc-options').forEach(x => { if (x !== opts) x.style.display = 'none'; }); opts.style.display = opts.style.display === 'block' ? 'none' : 'block'; }); }); updateSummary();
+        }
+        function updateSummary() { const l = $('#pc-summary-list'), t = $('#pc-total-price'); if (!l || !t) return; let total = 0; l.innerHTML = ''; Object.entries(data.pcComponents).forEach(([key, comp]) => { const sel = builder[key]; const li = document.createElement('li'); li.style.cssText = 'display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border-light);font-size:0.75rem;'; if (sel) { total += sel.price; li.innerHTML = `<span>${comp.label}: <strong>${sel.name}</strong></span><span style="color:var(--accent);">${formatPrice(sel.price)}</span>`; } else { li.innerHTML = `<span style="color:var(--text-muted);">${comp.label}: اختر...</span><span>-</span>`; } l.appendChild(li); }); t.textContent = `المجموع: ${formatPrice(total)}`; }
+
+        // ----------------------------------------------
+        // DUAL ADMIN LOGIN SYSTEM (Admin + Assistant)
+        // ----------------------------------------------
+        function openAdminLogin(role = 'admin') {
+            currentLoginRole = role;
+            const overlay = $('#admin-login-overlay');
+            const icon = $('#admin-login-icon');
+            const title = $('#admin-login-title');
+            const subtitle = $('#admin-login-subtitle');
+            const roleSelector = $('#role-selector');
             
-            function loadProducts() {
-                const stored = localStorage.getItem(CONFIG.STORAGE_KEY);
-                if (!stored) return defaultProducts();
-                try {
-                    const all = JSON.parse(stored);
-                    const pc = { cpu:{label:'🧠 المعالج',icon:'fa-microchip',options:[]}, motherboard:{label:'📟 اللوحة الأم',icon:'fa-server',options:[]}, gpu:{label:'🎮 كرت الشاشة',icon:'fa-tv',options:[]}, ram:{label:'🧮 الذاكرة',icon:'fa-memory',options:[]}, storage:{label:'💾 التخزين',icon:'fa-hdd',options:[]}, psu:{label:'⚡ مزود الطاقة',icon:'fa-bolt',options:[]}, case:{label:'📦 الصندوق',icon:'fa-desktop',options:[]} };
-                    all.filter(p => p.type === 'component').forEach(c => { if (pc[c.componentType]) pc[c.componentType].options.push({ name: c.name, price: c.price, image: c.image || '', id: c.id }); });
-                    return { movies: all.filter(p => p.type === 'movies'), series: all.filter(p => p.type === 'series'), software: all.filter(p => p.type === 'programs'), pcgames: all.filter(p => p.type === 'pcgames'), psgames: all.filter(p => p.type === 'playstation'), pcComponents: pc };
-                } catch(e) { return defaultProducts(); }
+            if (role === 'assistant') {
+                icon.innerHTML = '<i class="fas fa-user-friends"></i>';
+                title.textContent = '🔐 دخول المساعد';
+                subtitle.textContent = 'إدارة المتجر كمساعد';
+                roleSelector.style.display = 'none';
+            } else {
+                icon.innerHTML = '<i class="fas fa-shield-halved"></i>';
+                title.textContent = '🔐 دخول المسؤول';
+                subtitle.textContent = 'اختر نوع الدخول';
+                roleSelector.style.display = 'flex';
             }
-            function defaultProducts() { return { movies: [], series: [], software: [], pcgames: [], psgames: [], pcComponents: { cpu:{label:'🧠 المعالج',icon:'fa-microchip',options:[]}, motherboard:{label:'📟 اللوحة الأم',icon:'fa-server',options:[]}, gpu:{label:'🎮 كرت الشاشة',icon:'fa-tv',options:[]}, ram:{label:'🧮 الذاكرة',icon:'fa-memory',options:[]}, storage:{label:'💾 التخزين',icon:'fa-hdd',options:[]}, psu:{label:'⚡ مزود الطاقة',icon:'fa-bolt',options:[]}, case:{label:'📦 الصندوق',icon:'fa-desktop',options:[]} } }; }
-
-            function formatPrice(p) { return p.toLocaleString('en-US') + ' ' + siteSettings.currency; }
-            function showToast(msg) { const c = $('#toast-container'); if (!c) return; const t = document.createElement('div'); t.className = 'toast'; t.textContent = msg; c.appendChild(t); setTimeout(() => t.remove(), 2800); }
-
-            // Cart Functions
-            function addToCart(p) { const ex = cart.find(i => i.id === p.id); if (ex) ex.quantity = (ex.quantity || 1) + 1; else cart.push({ ...p, quantity: 1 }); saveCart(); updateCartUI(); renderAll(); showToast('✓ تمت الإضافة للسلة'); }
-            function updateCartQty(i, d) { if (i < 0 || i >= cart.length) return; cart[i].quantity = (cart[i].quantity || 1) + d; if (cart[i].quantity <= 0) cart.splice(i, 1); saveCart(); updateCartUI(); renderCartItems(); renderAll(); }
-            function updateCartUI() { const t = cart.reduce((s, i) => s + (i.quantity || 1), 0); const b = $('#cart-badge'); if (b) b.classList.toggle('show', t > 0) && (b.textContent = t); }
-            function openCart() { $('#cart-overlay').classList.add('open'); renderCartItems(); }
-            function closeCart() { $('#cart-overlay').classList.remove('open'); }
-            function renderCartItems() {
-                const c = $('#cart-items'), e = $('#cart-empty-state'), f = $('#cart-footer'), t = $('#cart-total-amount');
-                if (!c) return;
-                if (cart.length === 0) { c.innerHTML = ''; e.classList.add('show'); f.style.display = 'none'; if (t) t.textContent = '0 ' + siteSettings.currency; }
-                else { e.classList.remove('show'); f.style.display = 'block'; c.innerHTML = cart.map((item, i) => `<div class="cart-item"><div class="cart-item-img"><img src="${item.image || 'https://via.placeholder.com/56'}" alt="${item.name}"></div><div class="cart-item-info"><h4>${item.name}</h4><div class="cart-item-price">${formatPrice(item.price)} × ${item.quantity || 1}</div><div style="color:var(--accent);font-weight:700;">${formatPrice(item.price * (item.quantity || 1))}</div></div><div class="cart-item-actions"><button class="qty-btn" onclick="window._q(${i},-1)">−</button><span>${item.quantity||1}</span><button class="qty-btn" onclick="window._q(${i},1)">+</button><button class="remove-cart-btn" onclick="window._r(${i})"><i class="fas fa-trash"></i></button></div></div>`).join(''); if (t) t.textContent = formatPrice(cart.reduce((s, i) => s + (i.price * (i.quantity || 1)), 0)); }
+            
+            overlay.classList.add('open');
+            showAdminStep('request');
+            // Clear any existing OTP
+            sessionStorage.removeItem(CONFIG.OTP_KEY + '_' + role);
+            for (let i = 1; i <= 6; i++) {
+                const inp = $('#admin-otp-' + i);
+                if (inp) inp.value = '';
             }
-            function checkoutCart() { if (cart.length === 0) { showToast('⚠️ السلة فارغة'); return; } let m = '🛒 *طلب جديد*\n\n'; cart.forEach(i => { m += `📦 ${i.name} (×${i.quantity||1}) — ${formatPrice(i.price*(i.quantity||1))}\n`; }); m += `\n💰 *الإجمالي: ${formatPrice(cart.reduce((s,i)=>s+(i.price*(i.quantity||1)),0))}*`; window.open(`https://wa.me/${siteSettings.whatsapp||CONFIG.WHATSAPP_NUMBER}?text=${encodeURIComponent(m)}`, '_blank'); }
-            window._q = updateCartQty; window._r = (i) => { cart.splice(i,1); saveCart(); updateCartUI(); renderCartItems(); renderAll(); };
-
-            // Wishlist Functions
-            function toggleWishlist(p, btn) { const idx = wishlist.findIndex(w => w.id === p.id); idx === -1 ? wishlist.push(p) : wishlist.splice(idx,1); if(btn) btn.classList.toggle('active', idx === -1); saveWishlist(); updateWishlistBadge(); renderAll(); showToast(idx === -1 ? '❤️ أضيف للمفضلة' : 'تمت الإزالة'); }
-            function updateWishlistBadge() { const b = $('#wishlist-badge'); if (b) b.classList.toggle('show', wishlist.length > 0) && (b.textContent = wishlist.length); }
-            function isInWishlist(id) { return wishlist.some(w => w.id === id); }
-            function isInCart(id) { return cart.some(i => i.id === id); }
-
-            // Modal
-            function openModal(p) {
-                $('#product-modal-overlay').classList.add('open');
-                $('#modal-product-image').innerHTML = `<img src="${p.image || 'https://via.placeholder.com/600x400'}" alt="${p.name}">`;
-                const specs = p.specs ? Object.entries(p.specs).map(([k,v]) => `<span class="modal-spec-tag">${k}: ${v}</span>`).join('') : '';
-                $('#modal-product-details').innerHTML = `<div class="modal-brand">${p.brand||'Dar3a Store'}</div><h2>${p.name}</h2><div class="modal-price">${formatPrice(p.price)}</div>${p.description?`<p>${p.description}</p>`:''}${specs?`<div class="modal-specs">${specs}</div>`:''}<div class="modal-actions"><div class="modal-actions-row"><button class="btn btn-primary" id="modal-add-cart" style="flex:1;"><i class="fas fa-cart-plus"></i> ${isInCart(p.id)?'✓ في السلة':'إضافة للسلة'}</button><button class="btn btn-whatsapp" id="modal-buy-now" style="flex:1;"><i class="fab fa-whatsapp"></i> شراء مباشر</button></div></div>`;
-                document.getElementById('modal-add-cart').onclick = () => { addToCart(p); closeModal(); };
-                document.getElementById('modal-buy-now').onclick = () => { window.open(`https://wa.me/${siteSettings.whatsapp||CONFIG.WHATSAPP_NUMBER}?text=${encodeURIComponent(`🛒 ${p.name}\n💰 ${formatPrice(p.price)}`)}`, '_blank'); };
+        }
+        
+        function closeAdminLogin() {
+            $('#admin-login-overlay').classList.remove('open');
+            clearInterval(otpTimer);
+            for (let i = 1; i <= 6; i++) {
+                const inp = $('#admin-otp-' + i);
+                if (inp) inp.value = '';
             }
-            function closeModal() { $('#product-modal-overlay').classList.remove('open'); }
+        }
+        
+        function showAdminStep(step) {
+            $$('.auth-step').forEach(s => s.classList.remove('active'));
+            const el = $('#admin-step-' + step);
+            if (el) el.classList.add('active');
+        }
+        
+        async function adminRequestOTP() {
+            const btn = $('#admin-request-code-btn');
+            const errorDiv = $('#admin-step1-error');
+            const successDiv = $('#admin-step1-success');
+            
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الإرسال...';
+            }
+            
+            errorDiv.classList.remove('show');
+            successDiv.classList.remove('show');
+            
+            const otp = Math.floor(100000 + Math.random() * 900000).toString();
+            
+            // Determine which bot to use based on role
+            let botToken, chatId;
+            if (currentLoginRole === 'assistant') {
+                botToken = CONFIG.ASSISTANT_BOT_TOKEN;
+                chatId = CONFIG.ASSISTANT_CHAT_ID;
+                if (!botToken || botToken === 'YOUR_ASSISTANT_BOT_TOKEN_HERE') {
+                    if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fab fa-telegram-plane"></i> طلب كود التحقق'; }
+                    errorDiv.textContent = '⚠️ لم يتم إعداد بوت المساعد بعد!';
+                    errorDiv.classList.add('show');
+                    return;
+                }
+            } else {
+                botToken = CONFIG.TELEGRAM_BOT_TOKEN;
+                chatId = CONFIG.TELEGRAM_CHAT_ID;
+            }
+            
+            // Store OTP with role
+            sessionStorage.setItem(CONFIG.OTP_KEY + '_' + currentLoginRole, JSON.stringify({ code: otp, expires: Date.now() + 300000, attempts: 0 }));
+            
+            try {
+                const res = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ chat_id: chatId, text: `🔐 *رمز تحقق ${currentLoginRole === 'assistant' ? 'المساعد' : 'المدير'}*\n🔢 *${otp}*\nصالح 5 دقائق`, parse_mode: 'Markdown' })
+                });
+                
+                if (res.ok) {
+                    successDiv.textContent = '✅ تم إرسال الكود بنجاح!';
+                    successDiv.classList.add('show');
+                    setTimeout(() => { 
+                        showAdminStep('verify'); 
+                        startAdminTimer(300);
+                        const firstOtp = $('#admin-otp-1');
+                        if (firstOtp) firstOtp.focus();
+                    }, 600);
+                } else {
+                    errorDiv.textContent = '❌ فشل الإرسال، تأكد من إعدادات البوت';
+                    errorDiv.classList.add('show');
+                }
+            } catch(e) {
+                console.error(e);
+                errorDiv.textContent = '❌ خطأ في الاتصال بالخادم';
+                errorDiv.classList.add('show');
+            } finally {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fab fa-telegram-plane"></i> طلب كود التحقق';
+                }
+            }
+        }
+        
+        function adminVerifyOTP() {
+            const digits = [];
+            for (let i = 1; i <= 6; i++) digits.push($('#admin-otp-' + i)?.value || '');
+            const entered = digits.join('');
+            if (entered.length !== 6) return;
+            
+            const od = JSON.parse(sessionStorage.getItem(CONFIG.OTP_KEY + '_' + currentLoginRole) || '{}');
+            if (!od.code || Date.now() > od.expires) {
+                const errorDiv = $('#admin-step2-error');
+                errorDiv.textContent = '⚠️ الكود منتهي الصلاحية، اطلب كود جديد';
+                errorDiv.classList.add('show');
+                return;
+            }
+            
+            if (entered === od.code) {
+                sessionStorage.removeItem(CONFIG.OTP_KEY + '_' + currentLoginRole);
+                clearInterval(otpTimer);
+                showToast('✅ تم التحقق! جاري التوجيه إلى لوحة التحكم...');
+                setTimeout(() => {
+                    window.location.href = CONFIG.ADMIN_URL;
+                }, 800);
+            } else {
+                const errorDiv = $('#admin-step2-error');
+                errorDiv.textContent = '❌ كود غير صحيح';
+                errorDiv.classList.add('show');
+                setTimeout(() => errorDiv.classList.remove('show'), 2000);
+            }
+        }
+        
+        function startAdminTimer(s) {
+            otpTimeLeft = s;
+            updateTimerDisplay();
+            clearInterval(otpTimer);
+            const rl = $('#admin-resend-link');
+            if (rl) rl.classList.add('disabled');
+            otpTimer = setInterval(() => {
+                otpTimeLeft--;
+                updateTimerDisplay();
+                if (otpTimeLeft <= 0) {
+                    clearInterval(otpTimer);
+                    if ($('#admin-resend-link')) $('#admin-resend-link').classList.remove('disabled');
+                }
+            }, 1000);
+        }
+        
+        function updateTimerDisplay() {
+            const m = Math.floor(otpTimeLeft / 60);
+            const s = otpTimeLeft % 60;
+            const d = $('#admin-timer-display');
+            if (d) d.textContent = `⏰ ${m}:${s.toString().padStart(2, '0')}`;
+        }
+        
+        // ----------------------------------------------
+        // SECRET ADMIN ACCESS (Long Press on Logo)
+        // ----------------------------------------------
+        function initSecretAccess() {
+            const trigger = document.getElementById('secret-admin-trigger');
+            const pressBar = document.getElementById('secret-press-bar');
+            const pressFill = document.getElementById('secret-press-fill');
+            const hint = document.getElementById('secret-hint');
+            const logoEl = document.getElementById('logo-icon-el');
+            let start = 0, interval = null, pressing = false;
+            
+            function startPress(e) {
+                if (e.type === 'touchstart') e.preventDefault();
+                if (pressing) return;
+                pressing = true;
+                start = Date.now();
+                pressBar.classList.add('active');
+                pressFill.style.width = '0%';
+                pressFill.style.transition = 'none';
+                if (logoEl) logoEl.classList.add('pressing');
+                interval = setInterval(() => {
+                    const elapsed = Date.now() - start;
+                    const progress = Math.min((elapsed / CONFIG.LONG_PRESS_MS) * 100, 100);
+                    pressFill.style.width = progress + '%';
+                    if (elapsed >= CONFIG.LONG_PRESS_MS) {
+                        cancelPress();
+                        hint.textContent = '✅ تم الفتح!';
+                        hint.classList.add('show');
+                        setTimeout(() => hint.classList.remove('show'), 1500);
+                        if (logoEl) {
+                            logoEl.classList.add('success');
+                            setTimeout(() => logoEl.classList.remove('success'), 600);
+                        }
+                        setTimeout(() => openAdminLogin('admin'), 500);
+                    }
+                }, 30);
+            }
+            
+            function cancelPress() {
+                if (!pressing && !interval) return;
+                pressing = false;
+                clearInterval(interval);
+                interval = null;
+                pressBar.classList.remove('active');
+                pressFill.style.transition = 'width 0.3s ease';
+                pressFill.style.width = '0%';
+                hint.classList.remove('show');
+                if (logoEl) logoEl.classList.remove('pressing');
+            }
+            
+            if (trigger) {
+                trigger.addEventListener('mousedown', startPress);
+                trigger.addEventListener('touchstart', startPress, { passive: false });
+                trigger.addEventListener('mouseup', cancelPress);
+                trigger.addEventListener('mouseleave', cancelPress);
+                trigger.addEventListener('touchend', cancelPress);
+                trigger.addEventListener('touchcancel', cancelPress);
+            }
+            
+            // Keyboard shortcut: Ctrl+Shift+A for Admin
+            document.addEventListener('keydown', e => {
+                if (e.ctrlKey && e.shiftKey && (e.key === 'A' || e.key === 'a')) {
+                    e.preventDefault();
+                    setTimeout(() => openAdminLogin('admin'), 400);
+                }
+            });
+            
+            // Assistant shortcut: Ctrl+Shift+S
+            document.addEventListener('keydown', e => {
+                if (e.ctrlKey && e.shiftKey && (e.key === 'S' || e.key === 's')) {
+                    e.preventDefault();
+                    setTimeout(() => openAdminLogin('assistant'), 400);
+                }
+            });
+            
+            if (new URL(location.href).searchParams.has('admin')) setTimeout(() => openAdminLogin('admin'), 600);
+            if (new URL(location.href).searchParams.has('assistant')) setTimeout(() => openAdminLogin('assistant'), 600);
+        }
+        
+        // ----------------------------------------------
+        // UI ENHANCEMENTS
+        // ----------------------------------------------
+        function initScrollProgress() { const pb = document.getElementById('scrollProgress'); if (!pb) return; window.addEventListener('scroll', () => { const winScroll = document.documentElement.scrollTop, height = document.documentElement.scrollHeight - document.documentElement.clientHeight; pb.style.width = (winScroll / height) * 100 + '%'; }); }
+        function initFadeOnScroll() { const fadeElements = document.querySelectorAll('.fade-up'); const observer = new IntersectionObserver((entries) => { entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); }); }, { threshold: 0.1 }); fadeElements.forEach(el => observer.observe(el)); }
+        function initNavbarScroll() { const navbar = document.getElementById('navbar'); if (!navbar) return; window.addEventListener('scroll', () => navbar.classList.toggle('scrolled', window.scrollY > 50)); }
+        function initMobileMenu() {
+            const hamburger = document.getElementById('hamburger-btn'), mobileMenu = document.getElementById('mobileMenu'), menuOverlay = document.getElementById('menuOverlay'), closeBtn = document.getElementById('mobileMenuClose');
+            function openMenu() { mobileMenu.classList.add('open'); menuOverlay.classList.add('open'); document.body.style.overflow = 'hidden'; }
+            function closeMenu() { mobileMenu.classList.remove('open'); menuOverlay.classList.remove('open'); document.body.style.overflow = ''; }
+            hamburger?.addEventListener('click', openMenu); closeBtn?.addEventListener('click', closeMenu); menuOverlay?.addEventListener('click', closeMenu);
+            mobileMenu?.querySelectorAll('a').forEach(link => link.addEventListener('click', closeMenu));
+        }
 
-            // Product Card
-            function createProductCard(p) {
-                const card = document.createElement('div'); card.className = 'product-card';
-                card.innerHTML = `<div class="product-card-image"><img src="${p.image || 'https://via.placeholder.com/400x260'}" alt="${p.name}"><div class="product-badges">${p.discount?`<span class="badge badge-sale">-${p.discount}%</span>`:''}</div><div class="product-quick-actions"><button class="quick-action-btn ${isInWishlist(p.id)?'active':''}"><i class="fas fa-heart"></i></button></div></div><div class="product-card-body"><div class="brand">${p.brand||'Dar3a'}</div><h3>${p.name}</h3><div class="specs-pills">${p.specs?Object.entries(p.specs).slice(0,3).map(([k,v])=>`<span class="spec-pill">${k}:${v}</span>`).join(''):''}</div><div class="product-price-row"><span class="product-price">${formatPrice(p.price)}</span>${p.oldPrice?`<span class="product-price-old">${formatPrice(p.oldPrice)}</span>`:''}</div><button class="add-to-cart-btn ${isInCart(p.id)?'in-cart':''}">${isInCart(p.id)?'✓ في السلة':'إضافة للسلة'}</button></div>`;
-                card.querySelector('.add-to-cart-btn').addEventListener('click', e => { e.stopPropagation(); addToCart(p); });
-                card.querySelector('.quick-action-btn').addEventListener('click', e => { e.stopPropagation(); toggleWishlist(p, e.currentTarget); });
-                card.addEventListener('click', e => { if (!e.target.closest('button')) openModal(p); });
-                return card;
+        // ----------------------------------------------
+        // BIND EVENTS
+        // ----------------------------------------------
+        function bindEvents() {
+            $('#modal-close-btn')?.addEventListener('click', closeModal);
+            $('#product-modal-overlay')?.addEventListener('click', e => { if (e.target === e.currentTarget) closeModal(); });
+            document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeModal(); closeCart(); closeAdminLogin(); } });
+            $('#cart-nav-btn')?.addEventListener('click', openCart);
+            $('#cart-close-btn')?.addEventListener('click', closeCart);
+            $('#cart-overlay')?.addEventListener('click', e => { if (e.target === e.currentTarget) closeCart(); });
+            $('#cart-checkout-btn')?.addEventListener('click', checkoutCart);
+            $('#wishlist-btn')?.addEventListener('click', () => showToast('❤️ ' + wishlist.length + ' منتجات'));
+            $('#theme-toggle')?.addEventListener('click', () => { currentTheme = currentTheme === 'dark' ? 'light' : 'dark'; document.documentElement.setAttribute('data-theme', currentTheme); localStorage.setItem('dar3a_theme', currentTheme); $('#theme-toggle').textContent = currentTheme === 'dark' ? '☀️' : '🌙'; });
+            $('#add-pc-to-cart')?.addEventListener('click', () => { const sel = Object.entries(builder).filter(([,o])=>o); if(sel.length<3){showToast('⚠️ اختر 3 مكونات على الأقل');return;} let total=0; const specs={}; sel.forEach(([k,o])=>{total+=o.price;specs[data.pcComponents[k].label]=o.name;}); addToCart({id:'build_'+Date.now(),name:'🖥️ تجميعة PC',brand:'Dar3a Custom',price:total,image:'https://picsum.photos/seed/pcbuild/400/260',specs}); builder={}; renderBuilder(); });
+            $('#reset-builder')?.addEventListener('click', () => { builder = {}; renderBuilder(); });
+            document.addEventListener('click', e => { if (!e.target.closest('.pc-select') && !e.target.closest('.pc-options')) $$('.pc-options').forEach(o => o.style.display = 'none'); });
+            window.addEventListener('storage', () => { data = loadProducts(); cart = loadCart(); wishlist = loadWishlist(); renderAll(); });
+            
+            // Admin Login Events
+            $('#admin-login-close')?.addEventListener('click', closeAdminLogin);
+            $('#admin-login-overlay')?.addEventListener('click', e => { if (e.target === e.currentTarget) closeAdminLogin(); });
+            $('#admin-request-code-btn')?.addEventListener('click', adminRequestOTP);
+            $('#admin-resend-link')?.addEventListener('click', () => { if (otpTimeLeft > 0) return; sessionStorage.removeItem(CONFIG.OTP_KEY + '_' + currentLoginRole); clearInterval(otpTimer); for (let i=1;i<=6;i++) { const inp = $('#admin-otp-'+i); if(inp)inp.value=''; } showAdminStep('request'); });
+            $('#admin-back-btn')?.addEventListener('click', () => { clearInterval(otpTimer); sessionStorage.removeItem(CONFIG.OTP_KEY + '_' + currentLoginRole); for (let i=1;i<=6;i++) { const inp = $('#admin-otp-'+i); if(inp)inp.value=''; } showAdminStep('request'); });
+            
+            // Role selection buttons
+            document.querySelectorAll('.role-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const role = btn.getAttribute('data-role');
+                    openAdminLogin(role);
+                });
+            });
+            
+            // Assistant login button in navbar
+            const assistantBtn = document.getElementById('assistant-login-btn');
+            if (assistantBtn) {
+                assistantBtn.addEventListener('click', () => openAdminLogin('assistant'));
             }
+            
+            // OTP inputs handler
+            for (let i = 1; i <= 6; i++) {
+                const inp = $('#admin-otp-' + i);
+                if (!inp) continue;
+                inp.addEventListener('input', function() {
+                    this.value = this.value.replace(/[^0-9]/g, '');
+                    if (this.value.length === 1 && i < 6) $('#admin-otp-' + (i + 1))?.focus();
+                    if (i === 6 && this.value.length === 1) setTimeout(adminVerifyOTP, 200);
+                });
+            }
+            
+            // Language toggle
+            document.getElementById('lang-toggle')?.addEventListener('click', () => { currentLang = currentLang === 'ar' ? 'en' : 'ar'; localStorage.setItem('dar3a_language', currentLang); document.documentElement.lang = currentLang; document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr'; renderAll(); });
+            
+            // Smooth scroll for nav links
+            document.querySelectorAll('.nav-links a, .hero-btns a').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    const href = this.getAttribute('href');
+                    if (href && href.startsWith('#')) {
+                        e.preventDefault();
+                        document.querySelector(href)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        if (window.innerWidth <= 768) document.querySelector('.nav-links').style.display = 'none';
+                    }
+                });
+            });
+        }
 
-            function renderGrid(id, arr) { const g = document.getElementById(id); if (!g) return; g.innerHTML = ''; if (!arr || arr.length === 0) { g.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-muted);grid-column:1/-1;">لا توجد منتجات</div>'; return; } arr.forEach(p => g.appendChild(createProductCard(p))); }
-            function renderAll() { renderGrid('movies-grid', data.movies); renderGrid('series-grid', data.series); renderGrid('software-grid', data.software); renderGrid('pcgames-grid', data.pcgames); renderGrid('psgames-grid', data.psgames); renderBuilder(); updateCartUI(); updateWishlistBadge(); }
-
-            function renderBuilder() {
-                const c = $('#pc-builder-components'); if (!c) return; c.innerHTML = '';
-                if (!Object.values(data.pcComponents).some(comp => comp.options.length > 0)) { c.innerHTML = '<div style="text-align:center;padding:40px;">لا توجد قطع</div>'; updateSummary(); return; }
-                Object.entries(data.pcComponents).forEach(([key, comp]) => { if (!comp.options.length) return; const sel = builder[key]; const w = document.createElement('div'); w.style.marginBottom = '6px'; w.innerHTML = `<div class="pc-select ${sel?'selected':''}" data-comp="${key}"><div class="circle"><i class="fas ${comp.icon}"></i></div><div style="flex:1"><div style="font-weight:700">${comp.label}</div><div style="font-size:0.75rem;color:var(--text-muted)">${sel?.name||'اختر...'}</div></div><div style="font-weight:700;color:var(--accent)">${sel?formatPrice(sel.price):''}</div></div><div class="pc-options" id="opts-${key}" style="display:none;"></div>`; c.appendChild(w); const opts = w.querySelector('.pc-options'); comp.options.forEach(o => { const opt = document.createElement('div'); opt.style.cssText = 'padding:8px 12px;cursor:pointer;display:flex;justify-content:space-between;border-bottom:1px solid var(--border-light);font-size:0.75rem;'; opt.innerHTML = `<span>${o.name}</span><span style="color:var(--accent);font-weight:700">${formatPrice(o.price)}</span>`; opt.addEventListener('click', e => { e.stopPropagation(); builder[key] = o; renderBuilder(); updateSummary(); }); opts.appendChild(opt); }); w.querySelector('.pc-select').addEventListener('click', e => { e.stopPropagation(); $$('.pc-options').forEach(x => { if (x !== opts) x.style.display = 'none'; }); opts.style.display = opts.style.display === 'block' ? 'none' : 'block'; }); }); updateSummary();
-            }
-            function updateSummary() { const l = $('#pc-summary-list'), t = $('#pc-total-price'); if (!l || !t) return; let total = 0; l.innerHTML = ''; Object.entries(data.pcComponents).forEach(([key, comp]) => { const sel = builder[key]; const li = document.createElement('li'); li.style.cssText = 'display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border-light);font-size:0.75rem;'; if (sel) { total += sel.price; li.innerHTML = `<span>${comp.label}: <strong>${sel.name}</strong></span><span style="color:var(--accent);">${formatPrice(sel.price)}</span>`; } else { li.innerHTML = `<span style="color:var(--text-muted);">${comp.label}: اختر...</span><span>-</span>`; } l.appendChild(li); }); t.textContent = `المجموع: ${formatPrice(total)}`; }
-
-            // Secret Admin Access
-            function initSecretAccess() {
-                const trigger = document.getElementById('secret-admin-trigger'), pressBar = document.getElementById('secret-press-bar'), pressFill = document.getElementById('secret-press-fill'), hint = document.getElementById('secret-hint'), logoEl = document.getElementById('logo-icon-el');
-                let start = 0, interval = null, pressing = false;
-                function startPress(e) { if (e.type === 'touchstart') e.preventDefault(); if (pressing) return; pressing = true; start = Date.now(); pressBar.classList.add('active'); pressFill.style.width = '0%'; pressFill.style.transition = 'none'; if (logoEl) logoEl.classList.add('pressing'); interval = setInterval(() => { const elapsed = Date.now() - start, progress = Math.min((elapsed / CONFIG.LONG_PRESS_MS) * 100, 100); pressFill.style.width = progress + '%'; if (elapsed >= CONFIG.LONG_PRESS_MS) { cancelPress(); hint.textContent = '✅ تم الفتح!'; hint.classList.add('show'); setTimeout(() => hint.classList.remove('show'), 1500); if (logoEl) { logoEl.classList.add('success'); setTimeout(() => logoEl.classList.remove('success'), 600); } setTimeout(() => openAdminLogin(), 500); } }, 30); }
-                function cancelPress() { if (!pressing && !interval) return; pressing = false; clearInterval(interval); interval = null; pressBar.classList.remove('active'); pressFill.style.transition = 'width 0.3s ease'; pressFill.style.width = '0%'; hint.classList.remove('show'); if (logoEl) logoEl.classList.remove('pressing'); }
-                if (trigger) { trigger.addEventListener('mousedown', startPress); trigger.addEventListener('touchstart', startPress, { passive: false }); trigger.addEventListener('mouseup', cancelPress); trigger.addEventListener('mouseleave', cancelPress); trigger.addEventListener('touchend', cancelPress); trigger.addEventListener('touchcancel', cancelPress); }
-                document.addEventListener('keydown', e => { if (e.ctrlKey && e.shiftKey && (e.key === 'A' || e.key === 'a')) { e.preventDefault(); setTimeout(() => openAdminLogin(), 400); } });
-                if (new URL(location.href).searchParams.has('admin')) setTimeout(() => openAdminLogin(), 600);
-            }
-
-            // Admin Login
-            function openAdminLogin() { const o = $('#admin-login-overlay'); o.classList.add('open'); showAdminStep('request'); }
-            function closeAdminLogin() { $('#admin-login-overlay').classList.remove('open'); clearInterval(otpTimer); for (let i = 1; i <= 6; i++) { const inp = $('#admin-otp-' + i); if (inp) inp.value = ''; } }
-            function showAdminStep(step) { $$('.auth-step').forEach(s => s.classList.remove('active')); const el = $('#admin-step-' + step); if (el) el.classList.add('active'); }
-            async function adminRequestOTP() {
-                const btn = $('#admin-request-code-btn'); if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الإرسال...'; }
-                const otp = Math.floor(100000 + Math.random() * 900000).toString();
-                sessionStorage.setItem(CONFIG.OTP_KEY, JSON.stringify({ code: otp, expires: Date.now() + 300000, attempts: 0 }));
-                try {
-                    const res = await fetch(`https://api.telegram.org/bot${CONFIG.TELEGRAM_BOT_TOKEN}/sendMessage`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ chat_id: CONFIG.TELEGRAM_CHAT_ID, text: `🔐 *رمز تحقق*\n🔢 *${otp}*\nصالح 5 دقائق`, parse_mode: 'Markdown' }) });
-                    if (res.ok) { setTimeout(() => { showAdminStep('verify'); startAdminTimer(300); $('#admin-otp-1')?.focus(); }, 600); }
-                } catch(e) {}
-                finally { if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fab fa-telegram-plane"></i> طلب كود التحقق'; } }
-            }
-            function adminVerifyOTP() {
-                const digits = []; for (let i = 1; i <= 6; i++) digits.push($('#admin-otp-' + i)?.value || '');
-                const entered = digits.join('');
-                if (entered.length !== 6) return;
-                const od = JSON.parse(sessionStorage.getItem(CONFIG.OTP_KEY) || '{}');
-                if (!od.code || Date.now() > od.expires) return;
-                if (entered === od.code) { sessionStorage.removeItem(CONFIG.OTP_KEY); clearInterval(otpTimer); showToast('✅ تم التحقق!'); setTimeout(() => { window.location.href = CONFIG.ADMIN_URL; }, 800); }
-            }
-            function startAdminTimer(s) { otpTimeLeft = s; updateTimerDisplay(); clearInterval(otpTimer); const rl = $('#admin-resend-link'); if (rl) rl.classList.add('disabled'); otpTimer = setInterval(() => { otpTimeLeft--; updateTimerDisplay(); if (otpTimeLeft <= 0) { clearInterval(otpTimer); if ($('#admin-resend-link')) $('#admin-resend-link').classList.remove('disabled'); } }, 1000); }
-            function updateTimerDisplay() { const m = Math.floor(otpTimeLeft/60), s = otpTimeLeft%60; const d = $('#admin-timer-display'); if (d) d.textContent = `⏰ ${m}:${s.toString().padStart(2,'0')}`; }
-            function bindAdminEvents() {
-                $('#admin-login-close')?.addEventListener('click', closeAdminLogin);
-                $('#admin-login-overlay')?.addEventListener('click', e => { if (e.target === this) closeAdminLogin(); });
-                $('#admin-request-code-btn')?.addEventListener('click', adminRequestOTP);
-                $('#admin-resend-link')?.addEventListener('click', () => { if (otpTimeLeft > 0) return; sessionStorage.removeItem(CONFIG.OTP_KEY); clearInterval(otpTimer); for (let i=1;i<=6;i++) { const inp = $('#admin-otp-'+i); if(inp)inp.value=''; } showAdminStep('request'); });
-                $('#admin-back-btn')?.addEventListener('click', () => { clearInterval(otpTimer); sessionStorage.removeItem(CONFIG.OTP_KEY); for (let i=1;i<=6;i++) { const inp = $('#admin-otp-'+i); if(inp)inp.value=''; } showAdminStep('request'); });
-                for (let i=1;i<=6;i++) { const inp = $('#admin-otp-'+i); if(!inp) continue; inp.addEventListener('input', function() { this.value=this.value.replace(/[^0-9]/g,''); if(this.value.length===1&&i<6) $('#admin-otp-'+(i+1))?.focus(); if(i===6&&this.value.length===1) setTimeout(adminVerifyOTP,200); }); }
-            }
-
-            // UI Enhancements
-            function initScrollProgress() { const pb = document.getElementById('scrollProgress'); if (!pb) return; window.addEventListener('scroll', () => { const winScroll = document.documentElement.scrollTop, height = document.documentElement.scrollHeight - document.documentElement.clientHeight; pb.style.width = (winScroll / height) * 100 + '%'; }); }
-            function initFadeOnScroll() { const fadeElements = document.querySelectorAll('.fade-up'); const observer = new IntersectionObserver((entries) => { entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); }); }, { threshold: 0.1 }); fadeElements.forEach(el => observer.observe(el)); }
-            function initNavbarScroll() { const navbar = document.getElementById('navbar'); if (!navbar) return; window.addEventListener('scroll', () => navbar.classList.toggle('scrolled', window.scrollY > 50)); }
-            function initMobileMenu() {
-                const hamburger = document.getElementById('hamburger-btn'), mobileMenu = document.getElementById('mobileMenu'), menuOverlay = document.getElementById('menuOverlay'), closeBtn = document.getElementById('mobileMenuClose');
-                function openMenu() { mobileMenu.classList.add('open'); menuOverlay.classList.add('open'); document.body.style.overflow = 'hidden'; }
-                function closeMenu() { mobileMenu.classList.remove('open'); menuOverlay.classList.remove('open'); document.body.style.overflow = ''; }
-                hamburger?.addEventListener('click', openMenu); closeBtn?.addEventListener('click', closeMenu); menuOverlay?.addEventListener('click', closeMenu);
-                mobileMenu?.querySelectorAll('a').forEach(link => link.addEventListener('click', closeMenu));
-            }
-
-            // Events
-            function bindEvents() {
-                $('#modal-close-btn')?.addEventListener('click', closeModal);
-                $('#product-modal-overlay')?.addEventListener('click', e => { if (e.target === e.currentTarget) closeModal(); });
-                document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeModal(); closeCart(); closeAdminLogin(); } });
-                $('#cart-nav-btn')?.addEventListener('click', openCart);
-                $('#cart-close-btn')?.addEventListener('click', closeCart);
-                $('#cart-overlay')?.addEventListener('click', e => { if (e.target === e.currentTarget) closeCart(); });
-                $('#cart-checkout-btn')?.addEventListener('click', checkoutCart);
-                $('#wishlist-btn')?.addEventListener('click', () => showToast('❤️ ' + wishlist.length + ' منتجات'));
-                $('#theme-toggle')?.addEventListener('click', () => { currentTheme = currentTheme === 'dark' ? 'light' : 'dark'; document.documentElement.setAttribute('data-theme', currentTheme); localStorage.setItem('dar3a_theme', currentTheme); $('#theme-toggle').textContent = currentTheme === 'dark' ? '☀️' : '🌙'; });
-                $('#add-pc-to-cart')?.addEventListener('click', () => { const sel = Object.entries(builder).filter(([,o])=>o); if(sel.length<3){showToast('⚠️ اختر 3 مكونات على الأقل');return;} let total=0; const specs={}; sel.forEach(([k,o])=>{total+=o.price;specs[data.pcComponents[k].label]=o.name;}); addToCart({id:'build_'+Date.now(),name:'🖥️ تجميعة PC',brand:'Dar3a Custom',price:total,image:'https://picsum.photos/seed/pcbuild/400/260',specs}); builder={}; renderBuilder(); });
-                $('#reset-builder')?.addEventListener('click', () => { builder = {}; renderBuilder(); });
-                document.addEventListener('click', e => { if (!e.target.closest('.pc-select') && !e.target.closest('.pc-options')) $$('.pc-options').forEach(o => o.style.display = 'none'); });
-                window.addEventListener('storage', () => { data = loadProducts(); cart = loadCart(); wishlist = loadWishlist(); renderAll(); });
-                bindAdminEvents();
-                document.getElementById('lang-toggle')?.addEventListener('click', () => { currentLang = currentLang === 'ar' ? 'en' : 'ar'; localStorage.setItem('dar3a_language', currentLang); document.documentElement.lang = currentLang; document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr'; renderAll(); });
-                document.querySelectorAll('.nav-links a, .hero-btns a').forEach(link => { link.addEventListener('click', function(e) { const href = this.getAttribute('href'); if (href && href.startsWith('#')) { e.preventDefault(); document.querySelector(href)?.scrollIntoView({ behavior: 'smooth', block: 'start' }); if (window.innerWidth <= 768) document.querySelector('.nav-links').style.display = 'none'; } }); });
-            }
-
-            function init() {
-                document.documentElement.setAttribute('data-theme', currentTheme);
-                $('#theme-toggle').textContent = currentTheme === 'dark' ? '☀️' : '🌙';
-                if (siteSettings.primaryColor) document.documentElement.style.setProperty('--accent', siteSettings.primaryColor);
-                bindEvents();
-                initSecretAccess();
-                initScrollProgress();
-                initFadeOnScroll();
-                initNavbarScroll();
-                initMobileMenu();
-                renderAll();
-                updateCartUI();
-                updateWishlistBadge();
-                console.log('🚀 Dar3a Store Ready');
-            }
-            init();
-        })();
+        // ----------------------------------------------
+        // INITIALIZATION
+        // ----------------------------------------------
+        function init() {
+            document.documentElement.setAttribute('data-theme', currentTheme);
+            $('#theme-toggle').textContent = currentTheme === 'dark' ? '☀️' : '🌙';
+            if (siteSettings.primaryColor) document.documentElement.style.setProperty('--accent', siteSettings.primaryColor);
+            bindEvents();
+            initSecretAccess();
+            initScrollProgress();
+            initFadeOnScroll();
+            initNavbarScroll();
+            initMobileMenu();
+            renderAll();
+            updateCartUI();
+            updateWishlistBadge();
+            console.log('🚀 Dar3a Store Ready with Dual Admin System!');
+        }
+        
+        init();
     </script>
 </body>
 </html>
