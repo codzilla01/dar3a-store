@@ -97,28 +97,6 @@
             transform: translateY(0);
         }
 
-        /* ===== RIPPLE EFFECT ===== */
-        .ripple {
-            position: relative;
-            overflow: hidden;
-        }
-        .ripple::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.4);
-            transform: translate(-50%, -50%);
-            transition: width 0.6s, height 0.6s;
-        }
-        .ripple:active::after {
-            width: 300px;
-            height: 300px;
-        }
-
         .container { width: 100%; max-width: 1320px; margin: 0 auto; padding: 0 clamp(16px, 4vw, 32px); }
 
         /* ===== NAVBAR ===== */
@@ -163,7 +141,29 @@
             font-size: 1.2rem;
             box-shadow: 0 4px 20px var(--accent-glow);
             transition: var(--transition);
+            overflow: hidden;
         }
+        .nav-logo .logo-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 12px;
+        }
+        
+        /* Logo text - hidden on mobile, visible on desktop */
+        .logo-text {
+            display: inline-block;
+        }
+        @media (max-width: 768px) {
+            .logo-text {
+                display: none;
+            }
+            .nav-logo .logo-icon {
+                width: 38px;
+                height: 38px;
+            }
+        }
+
         .nav-links { display: flex; align-items: center; gap: 4px; list-style: none; }
         .nav-links a {
             text-decoration: none;
@@ -1301,8 +1301,8 @@
     <nav class="navbar" id="navbar">
         <div class="container">
             <div class="nav-logo" id="secret-admin-trigger" tabindex="0" role="button">
-                <span class="logo-icon" id="logo-icon-el"><img src="images/logo.png" alt="DAR3A" style="width:100%;height:100%;object-fit:contain;border-radius:12px;"></span>
-                <span data-translate="store_name">Dar3a Store</span>
+                <span class="logo-icon" id="logo-icon-el"><img src="images/logo.png" alt="DAR3A"></span>
+                <span class="logo-text" data-translate="store_name">Dar3a Store</span>
             </div>
             <ul class="nav-links">
                 <li><a href="#home" class="active" data-translate="home">الرئيسية</a></li>
