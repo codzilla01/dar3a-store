@@ -159,25 +159,6 @@
             }
         }
 
-        .assistant-login-btn {
-            background: linear-gradient(135deg, #4f46e5, #6366f1);
-            border: none;
-            color: #fff;
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        .assistant-login-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4);
-        }
-
         .nav-links { display: flex; align-items: center; gap: 4px; list-style: none; }
         .nav-links a {
             text-decoration: none;
@@ -1314,32 +1295,26 @@
     </style>
 </head>
 <body>
-    <!-- SCROLL PROGRESS BAR -->
     <div class="scroll-progress" id="scrollProgress"></div>
-    
-    <!-- SECRET PRESS BAR -->
     <div class="secret-press-bar" id="secret-press-bar"><div class="fill" id="secret-press-fill"></div></div>
     <div class="secret-hint" id="secret-hint"></div>
     <div class="toast-container" id="toast-container"></div>
 
-    <!-- ===== NAVBAR ===== -->
     <nav class="navbar" id="navbar">
         <div class="container">
             <div class="nav-logo" id="secret-admin-trigger" tabindex="0" role="button">
-                <span class="logo-icon" id="logo-icon-el"><img src="images/logo.png" alt="DAR3A"></span>
-                <span class="logo-text" data-translate="store_name">Dar3a Store</span>
+                <span class="logo-icon" id="logo-icon-el"><img src="images/logo.png" alt="DAR3A" onerror="this.src='https://via.placeholder.com/42?text=D'"></span>
+                <span class="logo-text" id="store-name-text">Dar3a Store</span>
             </div>
             <ul class="nav-links">
-                <li><a href="#home" class="active" data-translate="home">الرئيسية</a></li>
-                <li><a href="#movies" data-translate="movies">🎬 أفلام</a></li>
-                <li><a href="#series" data-translate="series">📺 مسلسلات</a></li>
-                <li><a href="#software" data-translate="software">💻 برامج</a></li>
-                <li><a href="#games-section" data-translate="games">🎮 ألعاب</a></li>
-                <li><a href="#builder" data-translate="builder">🔧 تجميع</a></li>
+                <li><a href="#home" class="active">الرئيسية</a></li>
+                <li><a href="#movies">🎬 أفلام</a></li>
+                <li><a href="#series">📺 مسلسلات</a></li>
+                <li><a href="#software">💻 برامج</a></li>
+                <li><a href="#games-section">🎮 ألعاب</a></li>
+                <li><a href="#builder">🔧 تجميع</a></li>
             </ul>
             <div class="nav-actions">
-                <!--<button class="assistant-login-btn" id="assistant-login-btn" title="دخول المساعد"><i class="fas fa-user-friends"></i></button>-->
-                <button class="nav-btn" id="lang-toggle" title="Switch Language">EN</button>
                 <button class="nav-btn" id="theme-toggle">🌙</button>
                 <button class="nav-btn" id="wishlist-btn"><i class="fas fa-heart"></i><span class="badge-dot" id="wishlist-badge">0</span></button>
                 <button class="nav-btn" id="cart-nav-btn"><i class="fas fa-shopping-cart"></i><span class="badge-dot" id="cart-badge">0</span></button>
@@ -1348,26 +1323,24 @@
         </div>
     </nav>
 
-    <!-- MOBILE MENU -->
     <div class="mobile-menu" id="mobileMenu">
         <button class="mobile-close" id="mobileMenuClose"><i class="fas fa-times"></i></button>
         <ul class="nav-links">
-            <li><a href="#home" data-translate="home">الرئيسية</a></li>
-            <li><a href="#movies" data-translate="movies">🎬 أفلام</a></li>
-            <li><a href="#series" data-translate="series">📺 مسلسلات</a></li>
-            <li><a href="#software" data-translate="software">💻 برامج</a></li>
-            <li><a href="#games-section" data-translate="games">🎮 ألعاب</a></li>
-            <li><a href="#builder" data-translate="builder">🔧 تجميع</a></li>
+            <li><a href="#home">الرئيسية</a></li>
+            <li><a href="#movies">🎬 أفلام</a></li>
+            <li><a href="#series">📺 مسلسلات</a></li>
+            <li><a href="#software">💻 برامج</a></li>
+            <li><a href="#games-section">🎮 ألعاب</a></li>
+            <li><a href="#builder">🔧 تجميع</a></li>
         </ul>
     </div>
     <div class="menu-overlay" id="menuOverlay"></div>
 
-    <!-- ===== HERO SECTION ===== -->
     <section class="hero" id="home">
-        <img src="images/Banner.png" alt="Dar3a Store Banner" class="hero-banner">
+        <img src="images/Banner.png" alt="Dar3a Store Banner" class="hero-banner" onerror="this.src='https://via.placeholder.com/1920x600?text=Dar3a+Store'">
         <div class="container">
             <h1><span>Dar3a</span> Store</h1>
-            <p>أفلام • مسلسلات • برامج هندسية • ألعاب — كل ما تحتاجه في مكان واحد</p>
+            <p id="hero-tagline">أفلام • مسلسلات • برامج هندسية • ألعاب — كل ما تحتاجه في مكان واحد</p>
             <div class="hero-btns">
                 <a href="#movies" class="btn btn-primary"><i class="fas fa-film"></i> تصفح الأفلام</a>
                 <a href="#games-section" class="btn btn-outline"><i class="fas fa-gamepad"></i> تصفح الألعاب</a>
@@ -1375,7 +1348,6 @@
         </div>
     </section>
 
-    <!-- ===== MOVIES SECTION ===== -->
     <section id="movies" class="section">
         <div class="container">
             <div class="section-header fade-up">
@@ -1387,7 +1359,6 @@
         </div>
     </section>
 
-    <!-- ===== SERIES SECTION ===== -->
     <section id="series" class="section section-alt">
         <div class="container">
             <div class="section-header fade-up">
@@ -1399,7 +1370,6 @@
         </div>
     </section>
 
-    <!-- ===== SOFTWARE SECTION ===== -->
     <section id="software" class="section">
         <div class="container">
             <div class="section-header fade-up">
@@ -1411,7 +1381,6 @@
         </div>
     </section>
 
-    <!-- ===== GAMES SECTION ===== -->
     <section id="games-section" class="section section-alt">
         <div class="container">
             <div class="section-header fade-up">
@@ -1438,7 +1407,6 @@
         </div>
     </section>
 
-    <!-- ===== PC BUILDER SECTION ===== -->
     <section id="builder" class="section">
         <div class="container">
             <div class="section-header fade-up">
@@ -1459,11 +1427,9 @@
         </div>
     </section>
 
-    <!-- ===== MODALS ===== -->
     <div class="modal-overlay" id="product-modal-overlay"><div class="modal-content"><button class="modal-close" id="modal-close-btn">&times;</button><div class="modal-image" id="modal-product-image"></div><div class="modal-details" id="modal-product-details"></div></div></div>
     <div class="cart-overlay" id="cart-overlay"><div class="cart-drawer"><div class="cart-header"><h3><i class="fas fa-shopping-cart"></i> سلة التسوق</h3><button class="cart-close" id="cart-close-btn">&times;</button></div><div class="cart-items" id="cart-items"></div><div class="cart-empty-state" id="cart-empty-state"><i class="fas fa-shopping-cart"></i><p>السلة فارغة</p></div><div class="cart-footer" id="cart-footer"><div class="cart-total-row"><span>المجموع:</span><span id="cart-total-amount">0 ج.م</span></div><button class="btn btn-primary" id="cart-checkout-btn" style="width:100%;"><i class="fab fa-whatsapp"></i> إتمام الطلب</button></div></div></div>
     
-    <!-- ADMIN LOGIN MODAL (Dual Role with Paste Support) -->
     <div class="admin-overlay" id="admin-login-overlay"><div class="admin-card"><button class="admin-close" id="admin-login-close">&times;</button><div class="admin-icon" id="admin-login-icon"><i class="fas fa-shield-halved"></i></div><h3 id="admin-login-title">🔐 دخول المسؤول</h3><p class="subtitle" id="admin-login-subtitle">اختر نوع الدخول</p>
         <div class="role-selector" id="role-selector">
             <button class="role-btn" data-role="admin"><i class="fas fa-crown"></i> مدير</button>
@@ -1472,13 +1438,12 @@
         <div class="auth-step active" id="admin-step-request"><button class="telegram-btn" id="admin-request-code-btn"><i class="fab fa-telegram-plane"></i> طلب كود التحقق</button><div class="error-text" id="admin-step1-error"></div><div class="success-text" id="admin-step1-success">✅ تم الإرسال</div></div>
         <div class="auth-step" id="admin-step-verify"><p style="color:var(--success);">تم إرسال الكود</p><div class="otp-group" id="admin-otp-group"><input type="text" class="otp-input" maxlength="1" id="admin-otp-1" inputmode="numeric"><input type="text" class="otp-input" maxlength="1" id="admin-otp-2" inputmode="numeric"><input type="text" class="otp-input" maxlength="1" id="admin-otp-3" inputmode="numeric"><input type="text" class="otp-input" maxlength="1" id="admin-otp-4" inputmode="numeric"><input type="text" class="otp-input" maxlength="1" id="admin-otp-5" inputmode="numeric"><input type="text" class="otp-input" maxlength="1" id="admin-otp-6" inputmode="numeric"></div><div class="timer-text" id="admin-timer-display"></div><span class="resend-link disabled" id="admin-resend-link">إعادة الإرسال</span><div class="error-text" id="admin-step2-error"></div><button class="back-btn" id="admin-back-btn">العودة</button></div></div></div>
 
-    <!-- ===== FOOTER ===== -->
     <footer class="footer">
         <div class="container">
             <div class="footer-grid">
                 <div class="footer-col">
                     <h4>🏪 عن المتجر</h4>
-                    <p>متجر درعة ستور هو وجهتك الأولى لكل ما تحتاجه من أفلام، مسلسلات، برامج هندسية، وألعاب.</p>
+                    <p id="footer-about-text">متجر درعة ستور هو وجهتك الأولى لكل ما تحتاجه من أفلام، مسلسلات، برامج هندسية، وألعاب.</p>
                     <div class="trust-badge"><i class="fas fa-shield-alt"></i><p>تسوق آمن 100%</p></div>
                 </div>
                 <div class="footer-col">
@@ -1492,10 +1457,10 @@
                 </div>
                 <div class="footer-col">
                     <h4>📞 تواصل معنا</h4>
-                    <p><i class="fas fa-phone"></i> 0922265656</p>
-                    <p><i class="fas fa-map-marker-alt"></i> السودان - أمدرمان</p>
-                    <p><i class="fas fa-clock"></i> يومياً 10 ص - 10 م</p>
-                    <p><i class="fab fa-whatsapp"></i> واتساب: 0922265656</p>
+                    <p id="footer-phone"><i class="fas fa-phone"></i> 0922265656</p>
+                    <p id="footer-address"><i class="fas fa-map-marker-alt"></i> السودان - أمدرمان</p>
+                    <p id="footer-hours"><i class="fas fa-clock"></i> يومياً 10 ص - 10 م</p>
+                    <p id="footer-whatsapp"><i class="fab fa-whatsapp"></i> واتساب: 0922265656</p>
                     <div class="social-links">
                         <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
                         <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
@@ -1525,145 +1490,430 @@
                     <a href="#">سياسة الاستبدال</a>
                 </div>
                 <div class="developer-credit">
-                    <span>&copy; 2026 Dar3a Store</span>
+                    <span id="footer-copyright">&copy; 2026 Dar3a Store</span>
                     <span>|</span>
-                    <span>تصميم <a href="https://me-one-blue.vercel.app" target="_blank">Mr.Developer</a></span>
+                    <span>تصميم <a href="https://me-one-blue.vercel.app" target="_blank" id="footer-dev-link">Mr.Developer</a></span>
                 </div>
             </div>
         </div>
     </footer>
     
-    <!-- BACK TO TOP -->
     <button class="back-to-top" id="backToTopBtn"><i class="fas fa-arrow-up"></i></button>
-    <a href="chat-bot.html" class="fab-btn"><i class="fas fa-robot"></i> <span>المساعدة</span></a>
+    <a href="chat-bot-new.html" class="fab-btn"><i class="fas fa-robot"></i> <span>المساعدة</span></a>
 
     <script>
-        // ----------------------------------------------
-        // CONFIGURATION
-        // ----------------------------------------------
+        // ==================== CONFIGURATION ====================
         const CONFIG = {
             STORAGE_KEY: 'dar3a_store_products',
             CART_KEY: 'dar3a_cart',
             WISHLIST_KEY: 'dar3a_wishlist',
             SITE_SETTINGS_KEY: 'dar3a_site_settings',
             WHATSAPP_NUMBER: '0922265656',
-            ADMIN_URL: 'admin.html',
+            ADMIN_URL: 'admin-new.html',
             LONG_PRESS_MS: 3000,
             OTP_KEY: 'dar3a_telegram_otp',
-            // MAIN ADMIN
             TELEGRAM_BOT_TOKEN: '8723447348:AAGtKoujIGCtbLXuPUWAR-B-oweiOdcDCKk',
             TELEGRAM_CHAT_ID: '6776057443',
-            // ASSISTANT ADMIN
             ASSISTANT_BOT_TOKEN: '8722670397:AAFvypmlj5ebYYFWxheXbgXorOkPgthbnWo',
             ASSISTANT_CHAT_ID: '665454768'
         };
 
-        // ----------------------------------------------
-        // CORE FUNCTIONS
-        // ----------------------------------------------
-        const $ = s => document.querySelector(s), $$ = s => document.querySelectorAll(s);
-
-        let data = loadProducts(), cart = loadCart(), wishlist = loadWishlist(), builder = {};
+        // ==================== GLOBAL VARIABLES ====================
+        let allProducts = [];
+        let cart = [];
+        let wishlist = [];
+        let builder = {};
         let currentTheme = localStorage.getItem('dar3a_theme') || 'dark';
-        let currentLang = localStorage.getItem('dar3a_language') || 'ar';
-        let otpTimer = null, otpTimeLeft = 0;
+        let siteSettings = {
+            name: 'Dar3a Store', tagline: 'أفلام • مسلسلات • برامج • ألعاب',
+            currency: 'ج.س', phone: '0922265656', whatsapp: '0922265656',
+            address: 'السودان - امدرمان', hours: 'يومياً 10 ص - 10 م',
+            website: 'https://dar3a-store.vercel.app',
+            primaryColor: '#e63946', secondaryColor: '#ff6b6b',
+            logoIcon: 'fa-shield-halved', mainLogo: '', favicon: '',
+            bgAnimation: 'particles',
+            developerName: 'Mohamed Elnil', developerUrl: 'https://me-one-blue.vercel.app/about.html',
+            copyright: '© 2026 Dar3a Store. جميع الحقوق محفوظة.'
+        };
+        let currentChallengeToken = null;
         let currentLoginRole = 'admin';
-        let siteSettings = { name: 'Dar3a Store', currency: 'ج.م', whatsapp: '0922265656', primaryColor: '#e63946' };
+        let otpTimer = null, otpTimeLeft = 0;
 
-        function loadCart() { try { return JSON.parse(localStorage.getItem(CONFIG.CART_KEY) || '[]'); } catch(e) { return []; } }
-        function loadWishlist() { try { return JSON.parse(localStorage.getItem(CONFIG.WISHLIST_KEY) || '[]'); } catch(e) { return []; } }
-        function saveCart() { localStorage.setItem(CONFIG.CART_KEY, JSON.stringify(cart)); }
-        function saveWishlist() { localStorage.setItem(CONFIG.WISHLIST_KEY, JSON.stringify(wishlist)); }
-        
-        function loadProducts() {
-            const stored = localStorage.getItem(CONFIG.STORAGE_KEY);
-            if (!stored) return defaultProducts();
-            try {
-                const all = JSON.parse(stored);
-                const pc = { cpu:{label:'🧠 المعالج',icon:'fa-microchip',options:[]}, motherboard:{label:'📟 اللوحة الأم',icon:'fa-server',options:[]}, gpu:{label:'🎮 كرت الشاشة',icon:'fa-tv',options:[]}, ram:{label:'🧮 الذاكرة',icon:'fa-memory',options:[]}, storage:{label:'💾 التخزين',icon:'fa-hdd',options:[]}, psu:{label:'⚡ مزود الطاقة',icon:'fa-bolt',options:[]}, case:{label:'📦 الصندوق',icon:'fa-desktop',options:[]} };
-                all.filter(p => p.type === 'component').forEach(c => { if (pc[c.componentType]) pc[c.componentType].options.push({ name: c.name, price: c.price, image: c.image || '', id: c.id }); });
-                return { movies: all.filter(p => p.type === 'movies'), series: all.filter(p => p.type === 'series'), software: all.filter(p => p.type === 'programs'), pcgames: all.filter(p => p.type === 'pcgames'), psgames: all.filter(p => p.type === 'playstation'), pcComponents: pc };
-            } catch(e) { return defaultProducts(); }
+        // ==================== API FUNCTIONS ====================
+        async function apiFetch(endpoint, options = {}) {
+            const response = await fetch(endpoint, options);
+            if (!response.ok) {
+                throw new Error(`API Error: ${response.status}`);
+            }
+            return response.json();
         }
-        
-        function defaultProducts() { return { movies: [], series: [], software: [], pcgames: [], psgames: [], pcComponents: { cpu:{label:'🧠 المعالج',icon:'fa-microchip',options:[]}, motherboard:{label:'📟 اللوحة الأم',icon:'fa-server',options:[]}, gpu:{label:'🎮 كرت الشاشة',icon:'fa-tv',options:[]}, ram:{label:'🧮 الذاكرة',icon:'fa-memory',options:[]}, storage:{label:'💾 التخزين',icon:'fa-hdd',options:[]}, psu:{label:'⚡ مزود الطاقة',icon:'fa-bolt',options:[]}, case:{label:'📦 الصندوق',icon:'fa-desktop',options:[]} } }; }
+
+        async function loadAllData() {
+            try {
+                const [products, settings] = await Promise.all([
+                    apiFetch('/api/products'),
+                    apiFetch('/api/settings')
+                ]);
+                allProducts = products;
+                siteSettings = { ...siteSettings, ...settings };
+                applySettings();
+                return true;
+            } catch (e) {
+                console.error('Failed to load data:', e);
+                showToast('⚠️ حدث خطأ في تحميل البيانات');
+                return false;
+            }
+        }
+
+        async function subscribeToNewsletter(email) {
+            try {
+                await apiFetch('/api/newsletter', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email })
+                });
+                return true;
+            } catch (e) {
+                console.error('Newsletter subscribe failed:', e);
+                return false;
+            }
+        }
+
+        // ==================== LOCAL STORAGE HELPERS ====================
+        function loadCart() {
+            try {
+                const stored = localStorage.getItem(CONFIG.CART_KEY);
+                cart = stored ? JSON.parse(stored) : [];
+            } catch(e) { cart = []; }
+        }
+        function loadWishlist() {
+            try {
+                const stored = localStorage.getItem(CONFIG.WISHLIST_KEY);
+                wishlist = stored ? JSON.parse(stored) : [];
+            } catch(e) { wishlist = []; }
+        }
+        function saveCart() { localStorage.setItem(CONFIG.CART_KEY, JSON.stringify(cart)); updateCartUI(); }
+        function saveWishlist() { localStorage.setItem(CONFIG.WISHLIST_KEY, JSON.stringify(wishlist)); updateWishlistBadge(); }
+
+        // ==================== UI HELPERS ====================
+        const $ = s => document.querySelector(s);
+        const $$ = s => document.querySelectorAll(s);
+
+        function showToast(msg) {
+            const c = $('#toast-container');
+            if (!c) return;
+            const t = document.createElement('div');
+            t.className = 'toast';
+            t.textContent = msg;
+            c.appendChild(t);
+            setTimeout(() => t.remove(), 2800);
+        }
 
         function formatPrice(p) { return p.toLocaleString('en-US') + ' ' + siteSettings.currency; }
-        function showToast(msg) { const c = $('#toast-container'); if (!c) return; const t = document.createElement('div'); t.className = 'toast'; t.textContent = msg; c.appendChild(t); setTimeout(() => t.remove(), 2800); }
 
-        // Cart Functions
-        function addToCart(p) { const ex = cart.find(i => i.id === p.id); if (ex) ex.quantity = (ex.quantity || 1) + 1; else cart.push({ ...p, quantity: 1 }); saveCart(); updateCartUI(); renderAll(); showToast('✓ تمت الإضافة للسلة'); }
-        function updateCartQty(i, d) { if (i < 0 || i >= cart.length) return; cart[i].quantity = (cart[i].quantity || 1) + d; if (cart[i].quantity <= 0) cart.splice(i, 1); saveCart(); updateCartUI(); renderCartItems(); renderAll(); }
-        function updateCartUI() { const t = cart.reduce((s, i) => s + (i.quantity || 1), 0); const b = $('#cart-badge'); if (b) b.classList.toggle('show', t > 0) && (b.textContent = t); }
+        function applySettings() {
+            document.title = siteSettings.name + ' — درعة ستور';
+            $('#store-name-text').textContent = siteSettings.name;
+            $('#hero-tagline').textContent = siteSettings.tagline || 'أفلام • مسلسلات • برامج • ألعاب';
+            $('#footer-about-text').textContent = `متجر ${siteSettings.name} هو وجهتك الأولى لكل ما تحتاجه من أفلام، مسلسلات، برامج هندسية، وألعاب.`;
+            $('#footer-phone').innerHTML = `<i class="fas fa-phone"></i> ${siteSettings.phone}`;
+            $('#footer-address').innerHTML = `<i class="fas fa-map-marker-alt"></i> ${siteSettings.address}`;
+            $('#footer-hours').innerHTML = `<i class="fas fa-clock"></i> ${siteSettings.hours}`;
+            $('#footer-whatsapp').innerHTML = `<i class="fab fa-whatsapp"></i> واتساب: ${siteSettings.whatsapp}`;
+            $('#footer-copyright').textContent = siteSettings.copyright;
+            const devLink = $('#footer-dev-link');
+            if (devLink) {
+                devLink.textContent = siteSettings.developerName;
+                devLink.href = siteSettings.developerUrl;
+            }
+            if (siteSettings.primaryColor) {
+                document.documentElement.style.setProperty('--accent', siteSettings.primaryColor);
+            }
+            const logoIcon = siteSettings.logoIcon || 'fa-shield-halved';
+            const logoUrl = siteSettings.mainLogo;
+            const logoEl = $('#logo-icon-el');
+            if (logoEl) {
+                if (logoUrl) {
+                    logoEl.innerHTML = `<img src="${logoUrl}" alt="Logo" style="width:100%;height:100%;object-fit:contain;">`;
+                } else {
+                    logoEl.innerHTML = `<i class="fas ${logoIcon}"></i>`;
+                }
+            }
+            if (siteSettings.favicon) {
+                let fl = document.querySelector('link[rel="icon"]');
+                if (!fl) { fl = document.createElement('link'); fl.rel = 'icon'; document.head.appendChild(fl); }
+                fl.href = siteSettings.favicon;
+            }
+            renderAll();
+        }
+
+        // ==================== CART FUNCTIONS ====================
+        function addToCart(product) {
+            const ex = cart.find(i => i.id === product.id);
+            if (ex) ex.quantity = (ex.quantity || 1) + 1;
+            else cart.push({ ...product, quantity: 1 });
+            saveCart();
+            renderAll();
+            showToast('✓ تمت الإضافة للسلة');
+        }
+
+        function updateCartQty(index, delta) {
+            if (index < 0 || index >= cart.length) return;
+            cart[index].quantity = (cart[index].quantity || 1) + delta;
+            if (cart[index].quantity <= 0) cart.splice(index, 1);
+            saveCart();
+            renderCartItems();
+            renderAll();
+        }
+
+        function updateCartUI() {
+            const total = cart.reduce((s, i) => s + (i.quantity || 1), 0);
+            const badge = $('#cart-badge');
+            if (badge) {
+                badge.classList.toggle('show', total > 0);
+                badge.textContent = total;
+            }
+        }
+
+        function updateWishlistBadge() {
+            const badge = $('#wishlist-badge');
+            if (badge) {
+                badge.classList.toggle('show', wishlist.length > 0);
+                badge.textContent = wishlist.length;
+            }
+        }
+
+        function isInCart(id) { return cart.some(i => i.id === id); }
+        function isInWishlist(id) { return wishlist.some(w => w.id === id); }
+
+        function toggleWishlist(product, btn) {
+            const idx = wishlist.findIndex(w => w.id === product.id);
+            if (idx === -1) wishlist.push(product);
+            else wishlist.splice(idx, 1);
+            if (btn) btn.classList.toggle('active', idx === -1);
+            saveWishlist();
+            renderAll();
+            showToast(idx === -1 ? '❤️ أضيف للمفضلة' : 'تمت الإزالة');
+        }
+
         function openCart() { $('#cart-overlay').classList.add('open'); renderCartItems(); }
         function closeCart() { $('#cart-overlay').classList.remove('open'); }
+
         function renderCartItems() {
-            const c = $('#cart-items'), e = $('#cart-empty-state'), f = $('#cart-footer'), t = $('#cart-total-amount');
-            if (!c) return;
-            if (cart.length === 0) { c.innerHTML = ''; e.classList.add('show'); f.style.display = 'none'; if (t) t.textContent = '0 ' + siteSettings.currency; }
-            else { e.classList.remove('show'); f.style.display = 'block'; c.innerHTML = cart.map((item, i) => `<div class="cart-item"><div class="cart-item-img"><img src="${item.image || 'https://via.placeholder.com/56'}" alt="${item.name}"></div><div class="cart-item-info"><h4>${item.name}</h4><div class="cart-item-price">${formatPrice(item.price)} × ${item.quantity || 1}</div><div style="color:var(--accent);font-weight:700;">${formatPrice(item.price * (item.quantity || 1))}</div></div><div class="cart-item-actions"><button class="qty-btn" onclick="window._q(${i},-1)">−</button><span>${item.quantity||1}</span><button class="qty-btn" onclick="window._q(${i},1)">+</button><button class="remove-cart-btn" onclick="window._r(${i})"><i class="fas fa-trash"></i></button></div></div>`).join(''); if (t) t.textContent = formatPrice(cart.reduce((s, i) => s + (i.price * (i.quantity || 1)), 0)); }
+            const container = $('#cart-items');
+            const emptyState = $('#cart-empty-state');
+            const footer = $('#cart-footer');
+            const totalSpan = $('#cart-total-amount');
+            if (!container) return;
+            if (cart.length === 0) {
+                container.innerHTML = '';
+                emptyState?.classList.add('show');
+                if (footer) footer.style.display = 'none';
+                if (totalSpan) totalSpan.textContent = '0 ' + siteSettings.currency;
+            } else {
+                emptyState?.classList.remove('show');
+                if (footer) footer.style.display = 'block';
+                container.innerHTML = cart.map((item, i) => `
+                    <div class="cart-item">
+                        <div class="cart-item-img"><img src="${item.image || 'https://via.placeholder.com/56'}" alt="${item.name}"></div>
+                        <div class="cart-item-info">
+                            <h4>${escapeHtml(item.name)}</h4>
+                            <div class="cart-item-price">${formatPrice(item.price)} × ${item.quantity || 1}</div>
+                            <div style="color:var(--accent);font-weight:700;">${formatPrice(item.price * (item.quantity || 1))}</div>
+                        </div>
+                        <div class="cart-item-actions">
+                            <button class="qty-btn" onclick="window._q(${i},-1)">−</button>
+                            <span>${item.quantity || 1}</span>
+                            <button class="qty-btn" onclick="window._q(${i},1)">+</button>
+                            <button class="remove-cart-btn" onclick="window._r(${i})"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                `).join('');
+                if (totalSpan) totalSpan.textContent = formatPrice(cart.reduce((s, i) => s + (i.price * (i.quantity || 1)), 0));
+            }
         }
-        function checkoutCart() { if (cart.length === 0) { showToast('⚠️ السلة فارغة'); return; } let m = '🛒 *طلب جديد*\n\n'; cart.forEach(i => { m += `📦 ${i.name} (×${i.quantity||1}) — ${formatPrice(i.price*(i.quantity||1))}\n`; }); m += `\n💰 *الإجمالي: ${formatPrice(cart.reduce((s,i)=>s+(i.price*(i.quantity||1)),0))}*`; window.open(`https://wa.me/${siteSettings.whatsapp||CONFIG.WHATSAPP_NUMBER}?text=${encodeURIComponent(m)}`, '_blank'); }
-        window._q = updateCartQty; window._r = (i) => { cart.splice(i,1); saveCart(); updateCartUI(); renderCartItems(); renderAll(); };
 
-        // Wishlist Functions
-        function toggleWishlist(p, btn) { const idx = wishlist.findIndex(w => w.id === p.id); idx === -1 ? wishlist.push(p) : wishlist.splice(idx,1); if(btn) btn.classList.toggle('active', idx === -1); saveWishlist(); updateWishlistBadge(); renderAll(); showToast(idx === -1 ? '❤️ أضيف للمفضلة' : 'تمت الإزالة'); }
-        function updateWishlistBadge() { const b = $('#wishlist-badge'); if (b) b.classList.toggle('show', wishlist.length > 0) && (b.textContent = wishlist.length); }
-        function isInWishlist(id) { return wishlist.some(w => w.id === id); }
-        function isInCart(id) { return cart.some(i => i.id === id); }
+        function checkoutCart() {
+            if (cart.length === 0) { showToast('⚠️ السلة فارغة'); return; }
+            let message = '🛒 *طلب جديد*\n\n';
+            cart.forEach(i => {
+                message += `📦 ${i.name} (×${i.quantity || 1}) — ${formatPrice(i.price * (i.quantity || 1))}\n`;
+            });
+            message += `\n💰 *الإجمالي: ${formatPrice(cart.reduce((s, i) => s + (i.price * (i.quantity || 1)), 0))}*`;
+            window.open(`https://wa.me/${siteSettings.whatsapp || CONFIG.WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`, '_blank');
+        }
 
-        // Modal
-        function openModal(p) {
+        window._q = updateCartQty;
+        window._r = (i) => { cart.splice(i, 1); saveCart(); renderCartItems(); renderAll(); };
+
+        // ==================== MODAL ====================
+        function openModal(product) {
             $('#product-modal-overlay').classList.add('open');
-            $('#modal-product-image').innerHTML = `<img src="${p.image || 'https://via.placeholder.com/600x400'}" alt="${p.name}">`;
-            const specs = p.specs ? Object.entries(p.specs).map(([k,v]) => `<span class="modal-spec-tag">${k}: ${v}</span>`).join('') : '';
-            $('#modal-product-details').innerHTML = `<div class="modal-brand">${p.brand||'Dar3a Store'}</div><h2>${p.name}</h2><div class="modal-price">${formatPrice(p.price)}</div>${p.description?`<p>${p.description}</p>`:''}${specs?`<div class="modal-specs">${specs}</div>`:''}<div class="modal-actions"><div class="modal-actions-row"><button class="btn btn-primary" id="modal-add-cart" style="flex:1;"><i class="fas fa-cart-plus"></i> ${isInCart(p.id)?'✓ في السلة':'إضافة للسلة'}</button><button class="btn btn-whatsapp" id="modal-buy-now" style="flex:1;"><i class="fab fa-whatsapp"></i> شراء مباشر</button></div></div>`;
-            document.getElementById('modal-add-cart').onclick = () => { addToCart(p); closeModal(); };
-            document.getElementById('modal-buy-now').onclick = () => { window.open(`https://wa.me/${siteSettings.whatsapp||CONFIG.WHATSAPP_NUMBER}?text=${encodeURIComponent(`🛒 ${p.name}\n💰 ${formatPrice(p.price)}`)}`, '_blank'); };
+            $('#modal-product-image').innerHTML = `<img src="${product.image || 'https://via.placeholder.com/600x400'}" alt="${escapeHtml(product.name)}">`;
+            const specs = product.specs ? Object.entries(product.specs).map(([k, v]) => `<span class="modal-spec-tag">${escapeHtml(k)}: ${escapeHtml(v)}</span>`).join('') : '';
+            $('#modal-product-details').innerHTML = `
+                <div class="modal-brand">${escapeHtml(product.brand || 'Dar3a Store')}</div>
+                <h2>${escapeHtml(product.name)}</h2>
+                <div class="modal-price">${formatPrice(product.price)}</div>
+                ${product.description ? `<p>${escapeHtml(product.description)}</p>` : ''}
+                ${specs ? `<div class="modal-specs">${specs}</div>` : ''}
+                <div class="modal-actions">
+                    <div class="modal-actions-row">
+                        <button class="btn btn-primary" id="modal-add-cart" style="flex:1;"><i class="fas fa-cart-plus"></i> ${isInCart(product.id) ? '✓ في السلة' : 'إضافة للسلة'}</button>
+                        <button class="btn btn-whatsapp" id="modal-buy-now" style="flex:1;"><i class="fab fa-whatsapp"></i> شراء مباشر</button>
+                    </div>
+                </div>
+            `;
+            document.getElementById('modal-add-cart').onclick = () => { addToCart(product); closeModal(); };
+            document.getElementById('modal-buy-now').onclick = () => {
+                window.open(`https://wa.me/${siteSettings.whatsapp || CONFIG.WHATSAPP_NUMBER}?text=${encodeURIComponent(`🛒 ${product.name}\n💰 ${formatPrice(product.price)}`)}`, '_blank');
+            };
         }
         function closeModal() { $('#product-modal-overlay').classList.remove('open'); }
 
-        // Product Card
-        function createProductCard(p) {
-            const card = document.createElement('div'); card.className = 'product-card';
-            card.innerHTML = `<div class="product-card-image"><img src="${p.image || 'https://via.placeholder.com/400x260'}" alt="${p.name}"><div class="product-badges">${p.discount?`<span class="badge badge-sale">-${p.discount}%</span>`:''}</div><div class="product-quick-actions"><button class="quick-action-btn ${isInWishlist(p.id)?'active':''}"><i class="fas fa-heart"></i></button></div></div><div class="product-card-body"><div class="brand">${p.brand||'Dar3a'}</div><h3>${p.name}</h3><div class="specs-pills">${p.specs?Object.entries(p.specs).slice(0,3).map(([k,v])=>`<span class="spec-pill">${k}:${v}</span>`).join(''):''}</div><div class="product-price-row"><span class="product-price">${formatPrice(p.price)}</span>${p.oldPrice?`<span class="product-price-old">${formatPrice(p.oldPrice)}</span>`:''}</div><button class="add-to-cart-btn ${isInCart(p.id)?'in-cart':''}">${isInCart(p.id)?'✓ في السلة':'إضافة للسلة'}</button></div>`;
-            card.querySelector('.add-to-cart-btn').addEventListener('click', e => { e.stopPropagation(); addToCart(p); });
-            card.querySelector('.quick-action-btn').addEventListener('click', e => { e.stopPropagation(); toggleWishlist(p, e.currentTarget); });
-            card.addEventListener('click', e => { if (!e.target.closest('button')) openModal(p); });
+        // ==================== PRODUCT CARD ====================
+        function escapeHtml(s) { return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+
+        function createProductCard(product) {
+            const card = document.createElement('div');
+            card.className = 'product-card';
+            card.innerHTML = `
+                <div class="product-card-image">
+                    <img src="${product.image || 'https://via.placeholder.com/400x260'}" alt="${escapeHtml(product.name)}">
+                    <div class="product-badges">${product.discount ? `<span class="badge badge-sale">-${product.discount}%</span>` : ''}</div>
+                    <div class="product-quick-actions">
+                        <button class="quick-action-btn ${isInWishlist(product.id) ? 'active' : ''}"><i class="fas fa-heart"></i></button>
+                    </div>
+                </div>
+                <div class="product-card-body">
+                    <div class="brand">${escapeHtml(product.brand || 'Dar3a')}</div>
+                    <h3>${escapeHtml(product.name)}</h3>
+                    <div class="specs-pills">${product.specs ? Object.entries(product.specs).slice(0, 3).map(([k, v]) => `<span class="spec-pill">${escapeHtml(k)}:${escapeHtml(v)}</span>`).join('') : ''}</div>
+                    <div class="product-price-row"><span class="product-price">${formatPrice(product.price)}</span>${product.oldPrice ? `<span class="product-price-old">${formatPrice(product.oldPrice)}</span>` : ''}</div>
+                    <button class="add-to-cart-btn ${isInCart(product.id) ? 'in-cart' : ''}">${isInCart(product.id) ? '✓ في السلة' : 'إضافة للسلة'}</button>
+                </div>
+            `;
+            card.querySelector('.add-to-cart-btn').addEventListener('click', e => { e.stopPropagation(); addToCart(product); });
+            card.querySelector('.quick-action-btn').addEventListener('click', e => { e.stopPropagation(); toggleWishlist(product, e.currentTarget); });
+            card.addEventListener('click', e => { if (!e.target.closest('button')) openModal(product); });
             return card;
         }
 
-        function renderGrid(id, arr) { const g = document.getElementById(id); if (!g) return; g.innerHTML = ''; if (!arr || arr.length === 0) { g.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-muted);grid-column:1/-1;">لا توجد منتجات</div>'; return; } arr.forEach(p => g.appendChild(createProductCard(p))); }
-        function renderAll() { renderGrid('movies-grid', data.movies); renderGrid('series-grid', data.series); renderGrid('software-grid', data.software); renderGrid('pcgames-grid', data.pcgames); renderGrid('psgames-grid', data.psgames); renderBuilder(); updateCartUI(); updateWishlistBadge(); }
-
-        function renderBuilder() {
-            const c = $('#pc-builder-components'); if (!c) return; c.innerHTML = '';
-            if (!Object.values(data.pcComponents).some(comp => comp.options.length > 0)) { c.innerHTML = '<div style="text-align:center;padding:40px;">لا توجد قطع</div>'; updateSummary(); return; }
-            Object.entries(data.pcComponents).forEach(([key, comp]) => { if (!comp.options.length) return; const sel = builder[key]; const w = document.createElement('div'); w.style.marginBottom = '6px'; w.innerHTML = `<div class="pc-select ${sel?'selected':''}" data-comp="${key}"><div class="circle"><i class="fas ${comp.icon}"></i></div><div style="flex:1"><div style="font-weight:700">${comp.label}</div><div style="font-size:0.75rem;color:var(--text-muted)">${sel?.name||'اختر...'}</div></div><div style="font-weight:700;color:var(--accent)">${sel?formatPrice(sel.price):''}</div></div><div class="pc-options" id="opts-${key}" style="display:none;"></div>`; c.appendChild(w); const opts = w.querySelector('.pc-options'); comp.options.forEach(o => { const opt = document.createElement('div'); opt.style.cssText = 'padding:8px 12px;cursor:pointer;display:flex;justify-content:space-between;border-bottom:1px solid var(--border-light);font-size:0.75rem;'; opt.innerHTML = `<span>${o.name}</span><span style="color:var(--accent);font-weight:700">${formatPrice(o.price)}</span>`; opt.addEventListener('click', e => { e.stopPropagation(); builder[key] = o; renderBuilder(); updateSummary(); }); opts.appendChild(opt); }); w.querySelector('.pc-select').addEventListener('click', e => { e.stopPropagation(); $$('.pc-options').forEach(x => { if (x !== opts) x.style.display = 'none'; }); opts.style.display = opts.style.display === 'block' ? 'none' : 'block'; }); }); updateSummary();
+        function renderGrid(containerId, products) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            container.innerHTML = '';
+            if (!products || products.length === 0) {
+                container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-muted);grid-column:1/-1;">لا توجد منتجات</div>';
+                return;
+            }
+            products.forEach(p => container.appendChild(createProductCard(p)));
         }
-        function updateSummary() { const l = $('#pc-summary-list'), t = $('#pc-total-price'); if (!l || !t) return; let total = 0; l.innerHTML = ''; Object.entries(data.pcComponents).forEach(([key, comp]) => { const sel = builder[key]; const li = document.createElement('li'); li.style.cssText = 'display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border-light);font-size:0.75rem;'; if (sel) { total += sel.price; li.innerHTML = `<span>${comp.label}: <strong>${sel.name}</strong></span><span style="color:var(--accent);">${formatPrice(sel.price)}</span>`; } else { li.innerHTML = `<span style="color:var(--text-muted);">${comp.label}: اختر...</span><span>-</span>`; } l.appendChild(li); }); t.textContent = `المجموع: ${formatPrice(total)}`; }
 
-        // ----------------------------------------------
-        // DUAL ADMIN LOGIN SYSTEM (With Paste Support)
-        // ----------------------------------------------
-        
-        // Helper: Fill OTP fields from pasted text
+        function renderAll() {
+            renderGrid('movies-grid', allProducts.filter(p => p.type === 'movies'));
+            renderGrid('series-grid', allProducts.filter(p => p.type === 'series'));
+            renderGrid('software-grid', allProducts.filter(p => p.type === 'programs'));
+            renderGrid('pcgames-grid', allProducts.filter(p => p.type === 'pcgames'));
+            renderGrid('psgames-grid', allProducts.filter(p => p.type === 'playstation'));
+            renderBuilder();
+            updateCartUI();
+            updateWishlistBadge();
+        }
+
+        // ==================== PC BUILDER ====================
+        function renderBuilder() {
+            const components = {
+                cpu: { label: '🧠 المعالج', icon: 'fa-microchip', options: [] },
+                motherboard: { label: '📟 اللوحة الأم', icon: 'fa-server', options: [] },
+                gpu: { label: '🎮 كرت الشاشة', icon: 'fa-tv', options: [] },
+                ram: { label: '🧮 الذاكرة', icon: 'fa-memory', options: [] },
+                storage: { label: '💾 التخزين', icon: 'fa-hdd', options: [] },
+                psu: { label: '⚡ مزود الطاقة', icon: 'fa-bolt', options: [] },
+                case: { label: '📦 الصندوق', icon: 'fa-desktop', options: [] }
+            };
+            allProducts.filter(p => p.type === 'component').forEach(c => {
+                if (components[c.componentType]) components[c.componentType].options.push({ name: c.name, price: c.price, image: c.image || '', id: c.id });
+            });
+            const container = $('#pc-builder-components');
+            if (!container) return;
+            container.innerHTML = '';
+            if (!Object.values(components).some(comp => comp.options.length > 0)) {
+                container.innerHTML = '<div style="text-align:center;padding:40px;">لا توجد قطع</div>';
+                updateSummary(components);
+                return;
+            }
+            Object.entries(components).forEach(([key, comp]) => {
+                if (!comp.options.length) return;
+                const sel = builder[key];
+                const div = document.createElement('div');
+                div.style.marginBottom = '6px';
+                div.innerHTML = `
+                    <div class="pc-select ${sel ? 'selected' : ''}" data-comp="${key}">
+                        <div class="circle"><i class="fas ${comp.icon}"></i></div>
+                        <div style="flex:1">
+                            <div style="font-weight:700">${comp.label}</div>
+                            <div style="font-size:0.75rem;color:var(--text-muted)">${sel?.name || 'اختر...'}</div>
+                        </div>
+                        <div style="font-weight:700;color:var(--accent)">${sel ? formatPrice(sel.price) : ''}</div>
+                    </div>
+                    <div class="pc-options" id="opts-${key}" style="display:none;"></div>
+                `;
+                container.appendChild(div);
+                const optsDiv = div.querySelector('.pc-options');
+                comp.options.forEach(opt => {
+                    const optEl = document.createElement('div');
+                    optEl.style.cssText = 'padding:8px 12px;cursor:pointer;display:flex;justify-content:space-between;border-bottom:1px solid var(--border-light);font-size:0.75rem;';
+                    optEl.innerHTML = `<span>${escapeHtml(opt.name)}</span><span style="color:var(--accent);font-weight:700">${formatPrice(opt.price)}</span>`;
+                    optEl.addEventListener('click', e => {
+                        e.stopPropagation();
+                        builder[key] = opt;
+                        renderBuilder();
+                        updateSummary(components);
+                    });
+                    optsDiv.appendChild(optEl);
+                });
+                div.querySelector('.pc-select').addEventListener('click', e => {
+                    e.stopPropagation();
+                    $$('.pc-options').forEach(x => { if (x !== optsDiv) x.style.display = 'none'; });
+                    optsDiv.style.display = optsDiv.style.display === 'block' ? 'none' : 'block';
+                });
+            });
+            updateSummary(components);
+        }
+
+        function updateSummary(components) {
+            const list = $('#pc-summary-list');
+            const totalSpan = $('#pc-total-price');
+            if (!list || !totalSpan) return;
+            let total = 0;
+            list.innerHTML = '';
+            Object.entries(components).forEach(([key, comp]) => {
+                const sel = builder[key];
+                const li = document.createElement('li');
+                li.style.cssText = 'display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border-light);font-size:0.75rem;';
+                if (sel) {
+                    total += sel.price;
+                    li.innerHTML = `<span>${comp.label}: <strong>${escapeHtml(sel.name)}</strong></span><span style="color:var(--accent);">${formatPrice(sel.price)}</span>`;
+                } else {
+                    li.innerHTML = `<span style="color:var(--text-muted);">${comp.label}: اختر...</span><span>-</span>`;
+                }
+                list.appendChild(li);
+            });
+            totalSpan.textContent = `المجموع: ${formatPrice(total)}`;
+        }
+
+        // ==================== ADMIN LOGIN ====================
         function fillAdminOtpFields(code) {
             const digits = code.replace(/\D/g, '').slice(0, 6);
             for (let i = 0; i < digits.length; i++) {
                 const field = document.getElementById('admin-otp-' + (i + 1));
                 if (field) field.value = digits[i];
             }
-            if (digits.length === 6) {
-                setTimeout(adminVerifyOTP, 100);
-            }
+            if (digits.length === 6) setTimeout(adminVerifyOTP, 100);
         }
 
-        // Setup paste event on all OTP fields
         function setupAdminOtpPaste() {
-            const otpGroup = document.getElementById('admin-otp-group');
-            if (!otpGroup) return;
-            // Add paste listener to each OTP input
             for (let i = 1; i <= 6; i++) {
                 const inp = document.getElementById('admin-otp-' + i);
                 if (inp) {
@@ -1683,7 +1933,6 @@
             const title = $('#admin-login-title');
             const subtitle = $('#admin-login-subtitle');
             const roleSelector = $('#role-selector');
-            
             if (role === 'assistant') {
                 icon.innerHTML = '<i class="fas fa-user-friends"></i>';
                 title.textContent = '🔐 دخول المساعد';
@@ -1695,85 +1944,56 @@
                 subtitle.textContent = 'اختر نوع الدخول';
                 roleSelector.style.display = 'flex';
             }
-            
             overlay.classList.add('open');
             showAdminStep('request');
-            sessionStorage.removeItem(CONFIG.OTP_KEY + '_' + role);
             for (let i = 1; i <= 6; i++) {
                 const inp = $('#admin-otp-' + i);
                 if (inp) inp.value = '';
             }
         }
-        
+
         function closeAdminLogin() {
             $('#admin-login-overlay').classList.remove('open');
             clearInterval(otpTimer);
-            for (let i = 1; i <= 6; i++) {
-                const inp = $('#admin-otp-' + i);
-                if (inp) inp.value = '';
-            }
         }
-        
+
         function showAdminStep(step) {
             $$('.auth-step').forEach(s => s.classList.remove('active'));
             const el = $('#admin-step-' + step);
             if (el) el.classList.add('active');
         }
-        
+
         async function adminRequestOTP() {
             const btn = $('#admin-request-code-btn');
             const errorDiv = $('#admin-step1-error');
             const successDiv = $('#admin-step1-success');
-            
             if (btn) {
                 btn.disabled = true;
                 btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الإرسال...';
             }
-            
             errorDiv.classList.remove('show');
             successDiv.classList.remove('show');
-            
-            const otp = Math.floor(100000 + Math.random() * 900000).toString();
-            
-            let botToken, chatId;
-            if (currentLoginRole === 'assistant') {
-                botToken = CONFIG.ASSISTANT_BOT_TOKEN;
-                chatId = CONFIG.ASSISTANT_CHAT_ID;
-                if (!botToken || botToken === 'YOUR_ASSISTANT_BOT_TOKEN_HERE') {
-                    if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fab fa-telegram-plane"></i> طلب كود التحقق'; }
-                    errorDiv.textContent = '⚠️ لم يتم إعداد بوت المساعد بعد!';
-                    errorDiv.classList.add('show');
-                    return;
-                }
-            } else {
-                botToken = CONFIG.TELEGRAM_BOT_TOKEN;
-                chatId = CONFIG.TELEGRAM_CHAT_ID;
-            }
-            
-            sessionStorage.setItem(CONFIG.OTP_KEY + '_' + currentLoginRole, JSON.stringify({ code: otp, expires: Date.now() + 300000, attempts: 0 }));
-            
             try {
-                const res = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+                const response = await fetch('/api/admin-auth', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ chat_id: chatId, text: `🔐 *رمز تحقق ${currentLoginRole === 'assistant' ? 'المساعد' : 'المدير'}*\n🔢 *${otp}*\nصالح 5 دقائق`, parse_mode: 'Markdown' })
+                    body: JSON.stringify({ action: 'request', storeName: siteSettings.name, expectedRole: currentLoginRole })
                 });
-                
-                if (res.ok) {
+                const data = await response.json();
+                if (data.ok) {
+                    currentChallengeToken = data.challengeToken;
                     successDiv.textContent = '✅ تم إرسال الكود بنجاح!';
                     successDiv.classList.add('show');
-                    setTimeout(() => { 
-                        showAdminStep('verify'); 
-                        startAdminTimer(300);
-                        const firstOtp = $('#admin-otp-1');
-                        if (firstOtp) firstOtp.focus();
+                    setTimeout(() => {
+                        showAdminStep('verify');
+                        startAdminTimer(data.expiresIn);
+                        $('#admin-otp-1')?.focus();
                     }, 600);
                 } else {
-                    errorDiv.textContent = '❌ فشل الإرسال، تأكد من إعدادات البوت';
+                    errorDiv.textContent = data.error || '❌ فشل الإرسال';
                     errorDiv.classList.add('show');
                 }
             } catch(e) {
-                console.error(e);
                 errorDiv.textContent = '❌ خطأ في الاتصال بالخادم';
                 errorDiv.classList.add('show');
             } finally {
@@ -1783,38 +2003,39 @@
                 }
             }
         }
-        
-        function adminVerifyOTP() {
+
+        async function adminVerifyOTP() {
             const digits = [];
             for (let i = 1; i <= 6; i++) digits.push($('#admin-otp-' + i)?.value || '');
             const entered = digits.join('');
             if (entered.length !== 6) return;
-            
-            const od = JSON.parse(sessionStorage.getItem(CONFIG.OTP_KEY + '_' + currentLoginRole) || '{}');
-            if (!od.code || Date.now() > od.expires) {
+            try {
+                const response = await fetch('/api/admin-auth', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'verify', otp: entered, challengeToken: currentChallengeToken, expectedRole: currentLoginRole })
+                });
+                const data = await response.json();
+                if (data.ok) {
+                    clearInterval(otpTimer);
+                    showToast('✅ تم التحقق! جاري التوجيه إلى لوحة التحكم...');
+                    setTimeout(() => window.location.href = CONFIG.ADMIN_URL, 800);
+                } else {
+                    const errorDiv = $('#admin-step2-error');
+                    if (data.challengeToken) currentChallengeToken = data.challengeToken;
+                    errorDiv.textContent = data.error || '❌ كود غير صحيح';
+                    errorDiv.classList.add('show');
+                    setTimeout(() => errorDiv.classList.remove('show'), 2000);
+                }
+            } catch(e) {
                 const errorDiv = $('#admin-step2-error');
-                errorDiv.textContent = '⚠️ الكود منتهي الصلاحية، اطلب كود جديد';
+                errorDiv.textContent = '❌ خطأ في التحقق';
                 errorDiv.classList.add('show');
-                return;
-            }
-            
-            if (entered === od.code) {
-                sessionStorage.removeItem(CONFIG.OTP_KEY + '_' + currentLoginRole);
-                clearInterval(otpTimer);
-                showToast('✅ تم التحقق! جاري التوجيه إلى لوحة التحكم...');
-                setTimeout(() => {
-                    window.location.href = CONFIG.ADMIN_URL;
-                }, 800);
-            } else {
-                const errorDiv = $('#admin-step2-error');
-                errorDiv.textContent = '❌ كود غير صحيح';
-                errorDiv.classList.add('show');
-                setTimeout(() => errorDiv.classList.remove('show'), 2000);
             }
         }
-        
-        function startAdminTimer(s) {
-            otpTimeLeft = s;
+
+        function startAdminTimer(seconds) {
+            otpTimeLeft = seconds;
             updateTimerDisplay();
             clearInterval(otpTimer);
             const rl = $('#admin-resend-link');
@@ -1828,17 +2049,15 @@
                 }
             }, 1000);
         }
-        
+
         function updateTimerDisplay() {
             const m = Math.floor(otpTimeLeft / 60);
             const s = otpTimeLeft % 60;
             const d = $('#admin-timer-display');
             if (d) d.textContent = `⏰ ${m}:${s.toString().padStart(2, '0')}`;
         }
-        
-        // ----------------------------------------------
-        // SECRET ADMIN ACCESS (Long Press on Logo)
-        // ----------------------------------------------
+
+        // ==================== SECRET ADMIN ACCESS ====================
         function initSecretAccess() {
             const trigger = document.getElementById('secret-admin-trigger');
             const pressBar = document.getElementById('secret-press-bar');
@@ -1846,7 +2065,6 @@
             const hint = document.getElementById('secret-hint');
             const logoEl = document.getElementById('logo-icon-el');
             let start = 0, interval = null, pressing = false;
-            
             function startPress(e) {
                 if (e.type === 'touchstart') e.preventDefault();
                 if (pressing) return;
@@ -1873,7 +2091,6 @@
                     }
                 }, 30);
             }
-            
             function cancelPress() {
                 if (!pressing && !interval) return;
                 pressing = false;
@@ -1885,7 +2102,6 @@
                 hint.classList.remove('show');
                 if (logoEl) logoEl.classList.remove('pressing');
             }
-            
             if (trigger) {
                 trigger.addEventListener('mousedown', startPress);
                 trigger.addEventListener('touchstart', startPress, { passive: false });
@@ -1894,42 +2110,57 @@
                 trigger.addEventListener('touchend', cancelPress);
                 trigger.addEventListener('touchcancel', cancelPress);
             }
-            
             document.addEventListener('keydown', e => {
                 if (e.ctrlKey && e.shiftKey && (e.key === 'A' || e.key === 'a')) {
                     e.preventDefault();
                     setTimeout(() => openAdminLogin('admin'), 400);
                 }
             });
-            
-            document.addEventListener('keydown', e => {
-                if (e.ctrlKey && e.shiftKey && (e.key === 'S' || e.key === 's')) {
-                    e.preventDefault();
-                    setTimeout(() => openAdminLogin('assistant'), 400);
-                }
-            });
-            
             if (new URL(location.href).searchParams.has('admin')) setTimeout(() => openAdminLogin('admin'), 600);
-            if (new URL(location.href).searchParams.has('assistant')) setTimeout(() => openAdminLogin('assistant'), 600);
-        }
-        
-        // ----------------------------------------------
-        // UI ENHANCEMENTS
-        // ----------------------------------------------
-        function initScrollProgress() { const pb = document.getElementById('scrollProgress'); if (!pb) return; window.addEventListener('scroll', () => { const winScroll = document.documentElement.scrollTop, height = document.documentElement.scrollHeight - document.documentElement.clientHeight; pb.style.width = (winScroll / height) * 100 + '%'; }); }
-        function initFadeOnScroll() { const fadeElements = document.querySelectorAll('.fade-up'); const observer = new IntersectionObserver((entries) => { entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); }); }, { threshold: 0.1 }); fadeElements.forEach(el => observer.observe(el)); }
-        function initNavbarScroll() { const navbar = document.getElementById('navbar'); if (!navbar) return; window.addEventListener('scroll', () => navbar.classList.toggle('scrolled', window.scrollY > 50)); }
-        function initMobileMenu() {
-            const hamburger = document.getElementById('hamburger-btn'), mobileMenu = document.getElementById('mobileMenu'), menuOverlay = document.getElementById('menuOverlay'), closeBtn = document.getElementById('mobileMenuClose');
-            function openMenu() { mobileMenu.classList.add('open'); menuOverlay.classList.add('open'); document.body.style.overflow = 'hidden'; }
-            function closeMenu() { mobileMenu.classList.remove('open'); menuOverlay.classList.remove('open'); document.body.style.overflow = ''; }
-            hamburger?.addEventListener('click', openMenu); closeBtn?.addEventListener('click', closeMenu); menuOverlay?.addEventListener('click', closeMenu);
-            mobileMenu?.querySelectorAll('a').forEach(link => link.addEventListener('click', closeMenu));
         }
 
-        // ----------------------------------------------
-        // BIND EVENTS
-        // ----------------------------------------------
+        // ==================== UI ENHANCEMENTS ====================
+        function initScrollProgress() {
+            const pb = document.getElementById('scrollProgress');
+            if (!pb) return;
+            window.addEventListener('scroll', () => {
+                const winScroll = document.documentElement.scrollTop;
+                const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                pb.style.width = (winScroll / height) * 100 + '%';
+            });
+        }
+        function initFadeOnScroll() {
+            const fadeElements = document.querySelectorAll('.fade-up');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+            }, { threshold: 0.1 });
+            fadeElements.forEach(el => observer.observe(el));
+        }
+        function initNavbarScroll() {
+            const navbar = document.getElementById('navbar');
+            if (!navbar) return;
+            window.addEventListener('scroll', () => navbar.classList.toggle('scrolled', window.scrollY > 50));
+        }
+        function initMobileMenu() {
+            const hamburger = document.getElementById('hamburger-btn');
+            const mobileMenu = document.getElementById('mobileMenu');
+            const menuOverlay = document.getElementById('menuOverlay');
+            const closeBtn = document.getElementById('mobileMenuClose');
+            function openMenu() { mobileMenu.classList.add('open'); menuOverlay.classList.add('open'); document.body.style.overflow = 'hidden'; }
+            function closeMenu() { mobileMenu.classList.remove('open'); menuOverlay.classList.remove('open'); document.body.style.overflow = ''; }
+            hamburger?.addEventListener('click', openMenu);
+            closeBtn?.addEventListener('click', closeMenu);
+            menuOverlay?.addEventListener('click', closeMenu);
+            mobileMenu?.querySelectorAll('a').forEach(link => link.addEventListener('click', closeMenu));
+        }
+        function initBackToTop() {
+            const btn = document.getElementById('backToTopBtn');
+            if (!btn) return;
+            window.addEventListener('scroll', () => btn.classList.toggle('show', window.scrollY > 300));
+            btn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+        }
+
+        // ==================== BIND EVENTS ====================
         function bindEvents() {
             $('#modal-close-btn')?.addEventListener('click', closeModal);
             $('#product-modal-overlay')?.addEventListener('click', e => { if (e.target === e.currentTarget) closeModal(); });
@@ -1939,37 +2170,47 @@
             $('#cart-overlay')?.addEventListener('click', e => { if (e.target === e.currentTarget) closeCart(); });
             $('#cart-checkout-btn')?.addEventListener('click', checkoutCart);
             $('#wishlist-btn')?.addEventListener('click', () => showToast('❤️ ' + wishlist.length + ' منتجات'));
-            $('#theme-toggle')?.addEventListener('click', () => { currentTheme = currentTheme === 'dark' ? 'light' : 'dark'; document.documentElement.setAttribute('data-theme', currentTheme); localStorage.setItem('dar3a_theme', currentTheme); $('#theme-toggle').textContent = currentTheme === 'dark' ? '☀️' : '🌙'; });
-            $('#add-pc-to-cart')?.addEventListener('click', () => { const sel = Object.entries(builder).filter(([,o])=>o); if(sel.length<3){showToast('⚠️ اختر 3 مكونات على الأقل');return;} let total=0; const specs={}; sel.forEach(([k,o])=>{total+=o.price;specs[data.pcComponents[k].label]=o.name;}); addToCart({id:'build_'+Date.now(),name:'🖥️ تجميعة PC',brand:'Dar3a Custom',price:total,image:'https://picsum.photos/seed/pcbuild/400/260',specs}); builder={}; renderBuilder(); });
+            $('#theme-toggle')?.addEventListener('click', () => {
+                currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                document.documentElement.setAttribute('data-theme', currentTheme);
+                localStorage.setItem('dar3a_theme', currentTheme);
+                $('#theme-toggle').textContent = currentTheme === 'dark' ? '☀️' : '🌙';
+            });
+            $('#add-pc-to-cart')?.addEventListener('click', () => {
+                const selected = Object.entries(builder).filter(([, o]) => o);
+                if (selected.length < 3) { showToast('⚠️ اختر 3 مكونات على الأقل'); return; }
+                let total = 0;
+                const specs = {};
+                selected.forEach(([k, o]) => {
+                    total += o.price;
+                    const label = { cpu: 'المعالج', motherboard: 'اللوحة الأم', gpu: 'كرت الشاشة', ram: 'الذاكرة', storage: 'التخزين', psu: 'مزود الطاقة', case: 'الصندوق' }[k] || k;
+                    specs[label] = o.name;
+                });
+                addToCart({ id: 'build_' + Date.now(), name: '🖥️ تجميعة PC', brand: 'Dar3a Custom', price: total, image: 'https://picsum.photos/seed/pcbuild/400/260', specs });
+                builder = {};
+                renderBuilder();
+            });
             $('#reset-builder')?.addEventListener('click', () => { builder = {}; renderBuilder(); });
             document.addEventListener('click', e => { if (!e.target.closest('.pc-select') && !e.target.closest('.pc-options')) $$('.pc-options').forEach(o => o.style.display = 'none'); });
-            window.addEventListener('storage', () => { data = loadProducts(); cart = loadCart(); wishlist = loadWishlist(); renderAll(); });
-            
-            // Admin Login Events
+            window.addEventListener('storage', () => { loadAllData(); renderAll(); });
             $('#admin-login-close')?.addEventListener('click', closeAdminLogin);
             $('#admin-login-overlay')?.addEventListener('click', e => { if (e.target === e.currentTarget) closeAdminLogin(); });
             $('#admin-request-code-btn')?.addEventListener('click', adminRequestOTP);
-            $('#admin-resend-link')?.addEventListener('click', () => { if (otpTimeLeft > 0) return; sessionStorage.removeItem(CONFIG.OTP_KEY + '_' + currentLoginRole); clearInterval(otpTimer); for (let i=1;i<=6;i++) { const inp = $('#admin-otp-'+i); if(inp)inp.value=''; } showAdminStep('request'); });
-            $('#admin-back-btn')?.addEventListener('click', () => { clearInterval(otpTimer); sessionStorage.removeItem(CONFIG.OTP_KEY + '_' + currentLoginRole); for (let i=1;i<=6;i++) { const inp = $('#admin-otp-'+i); if(inp)inp.value=''; } showAdminStep('request'); });
-            
-            // Setup OTP paste support
-            setupAdminOtpPaste();
-            
-            // Role selection buttons
-            document.querySelectorAll('.role-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const role = btn.getAttribute('data-role');
-                    openAdminLogin(role);
-                });
+            $('#admin-resend-link')?.addEventListener('click', () => {
+                if (otpTimeLeft > 0) return;
+                clearInterval(otpTimer);
+                for (let i = 1; i <= 6; i++) { const inp = $('#admin-otp-' + i); if (inp) inp.value = ''; }
+                showAdminStep('request');
             });
-            
-            // Assistant login button in navbar
-            const assistantBtn = document.getElementById('assistant-login-btn');
-            if (assistantBtn) {
-                assistantBtn.addEventListener('click', () => openAdminLogin('assistant'));
-            }
-            
-            // OTP inputs handler (individual digit entry)
+            $('#admin-back-btn')?.addEventListener('click', () => {
+                clearInterval(otpTimer);
+                for (let i = 1; i <= 6; i++) { const inp = $('#admin-otp-' + i); if (inp) inp.value = ''; }
+                showAdminStep('request');
+            });
+            setupAdminOtpPaste();
+            document.querySelectorAll('.role-btn').forEach(btn => {
+                btn.addEventListener('click', () => openAdminLogin(btn.getAttribute('data-role')));
+            });
             for (let i = 1; i <= 6; i++) {
                 const inp = $('#admin-otp-' + i);
                 if (!inp) continue;
@@ -1979,42 +2220,52 @@
                     if (i === 6 && this.value.length === 1) setTimeout(adminVerifyOTP, 200);
                 });
             }
-            
-            // Language toggle
-            document.getElementById('lang-toggle')?.addEventListener('click', () => { currentLang = currentLang === 'ar' ? 'en' : 'ar'; localStorage.setItem('dar3a_language', currentLang); document.documentElement.lang = currentLang; document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr'; renderAll(); });
-            
-            // Smooth scroll for nav links
             document.querySelectorAll('.nav-links a, .hero-btns a').forEach(link => {
                 link.addEventListener('click', function(e) {
                     const href = this.getAttribute('href');
                     if (href && href.startsWith('#')) {
                         e.preventDefault();
                         document.querySelector(href)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                        if (window.innerWidth <= 768) document.querySelector('.nav-links').style.display = 'none';
                     }
                 });
             });
+            $('#newsletter-subscribe-btn')?.addEventListener('click', async () => {
+                const email = $('#newsletter-email')?.value.trim();
+                if (!email || !email.includes('@')) {
+                    showToast('⚠️ الرجاء إدخال بريد إلكتروني صحيح');
+                    return;
+                }
+                const success = await subscribeToNewsletter(email);
+                const msgDiv = $('#newsletter-message');
+                if (msgDiv) {
+                    msgDiv.textContent = success ? '✅ تم الاشتراك بنجاح!' : '❌ حدث خطأ، حاول مرة أخرى';
+                    msgDiv.style.color = success ? '#22c55e' : '#ef4444';
+                    msgDiv.style.display = 'block';
+                    setTimeout(() => msgDiv.style.display = 'none', 3000);
+                }
+                if (success) $('#newsletter-email').value = '';
+            });
         }
 
-        // ----------------------------------------------
-        // INITIALIZATION
-        // ----------------------------------------------
-        function init() {
+        // ==================== INITIALIZATION ====================
+        async function init() {
             document.documentElement.setAttribute('data-theme', currentTheme);
             $('#theme-toggle').textContent = currentTheme === 'dark' ? '☀️' : '🌙';
-            if (siteSettings.primaryColor) document.documentElement.style.setProperty('--accent', siteSettings.primaryColor);
+            loadCart();
+            loadWishlist();
+            await loadAllData();
             bindEvents();
             initSecretAccess();
             initScrollProgress();
             initFadeOnScroll();
             initNavbarScroll();
             initMobileMenu();
+            initBackToTop();
             renderAll();
             updateCartUI();
             updateWishlistBadge();
-            console.log('🚀 Dar3a Store Ready with Dual Admin System + Paste OTP Support!');
+            console.log('🚀 Dar3a Store Ready with MongoDB API!');
         }
-        
         init();
     </script>
 </body>
