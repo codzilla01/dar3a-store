@@ -3,12 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Dar3a Store | لوحة التحكم</title>
+    <title>Dar3a Store | لوحة التحكم - Supabase</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🛡️</text></svg>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
     <style>
-        /* جميع الأنماط كما هي من admin.html الأصلي - تم حفظها */
         :root {
             --primary: #e63946; --primary-dark: #c92a37; --primary-light: #ff4757;
             --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); --font: 'Tajawal', sans-serif;
@@ -20,36 +19,37 @@
             font-family: var(--font);
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
             color: #f1f5f9; line-height: 1.6; min-height: 100vh; overflow-x: hidden;
-            display: flex; flex-direction: column;
         }
         .bg-particles { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
         .particle { position: absolute; background: var(--primary); border-radius: 50%; opacity: 0.1; animation: floatParticle 20s infinite linear; }
         @keyframes floatParticle { 0%,100%{transform:translateY(0) rotate(0deg)} 50%{transform:translateY(-100px) rotate(180deg)} }
 
-        /* ===== LOGIN ===== */
-        .login-overlay { position: fixed; inset: 0; background: radial-gradient(circle at center, #1a1a2e 0%, #0a0e17 100%); z-index: 10000; display: flex; align-items: center; justify-content: center; transition: all 0.5s; }
+        /* Login Styles */
+        .login-overlay {
+            position: fixed; inset: 0; background: radial-gradient(circle at center, #1a1a2e 0%, #0a0e17 100%);
+            z-index: 10000; display: flex; align-items: center; justify-content: center; transition: all 0.5s;
+        }
         .login-overlay.hidden { opacity: 0; visibility: hidden; pointer-events: none; transform: scale(0.95); }
-        .login-card { background: rgba(30,41,59,0.95); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); border-radius: 24px; padding: 40px 32px; text-align: center; max-width: 420px; width: 90%; box-shadow: 0 25px 80px rgba(0,0,0,0.5); animation: loginIn 0.6s ease; position: relative; overflow: hidden; }
+        .login-card {
+            background: rgba(30,41,59,0.95); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 24px; padding: 40px 32px; text-align: center; max-width: 420px; width: 90%;
+            box-shadow: 0 25px 80px rgba(0,0,0,0.5); animation: loginIn 0.6s ease;
+        }
         @keyframes loginIn { from{opacity:0;transform:translateY(40px) scale(0.9)} to{opacity:1;transform:translateY(0) scale(1)} }
-        .login-logo { width: 80px; height: 80px; background: linear-gradient(135deg, #e63946, #ff6b6b); border-radius: 20px; display: inline-flex; align-items: center; justify-content: center; font-size: 2.2rem; color: #fff; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(230,57,70,0.5); animation: logoFloat 3s ease-in-out infinite; overflow: hidden; }
-        .login-logo img { width: 70%; height: 70%; object-fit: contain; border-radius: 20px; }
-        @keyframes logoFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+        .login-logo { width: 80px; height: 80px; background: linear-gradient(135deg, #e63946, #ff6b6b); border-radius: 20px; display: inline-flex; align-items: center; justify-content: center; font-size: 2.2rem; color: #fff; margin-bottom: 20px; }
         
         .role-selector { display: flex; gap: 12px; margin: 20px 0; }
-        .role-btn { flex: 1; padding: 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); color: #fff; font-family: inherit; font-weight: 700; cursor: pointer; transition: all 0.3s ease; display: flex; flex-direction: column; align-items: center; gap: 6px; }
-        .role-btn i { font-size: 1.2rem; }
+        .role-btn { flex: 1; padding: 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); color: #fff; font-weight: 700; cursor: pointer; transition: all 0.3s; }
         .role-btn:hover { border-color: var(--primary); background: rgba(230,57,70,0.2); }
         .role-btn.selected { background: linear-gradient(135deg, #e63946, #ff6b6b); border-color: transparent; }
-        .role-btn.assistant { border-color: var(--assistant); }
-        .role-btn.assistant:hover, .role-btn.assistant.selected { background: linear-gradient(135deg, var(--assistant), var(--assistant-light)); }
+        .role-btn.assistant:hover, .role-btn.assistant.selected { background: linear-gradient(135deg, #4f46e5, #6366f1); }
         
-        .telegram-btn { display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; padding: 16px; border: none; border-radius: 12px; background: linear-gradient(135deg, #0088cc, #00b4d8); cursor: pointer; font-weight: 700; font-size: 1rem; color: #fff; transition: all 0.3s; }
-        .telegram-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(0,136,204,0.4); }
-        .telegram-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        .telegram-btn { display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; padding: 16px; border: none; border-radius: 12px; background: linear-gradient(135deg, #0088cc, #00b4d8); cursor: pointer; font-weight: 700; color: #fff; transition: all 0.3s; }
+        .telegram-btn:disabled { opacity: 0.5; cursor: not-allowed; }
         .auth-step { display: none; } .auth-step.active { display: block; }
         .otp-input-group { display: flex; gap: 10px; justify-content: center; margin: 24px 0; }
-        .otp-input { width: 52px; height: 56px; text-align: center; font-size: 1.5rem; font-weight: 700; border: 2px solid rgba(255,255,255,0.2); border-radius: 12px; background: rgba(255,255,255,0.05); color: #fff; font-family: monospace; transition: all 0.3s; }
-        .otp-input:focus { border-color: #0088cc; outline: none; box-shadow: 0 0 20px rgba(0,136,204,0.3); }
+        .otp-input { width: 52px; height: 56px; text-align: center; font-size: 1.5rem; font-weight: 700; border: 2px solid rgba(255,255,255,0.2); border-radius: 12px; background: rgba(255,255,255,0.05); color: #fff; font-family: monospace; }
+        .otp-input:focus { border-color: #0088cc; outline: none; }
         .timer-text { color: #fbbf24; font-size: 0.85rem; margin: 12px 0; }
         .resend-link { color: #0088cc; cursor: pointer; font-size: 0.8rem; }
         .resend-link.disabled { opacity: 0.4; cursor: default; pointer-events: none; }
@@ -57,26 +57,24 @@
         .error-text.show { display: block; }
         .back-btn { background: none; border: none; color: #94a3b8; cursor: pointer; font-size: 0.8rem; margin-top: 12px; }
 
-        /* ===== SIDEBAR ===== */
+        /* Sidebar */
         .sidebar { width: 280px; background: linear-gradient(180deg, rgba(15,23,42,0.98), rgba(30,41,59,0.98)); backdrop-filter: blur(20px); border-left: 1px solid rgba(255,255,255,0.08); position: fixed; top: 0; right: 0; height: 100vh; z-index: 100; display: flex; flex-direction: column; transition: all 0.4s; overflow-y: auto; }
         .sidebar-header { padding: 28px 24px 20px; border-bottom: 1px solid rgba(255,255,255,0.08); text-align: center; }
-        .sidebar-logo-icon { width: 56px; height: 56px; background: linear-gradient(135deg, #e63946, #ff6b6b); border-radius: 16px; display: inline-flex; align-items: center; justify-content: center; font-size: 1.6rem; color: #fff; margin-bottom: 12px; overflow: hidden; box-shadow: 0 8px 25px rgba(230,57,70,0.4); }
-        .sidebar-logo-icon img { width: 100%; height: 100%; object-fit: contain; border-radius: 16px; padding: 8px; }
+        .sidebar-logo-icon { width: 56px; height: 56px; background: linear-gradient(135deg, #e63946, #ff6b6b); border-radius: 16px; display: inline-flex; align-items: center; justify-content: center; font-size: 1.6rem; color: #fff; margin-bottom: 12px; overflow: hidden; }
         .role-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; font-weight: 700; margin-top: 8px; }
         .role-badge.admin { background: linear-gradient(135deg, #e63946, #ff6b6b); }
         .role-badge.assistant { background: linear-gradient(135deg, #4f46e5, #6366f1); }
         .sidebar-nav { flex: 1; padding: 12px; display: flex; flex-direction: column; gap: 4px; }
-        .sidebar-nav a { display: flex; align-items: center; gap: 12px; padding: 12px 16px; color: #94a3b8; text-decoration: none; border-radius: 10px; transition: all 0.3s; font-weight: 500; font-size: 0.9rem; cursor: pointer; position: relative; }
+        .sidebar-nav a { display: flex; align-items: center; gap: 12px; padding: 12px 16px; color: #94a3b8; text-decoration: none; border-radius: 10px; transition: all 0.3s; font-weight: 500; font-size: 0.9rem; cursor: pointer; }
         .sidebar-nav a:hover { background: rgba(255,255,255,0.08); color: #fff; }
         .sidebar-nav a.active { background: linear-gradient(135deg, rgba(230,57,70,0.3), rgba(230,57,70,0.1)); color: #fff; border-left: 3px solid var(--primary); }
         
-        .games-submenu { margin-right: 32px; margin-top: 4px; margin-bottom: 4px; display: flex; flex-direction: column; gap: 2px; }
-        .games-submenu a { padding: 8px 16px 8px 12px; font-size: 0.8rem; background: rgba(255,255,255,0.02); border-radius: 8px; }
-        .games-submenu a:hover { background: rgba(255,255,255,0.06); }
-        .games-submenu a.active { background: linear-gradient(135deg, rgba(230,57,70,0.2), rgba(230,57,70,0.05)); border-left: 3px solid var(--primary); }
-        .sidebar-nav .parent-link { position: relative; }
+        .games-submenu { margin-right: 32px; margin-top: 4px; display: none; flex-direction: column; gap: 2px; }
+        .games-submenu a { padding: 8px 16px; font-size: 0.8rem; background: rgba(255,255,255,0.02); border-radius: 8px; }
+        .parent-link.open .games-submenu { display: flex; }
         .parent-link .toggle-icon { position: absolute; left: 16px; transition: transform 0.3s; }
         .parent-link.open .toggle-icon { transform: rotate(180deg); }
+        .parent-link { position: relative; }
         
         .badge-nav { position: absolute; left: 12px; background: #22c55e; color: #fff; font-size: 0.65rem; padding: 2px 8px; border-radius: 20px; font-weight: 700; }
         .user-info { display: flex; align-items: center; gap: 12px; padding: 16px; margin: 12px; background: rgba(255,255,255,0.05); border-radius: 14px; }
@@ -84,16 +82,10 @@
         .logout-btn { background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.3); color: #fca5a5; cursor: pointer; padding: 8px 12px; border-radius: 8px; font-size: 0.75rem; transition: all 0.3s; }
         .logout-btn:hover { background: rgba(239,68,68,0.3); color: #fff; }
 
-        /* ===== MAIN ===== */
+        /* Main Content */
         .main-content { flex: 1; margin-right: 280px; padding: 28px; min-height: 100vh; position: relative; z-index: 1; }
         .panel { background: rgba(30,41,59,0.8); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; padding: 28px; box-shadow: 0 8px 32px rgba(0,0,0,0.2); display: none; animation: fadeIn 0.4s ease; }
         .panel.active { display: block; } @keyframes fadeIn { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
-        
-        .panel.editing-highlight { border: 3px solid #f59e0b !important; box-shadow: 0 0 30px rgba(245,158,11,0.4) !important; animation: editGlow 1.5s infinite; }
-        @keyframes editGlow { 0%,100%{box-shadow:0 0 30px rgba(245,158,11,0.4)} 50%{box-shadow:0 0 50px rgba(245,158,11,0.6)} }
-        .editing-badge { display: inline-block; background: #f59e0b; color: #000; padding: 4px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
-
         .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 12px; }
         .panel-header h2 { font-size: 1.5rem; font-weight: 800; }
 
@@ -101,50 +93,33 @@
         .stat-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 20px; transition: all 0.3s; position: relative; overflow: hidden; }
         .stat-card::before { content: ''; position: absolute; top: 0; right: 0; width: 4px; height: 100%; background: linear-gradient(180deg, var(--primary), #ff6b6b); }
         .stat-number { font-size: 1.8rem; font-weight: 900; background: linear-gradient(135deg, #e63946, #ff6b6b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-        .stat-label { color: #94a3b8; font-size: 0.78rem; margin-top: 2px; }
+        .stat-label { color: #94a3b8; font-size: 0.78rem; }
         .stat-icon { font-size: 1.6rem; margin-bottom: 10px; }
 
-        .btn { padding: 10px 22px; border: none; border-radius: 10px; cursor: pointer; font-weight: 700; font-size: 0.85rem; transition: all 0.3s; display: inline-flex; align-items: center; gap: 8px; font-family: inherit; white-space: nowrap; }
+        .btn { padding: 10px 22px; border: none; border-radius: 10px; cursor: pointer; font-weight: 700; font-size: 0.85rem; transition: all 0.3s; display: inline-flex; align-items: center; gap: 8px; font-family: inherit; }
         .btn-primary { background: linear-gradient(135deg, #e63946, #ff6b6b); color: #fff; }
         .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(230,57,70,0.5); }
         .btn-outline { background: transparent; border: 2px solid rgba(255,255,255,0.2); color: #fff; }
         .btn-outline:hover { border-color: var(--primary); color: var(--primary); }
         .btn-danger { background: rgba(239,68,68,0.2); border: 1px solid rgba(239,68,68,0.3); color: #fca5a5; }
         .btn-edit { background: rgba(59,130,246,0.25); border: 1px solid rgba(59,130,246,0.4); color: #93c5fd; }
-        .btn-edit:hover { background: rgba(59,130,246,0.5); color: #fff; transform: translateY(-2px); }
         .btn-sm { padding: 6px 14px; font-size: 0.8rem; }
         .btn-xs { padding: 6px 12px; font-size: 0.72rem; border-radius: 6px; }
 
-        .view-store-btn { position: fixed; bottom: 24px; right: 24px; z-index: 1000; background: linear-gradient(135deg, #22c55e, #16a34a); color: #fff; padding: 12px 24px; border-radius: 50px; text-decoration: none; font-weight: 700; font-size: 0.9rem; display: flex; align-items: center; gap: 10px; box-shadow: 0 8px 25px rgba(34,197,94,0.4); transition: all 0.3s ease; border: none; cursor: pointer; }
+        .view-store-btn { position: fixed; bottom: 24px; right: 24px; z-index: 1000; background: linear-gradient(135deg, #22c55e, #16a34a); color: #fff; padding: 12px 24px; border-radius: 50px; text-decoration: none; font-weight: 700; font-size: 0.9rem; display: flex; align-items: center; gap: 10px; box-shadow: 0 8px 25px rgba(34,197,94,0.4); transition: all 0.3s ease; }
         .view-store-btn:hover { transform: translateY(-3px); box-shadow: 0 12px 35px rgba(34,197,94,0.6); }
-        .view-store-btn i { font-size: 1.1rem; }
 
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
         .form-group { margin-bottom: 16px; }
         .form-group label { display: block; margin-bottom: 8px; font-weight: 700; font-size: 0.85rem; color: #cbd5e1; }
         .form-control { width: 100%; padding: 10px 14px; border: 1.5px solid rgba(255,255,255,0.1); border-radius: 10px; font-size: 0.9rem; font-family: inherit; transition: all 0.3s; background: rgba(255,255,255,0.05); color: #fff; }
         .form-control:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 3px rgba(230,57,70,0.2); background: rgba(255,255,255,0.08); }
-        select.form-control { cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%2394a3b8' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: left 12px center; padding-left: 32px; }
-        select.form-control option { background: #1e293b; color: #fff; }
 
-        /* ===== PRODUCT IMAGE UPLOAD ===== */
         .product-image-upload { border: 2px dashed rgba(255,255,255,0.2); border-radius: 16px; padding: 20px; text-align: center; cursor: pointer; transition: all 0.3s; background: rgba(255,255,255,0.02); position: relative; margin-bottom: 12px; }
         .product-image-upload:hover { border-color: var(--primary); background: rgba(230,57,70,0.05); }
-        .product-image-upload.has-image { border-style: solid; border-color: var(--success); background: rgba(34,197,94,0.05); }
         .product-image-upload input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
         .product-image-preview { max-width: 150px; max-height: 150px; border-radius: 12px; margin-top: 12px; display: block; margin-left: auto; margin-right: auto; }
-        .image-upload-icon { font-size: 2rem; margin-bottom: 8px; color: var(--primary); }
-        .remove-image-btn { background: rgba(239,68,68,0.2); border: 1px solid rgba(239,68,68,0.3); color: #fca5a5; padding: 4px 12px; border-radius: 8px; font-size: 0.7rem; cursor: pointer; margin-top: 8px; transition: all 0.3s; }
-        .remove-image-btn:hover { background: rgba(239,68,68,0.4); color: #fff; }
-        .image-url-input { margin-top: 12px; }
-        .image-url-input .form-control { font-size: 0.8rem; }
-
-        /* ===== LOGO UPLOAD ===== */
-        .logo-upload-area { border: 2px dashed rgba(255,255,255,0.2); border-radius: 16px; padding: 24px; text-align: center; cursor: pointer; transition: all 0.3s; background: rgba(255,255,255,0.02); position: relative; }
-        .logo-upload-area:hover { border-color: var(--primary); background: rgba(230,57,70,0.05); }
-        .logo-upload-area.has-image { border-style: solid; border-color: #22c55e; }
-        .logo-upload-area input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
-        .logo-preview { max-width: 120px; max-height: 120px; border-radius: 12px; margin-top: 8px; }
+        .remove-image-btn { background: rgba(239,68,68,0.2); border: 1px solid rgba(239,68,68,0.3); color: #fca5a5; padding: 4px 12px; border-radius: 8px; font-size: 0.7rem; cursor: pointer; margin-top: 8px; }
 
         .table-container { overflow-x: auto; border-radius: 12px; border: 1px solid rgba(255,255,255,0.08); }
         table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
@@ -160,25 +135,21 @@
         .badge-pcgames { background: rgba(255,105,180,0.2); color: #ff85c1; }
         .badge-playstation { background: rgba(30,144,255,0.2); color: #6cb2eb; }
 
-        /* ===== COLOR PICKER ===== */
-        .color-picker-group { display: flex; align-items: center; gap: 12px; }
-        .color-picker-group input[type="color"] { width: 50px; height: 40px; border: 2px solid rgba(255,255,255,0.1); border-radius: 8px; cursor: pointer; background: transparent; padding: 2px; }
-
-        /* ===== SETTINGS TABS ===== */
         .settings-tabs { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 12px; }
-        .settings-tab { padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 0.85rem; font-family: var(--font); border: 1px solid rgba(255,255,255,0.1); background: transparent; color: #94a3b8; transition: all 0.3s; }
+        .settings-tab { padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 0.85rem; border: 1px solid rgba(255,255,255,0.1); background: transparent; color: #94a3b8; transition: all 0.3s; }
         .settings-tab:hover, .settings-tab.active { border-color: var(--primary); color: #fff; background: rgba(230,57,70,0.2); }
         .settings-section { display: none; }
         .settings-section.active { display: block; }
 
+        .color-picker-group { display: flex; align-items: center; gap: 12px; }
+        .color-picker-group input[type="color"] { width: 50px; height: 40px; border: 2px solid rgba(255,255,255,0.1); border-radius: 8px; cursor: pointer; background: transparent; padding: 2px; }
+        .logo-upload-area { border: 2px dashed rgba(255,255,255,0.2); border-radius: 16px; padding: 24px; text-align: center; cursor: pointer; transition: all 0.3s; background: rgba(255,255,255,0.02); position: relative; }
+        .logo-upload-area:hover { border-color: var(--primary); background: rgba(230,57,70,0.05); }
+        .logo-upload-area input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+        .logo-preview { max-width: 120px; max-height: 120px; border-radius: 12px; margin-top: 8px; }
+
         .developer-footer { background: rgba(0,0,0,0.3); border-top: 1px solid rgba(255,255,255,0.05); padding: 8px 20px; text-align: center; font-size: 0.7rem; color: #64748b; position: fixed; bottom: 0; left: 0; right: 0; z-index: 50; backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; }
-        .developer-footer a { color: var(--primary); text-decoration: none; font-weight: 600; transition: color 0.2s; }
-        .developer-footer a:hover { color: #ff6b6b; }
-        .developer-footer .separator { color: #334155; }
-
-        .toast { position: fixed; bottom: 50px; left: 50%; transform: translateX(-50%); background: rgba(30,41,59,0.95); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 14px 28px; border-radius: 30px; z-index: 9999; font-weight: 600; box-shadow: 0 10px 40px rgba(0,0,0,0.5); animation: toastIn 0.4s ease; display: none; white-space: nowrap; }
-        @keyframes toastIn { from{opacity:0;transform:translateX(-50%) translateY(30px)} to{opacity:1;transform:translateX(-50%) translateY(0)} }
-
+        .toast { position: fixed; bottom: 50px; left: 50%; transform: translateX(-50%); background: rgba(30,41,59,0.95); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 14px 28px; border-radius: 30px; z-index: 9999; font-weight: 600; box-shadow: 0 10px 40px rgba(0,0,0,0.5); display: none; white-space: nowrap; }
         .mobile-menu-btn { display: none; position: fixed; top: 16px; right: 16px; z-index: 200; width: 44px; height: 44px; border-radius: 12px; background: linear-gradient(135deg, #e63946, #ff6b6b); color: #fff; border: none; cursor: pointer; font-size: 1.3rem; }
         .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 99; backdrop-filter: blur(4px); }
         .sidebar-overlay.show { display: block; }
@@ -186,18 +157,14 @@
         @media (max-width: 992px) { 
             .sidebar { transform: translateX(100%); } 
             .sidebar.open { transform: translateX(0); } 
-            .main-content { margin-right: 0; padding-bottom: 50px; } 
+            .main-content { margin-right: 0; } 
             .mobile-menu-btn { display: flex; align-items: center; justify-content: center; } 
             .form-grid { grid-template-columns: 1fr; }
-            .view-store-btn { bottom: 80px; right: 16px; padding: 10px 18px; font-size: 0.8rem; }
         }
         @media (max-width: 768px) { 
             .stats-grid { grid-template-columns: 1fr 1fr; } 
             .stat-number { font-size: 1.5rem; } 
             .panel { padding: 20px; }
-            .view-store-btn span { display: none; }
-            .view-store-btn { padding: 12px; border-radius: 50%; }
-            .view-store-btn i { margin: 0; font-size: 1.2rem; }
             .otp-input { width: 40px; height: 48px; font-size: 1.2rem; }
         }
     </style>
@@ -205,7 +172,7 @@
 <body>
     <div class="bg-particles" id="bg-particles"></div>
 
-    <!-- LOGIN WITH DUAL ROLE -->
+    <!-- LOGIN OVERLAY -->
     <div class="login-overlay" id="login-overlay">
         <div class="login-card">
             <div class="login-logo" id="login-logo-main"><i class="fas fa-shield-halved"></i></div>
@@ -242,7 +209,7 @@
     <button class="mobile-menu-btn" id="mobile-menu-btn"><i class="fas fa-bars"></i></button>
     <div class="sidebar-overlay" id="sidebar-overlay"></div>
 
-    <a href="index-new.html" class="view-store-btn" id="view-store-btn" target="_blank">
+    <a href="index.html" class="view-store-btn" id="view-store-btn" target="_blank">
         <i class="fas fa-store"></i>
         <span>عرض المتجر</span>
         <i class="fas fa-external-link-alt" style="font-size: 0.7rem;"></i>
@@ -273,7 +240,7 @@
                         <span><i class="fas fa-gamepad"></i> الألعاب</span>
                         <i class="fas fa-chevron-down toggle-icon" style="font-size: 0.7rem;"></i>
                     </a>
-                    <div class="games-submenu" id="games-submenu" style="display: none;">
+                    <div class="games-submenu">
                         <a data-panel="pcgames"><i class="fas fa-desktop"></i> PC Games</a>
                         <a data-panel="playstation"><i class="fab fa-playstation"></i> PlayStation Games</a>
                     </div>
@@ -286,11 +253,13 @@
         </aside>
 
         <main class="main-content">
+            <!-- Dashboard Panel -->
             <div class="panel active" id="panel-dashboard">
                 <div class="panel-header"><h2><i class="fas fa-th-large"></i> لوحة المعلومات</h2></div>
                 <div class="stats-grid" id="dashboard-stats"></div>
             </div>
 
+            <!-- Products Panel -->
             <div class="panel" id="panel-products">
                 <div class="panel-header">
                     <h2><i class="fas fa-boxes"></i> إدارة المحتوى</h2>
@@ -315,6 +284,7 @@
                 </div>
             </div>
 
+            <!-- Add/Edit Product Panel -->
             <div class="panel" id="panel-add-product">
                 <div class="panel-header"><h2 id="form-title"><i class="fas fa-plus-circle"></i> إضافة منتج جديد</h2></div>
                 <form id="product-form">
@@ -340,16 +310,12 @@
                         <div class="product-image-upload" id="product-image-upload">
                             <i class="fas fa-cloud-upload-alt image-upload-icon"></i><br>
                             <span style="font-size:0.8rem;">اسحب وأفلت الصورة أو انقر للرفع</span>
-                            <span style="font-size:0.7rem; display:block; margin-top:4px; color:#94a3b8;">PNG, JPG, GIF, WebP (max 5MB)</span>
                             <input type="file" id="prod-image-file" accept="image/*">
                             <img id="prod-image-preview" class="product-image-preview" style="display:none;">
-                            <div style="margin-top:8px;">
-                                <button type="button" class="remove-image-btn" id="remove-image-btn" style="display:none;"><i class="fas fa-trash"></i> إزالة الصورة</button>
-                            </div>
+                            <button type="button" class="remove-image-btn" id="remove-image-btn" style="display:none;"><i class="fas fa-trash"></i> إزالة</button>
                         </div>
-                        <div class="image-url-input">
-                            <label style="font-size:0.75rem; color:#94a3b8;">أو رابط الصورة (اختياري)</label>
-                            <input type="text" id="prod-image-url" class="form-control" placeholder="https://example.com/image.jpg">
+                        <div class="image-url-input" style="margin-top:8px;">
+                            <input type="text" id="prod-image-url" class="form-control" placeholder="أو رابط الصورة">
                         </div>
                     </div>
                     
@@ -357,48 +323,56 @@
                     <div class="form-group"><label>المواصفات</label><div id="specs-container" style="background:rgba(255,255,255,0.02);padding:12px;border-radius:8px;"></div><button type="button" class="btn btn-outline btn-sm" id="add-spec-btn" style="margin-top:8px;">+ مواصفة</button></div>
                     <div style="display:flex;gap:8px;margin-top:16px;">
                         <button type="submit" class="btn btn-primary" id="save-product-btn"><i class="fas fa-save"></i> حفظ</button>
-                        <button type="button" class="btn btn-outline" id="cancel-edit-btn" style="display:none;"><i class="fas fa-times"></i> إلغاء التعديل</button>
+                        <button type="button" class="btn btn-outline" id="cancel-edit-btn" style="display:none;"><i class="fas fa-times"></i> إلغاء</button>
                         <button type="button" class="btn btn-outline" id="reset-form-btn"><i class="fas fa-redo"></i> مسح</button>
                     </div>
                 </form>
             </div>
 
+            <!-- Inventory Panel -->
             <div class="panel" id="panel-inventory">
                 <div class="panel-header"><h2><i class="fas fa-warehouse"></i> المخزون</h2></div>
                 <div class="table-container"><table id="inventory-table"><thead><tr><th>المنتج</th><th>النوع</th><th>السعر</th><th>المخزون</th><th>الحالة</th></tr></thead><tbody></tbody></table></div>
             </div>
 
+            <!-- Coupons Panel -->
             <div class="panel" id="panel-coupons">
                 <div class="panel-header"><h2><i class="fas fa-tags"></i> الكوبونات</h2><button class="btn btn-primary btn-sm" id="add-coupon-btn">+ كوبون</button></div>
                 <div id="coupons-list"></div>
             </div>
 
+            <!-- PC Components Panel -->
             <div class="panel" id="panel-pc-components">
                 <div class="panel-header"><h2><i class="fas fa-microchip"></i> قطع PC</h2></div>
                 <div class="table-container"><table id="components-table"><thead><tr><th>النوع</th><th>الاسم</th><th>السعر</th><th>إجراءات</th></tr></thead><tbody></tbody></table></div>
             </div>
 
+            <!-- PC Games Panel -->
             <div class="panel" id="panel-pcgames">
                 <div class="panel-header"><h2><i class="fas fa-desktop"></i> PC Games</h2><button class="btn btn-primary btn-sm" id="add-pcgames-btn"><i class="fas fa-plus"></i> إضافة لعبة PC</button></div>
-                <div class="table-container"><table id="pcgames-table"><thead><tr><th>الصورة</th><th>الاسم</th><th>الماركة</th><th>السعر</th><th>المخزون</th><th>إجراءات</th></tr></thead><tbody></tbody></table></div>
+                <div class="table-container"><table id="pcgames-table"><thead><tr><th>الصورة</th><th>الاسم</th><th>الماركة</th><th>السعر</th><th>المخزون</th><th>إجراءات</th><tr></thead><tbody></tbody></table></div>
             </div>
 
+            <!-- PlayStation Panel -->
             <div class="panel" id="panel-playstation">
                 <div class="panel-header"><h2><i class="fab fa-playstation"></i> PlayStation Games</h2><button class="btn btn-primary btn-sm" id="add-playstation-btn"><i class="fas fa-plus"></i> إضافة لعبة PlayStation</button></div>
                 <div class="table-container"><table id="playstation-table"><thead><tr><th>الصورة</th><th>الاسم</th><th>الماركة</th><th>السعر</th><th>المخزون</th><th>إجراءات</th></tr></thead><tbody></tbody></table></div>
             </div>
 
+            <!-- Orders Panel -->
             <div class="panel" id="panel-orders">
                 <div class="panel-header"><h2><i class="fas fa-receipt"></i> الطلبات</h2></div>
                 <div class="table-container"><table id="orders-table"><thead><tr><th>التاريخ</th><th>المنتجات</th><th>الإجمالي</th></tr></thead><tbody></tbody></table></div>
             </div>
 
+            <!-- Newsletter Panel -->
             <div class="panel" id="panel-newsletter">
                 <div class="panel-header"><h2><i class="fas fa-envelope"></i> المشتركين</h2><button class="btn btn-danger btn-sm" id="clear-all-subscribers"><i class="fas fa-trash"></i> حذف الكل</button></div>
                 <div class="table-container"><table id="subscribers-table"><thead><tr><th>#</th><th>البريد الإلكتروني</th><th>تاريخ الاشتراك</th><th>إجراءات</th></tr></thead><tbody id="subscribers-list"></tbody></table></div>
                 <div class="stats-grid" style="margin-top:20px;"><div class="stat-card"><div class="stat-icon">📧</div><div class="stat-number" id="subscribers-count">0</div><div class="stat-label">إجمالي المشتركين</div></div></div>
             </div>
 
+            <!-- Settings Panel -->
             <div class="panel" id="panel-settings">
                 <div class="panel-header"><h2><i class="fas fa-cog"></i> إعدادات المتجر</h2></div>
                 <div class="settings-tabs">
@@ -443,6 +417,7 @@
         let products = [];
         let coupons = [];
         let ordersLog = [];
+        let subscribers = [];
         let editingId = null;
         let currentLoginRole = null;
         let otpTimer = null;
@@ -479,6 +454,7 @@
             return response.json();
         }
 
+        // Products
         async function loadProductsFromServer() {
             try {
                 const data = await apiFetch('/api/products');
@@ -506,6 +482,7 @@
             }
         }
 
+        // Settings
         async function loadSettingsFromServer() {
             try {
                 const data = await apiFetch('/api/settings');
@@ -532,6 +509,7 @@
             }
         }
 
+        // Coupons
         async function loadCouponsFromServer() {
             try {
                 coupons = await apiFetch('/api/coupons');
@@ -539,82 +517,6 @@
             } catch (e) {
                 console.error('Failed to load coupons:', e);
                 coupons = [];
-                return false;
-            }
-        }
-
-        async function saveCouponsToServer() {
-            if (!sessionToken) return false;
-            try {
-                await apiFetch('/api/coupons', {
-                    method: 'POST',
-                    body: JSON.stringify({ coupons })
-                });
-                return true;
-            } catch (e) {
-                console.error('Failed to save coupons:', e);
-                return false;
-            }
-        }
-
-        async function loadOrdersFromServer() {
-            try {
-                ordersLog = await apiFetch('/api/orders');
-                return true;
-            } catch (e) {
-                console.error('Failed to load orders:', e);
-                ordersLog = [];
-                return false;
-            }
-        }
-
-        async function loadSubscribersFromServer() {
-            try {
-                const subscribers = await apiFetch('/api/newsletter');
-                return subscribers;
-            } catch (e) {
-                console.error('Failed to load subscribers:', e);
-                return [];
-            }
-        }
-
-        async function addSubscriberToServer(email) {
-            try {
-                await apiFetch('/api/newsletter', {
-                    method: 'POST',
-                    body: JSON.stringify({ email })
-                });
-                return true;
-            } catch (e) {
-                console.error('Failed to add subscriber:', e);
-                return false;
-            }
-        }
-
-        async function deleteSubscriberFromServer(email) {
-            if (!sessionToken) return false;
-            try {
-                await apiFetch('/api/newsletter', {
-                    method: 'DELETE',
-                    body: JSON.stringify({ email })
-                });
-                return true;
-            } catch (e) {
-                console.error('Failed to delete subscriber:', e);
-                return false;
-            }
-        }
-
-        async function clearAllSubscribersFromServer() {
-            if (!sessionToken) return false;
-            try {
-                await apiFetch('/api/newsletter', {
-                    method: 'DELETE',
-                    body: JSON.stringify({ email: 'all' })
-                });
-                return true;
-            } catch (e) {
-                console.error('Failed to clear subscribers:', e);
                 return false;
             }
         }
@@ -647,6 +549,58 @@
             }
         }
 
+        // Orders
+        async function loadOrdersFromServer() {
+            try {
+                ordersLog = await apiFetch('/api/orders');
+                return true;
+            } catch (e) {
+                console.error('Failed to load orders:', e);
+                ordersLog = [];
+                return false;
+            }
+        }
+
+        // Subscribers
+        async function loadSubscribersFromServer() {
+            try {
+                subscribers = await apiFetch('/api/newsletter');
+                return true;
+            } catch (e) {
+                console.error('Failed to load subscribers:', e);
+                subscribers = [];
+                return false;
+            }
+        }
+
+        async function deleteSubscriberFromServer(email) {
+            if (!sessionToken) return false;
+            try {
+                await apiFetch('/api/newsletter', {
+                    method: 'DELETE',
+                    body: JSON.stringify({ email })
+                });
+                return true;
+            } catch (e) {
+                console.error('Failed to delete subscriber:', e);
+                return false;
+            }
+        }
+
+        async function clearAllSubscribersFromServer() {
+            if (!sessionToken) return false;
+            try {
+                await apiFetch('/api/newsletter', {
+                    method: 'DELETE',
+                    body: JSON.stringify({ email: 'all' })
+                });
+                return true;
+            } catch (e) {
+                console.error('Failed to clear subscribers:', e);
+                return false;
+            }
+        }
+
         // ==================== LOCAL HELPER FUNCTIONS ====================
         function showToast(msg) {
             const t = document.getElementById('toast');
@@ -658,22 +612,22 @@
 
         function formatPrice(p) { return p.toLocaleString('en-US') + ' ' + siteSettings.currency; }
         function escapeHtml(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+        
         function getTypeLabel(t) { 
             return { series:'📺 مسلسلات', movies:'🎬 أفلام', programs:'💻 برامج', 
                 component:'🔧 قطعة', pcgames:'🖥️ ألعاب كمبيوتر', playstation:'🎮 بلايستيشن'
             }[t]||t; 
         }
+        
         function getBadgeClass(t) { 
             return { series:'badge-series', movies:'badge-movies', programs:'badge-programs', 
                 component:'badge-component', pcgames:'badge-pcgames', playstation:'badge-playstation'
             }[t]||''; 
         }
 
-        // Newsletter Functions (local with server sync)
-        let subscribers = [];
-
+        // Newsletter UI
         async function loadAndRenderSubscribers() {
-            subscribers = await loadSubscribersFromServer();
+            await loadSubscribersFromServer();
             renderSubscribersTable();
         }
 
@@ -711,7 +665,7 @@
             }
         }
 
-        // Settings
+        // Settings UI
         function applyAllSettings() {
             document.title = siteSettings.name + ' | لوحة التحكم';
             document.querySelectorAll('#sidebar-store-name, #login-store-name').forEach(el => { if(el) el.textContent = siteSettings.name; });
@@ -854,7 +808,7 @@
             });
         }
 
-        // Render functions
+        // ==================== RENDER FUNCTIONS ====================
         function refreshDashboard() {
             const ts = products.filter(p => p.type==='series').length;
             const tm = products.filter(p => p.type==='movies').length;
@@ -884,7 +838,7 @@
                     <td>${escapeHtml(p.brand||'-')}</td>
                     <td style="font-weight:700;color:var(--primary);">${formatPrice(p.price)}</td>
                     <td>${p.stock||0}</td>
-                    <td style="display:flex;gap:6px;"><button class="btn btn-edit btn-xs edit-btn" data-id="${p.id}"><i class="fas fa-edit"></i> تعديل</button><button class="btn btn-danger btn-xs delete-btn" data-id="${p.id}"><i class="fas fa-trash"></i> حذف</button></span></td>
+                    <td style="display:flex;gap:6px;"><button class="btn btn-edit btn-xs edit-btn" data-id="${p.id}"><i class="fas fa-edit"></i> تعديل</button><button class="btn btn-danger btn-xs delete-btn" data-id="${p.id}"><i class="fas fa-trash"></i> حذف</button></td>
                 </tr>`).join('');
             tb.querySelectorAll('.edit-btn').forEach(b=>b.addEventListener('click',function(){editProduct(this.dataset.id);}));
             tb.querySelectorAll('.delete-btn').forEach(b=>b.addEventListener('click',function(){deleteProduct(this.dataset.id);}));
@@ -938,13 +892,13 @@
             const labels = { cpu:'🧠 معالج', motherboard:'📟 لوحة أم', gpu:'🎮 كرت شاشة', ram:'🧮 ذاكرة', storage:'💾 تخزين', psu:'⚡ مزود طاقة', case:'📦 صندوق' };
             if(!tb) return;
             if(comps.length === 0) {
-                tb.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:30px;">لا توجد قطع</td></tr>';
+                tb.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:30px;">لا توجد قطع</div></td>';
             } else {
                 tb.innerHTML = comps.map(p => `
                     <tr>
                         <td><span class="badge badge-component">${labels[p.componentType] || p.componentType}</span></td>
-                        <td>${escapeHtml(p.name)}</td>
-                        <td>${formatPrice(p.price)}</td>
+                        <td>${escapeHtml(p.name)}</div></td>
+                        <td>${formatPrice(p.price)}</div></td>
                         <td><button class="btn btn-edit btn-xs edit-btn" data-id="${p.id}">تعديل</button><button class="btn btn-danger btn-xs delete-btn" data-id="${p.id}">حذف</button></td>
                     </tr>`).join('');
                 tb.querySelectorAll('.edit-btn').forEach(b=>b.addEventListener('click',function(){editProduct(this.dataset.id);}));
@@ -963,11 +917,11 @@
                 else { st = 'نفذ'; sc = 'badge-inactive'; }
                 return `
                     <tr>
-                        <td>${escapeHtml(p.name)}</td>
-                        <td><span class="badge ${getBadgeClass(p.type)}">${getTypeLabel(p.type)}</span></td>
-                        <td>${formatPrice(p.price)}</td>
-                        <td>${s}</td>
-                        <td><span class="badge ${sc}">${st}</span></td>
+                        <td>${escapeHtml(p.name)}</div></td>
+                        <td><span class="badge ${getBadgeClass(p.type)}">${getTypeLabel(p.type)}</span></div></td>
+                        <td>${formatPrice(p.price)}</div></td>
+                        <td>${s}</div></td>
+                        <td><span class="badge ${sc}">${st}</span></div></td>
                     </tr>`}).join('');
         }
 
@@ -977,9 +931,9 @@
             tb.innerHTML = ordersLog.length ? ordersLog.map(o => `
                 <tr>
                     <td>${new Date(o.date).toLocaleString('ar-EG')}</td>
-                    <td>${o.items.length}</td>
-                    <td>${formatPrice(o.finalTotal)}</td>
-                </tr>`).join('') : '<tr><td colspan="3" style="text-align:center;padding:30px;">لا توجد طلبات</td></tr>';
+                    <td>${o.items?.length || 0}</td>
+                    <td>${formatPrice(o.finalTotal)}</div></td>
+                </tr>`).join('') : '<tr><td colspan="3" style="text-align:center;padding:30px;">لا توجد طلبات</div></tr>';
         }
 
         function renderCoupons() {
@@ -1005,6 +959,7 @@
             });
         }
 
+        // ==================== PRODUCT FORM ====================
         function resetForm() {
             document.getElementById('product-form').reset();
             document.getElementById('edit-id').value = '';
@@ -1139,6 +1094,7 @@
             else switchPanel('products');
         }
 
+        // ==================== PANEL NAVIGATION ====================
         function switchPanel(name) {
             document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
             const panel = document.getElementById('panel-' + name);
@@ -1268,13 +1224,12 @@
             successDiv.classList.remove('show');
             
             try {
-                const response = await fetch('/api/admin-auth', {
+                const response = await fetch('/api/auth/request', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        action: 'request',
-                        storeName: siteSettings.name,
-                        expectedRole: currentLoginRole
+                        role: currentLoginRole,
+                        storeName: siteSettings.name
                     })
                 });
                 
@@ -1313,14 +1268,13 @@
             if(entered.length !== 6) return;
             
             try {
-                const response = await fetch('/api/admin-auth', {
+                const response = await fetch('/api/auth/verify', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        action: 'verify',
                         otp: entered,
                         challengeToken: currentChallengeToken,
-                        expectedRole: currentLoginRole
+                        role: currentLoginRole
                     })
                 });
                 
@@ -1419,6 +1373,7 @@
 
         // ==================== BIND EVENTS ====================
         function bindEvents() {
+            // Navigation
             document.querySelectorAll('.sidebar-nav a[data-panel]').forEach(l => {
                 l.addEventListener('click', function(e) {
                     e.preventDefault();
@@ -1434,17 +1389,16 @@
                 });
             });
             
+            // Games submenu toggle
             const gamesParent = document.getElementById('games-parent');
-            const gamesSubmenu = document.getElementById('games-submenu');
-            if(gamesParent && gamesSubmenu) {
+            if(gamesParent) {
                 gamesParent.addEventListener('click', function(e) {
                     if(e.target.closest('.games-submenu a')) return;
-                    const isOpen = gamesSubmenu.style.display === 'block';
-                    gamesSubmenu.style.display = isOpen ? 'none' : 'block';
-                    gamesParent.classList.toggle('open', !isOpen);
+                    gamesParent.classList.toggle('open');
                 });
             }
             
+            // Product form buttons
             document.getElementById('add-product-btn')?.addEventListener('click', () => { resetForm(); switchPanel('add-product'); });
             document.getElementById('add-pcgames-btn')?.addEventListener('click', () => { resetForm(); document.getElementById('prod-type').value = 'pcgames'; switchPanel('add-product'); });
             document.getElementById('add-playstation-btn')?.addEventListener('click', () => { resetForm(); document.getElementById('prod-type').value = 'playstation'; switchPanel('add-product'); });
@@ -1455,6 +1409,7 @@
             document.getElementById('prod-type')?.addEventListener('change', function() { document.getElementById('comp-type-group').style.display = this.value === 'component' ? 'block' : 'none'; });
             document.getElementById('filter-type')?.addEventListener('change', function() { renderProductsTable(this.value); });
             
+            // Coupons
             document.getElementById('add-coupon-btn')?.addEventListener('click', async () => {
                 const c = prompt('كود الكوبون:'); if(!c) return;
                 const d = parseFloat(prompt('قيمة الخصم:')); if(!d) return;
@@ -1465,6 +1420,7 @@
                 showToast('✅ تم إضافة الكوبون');
             });
             
+            // Mobile menu
             document.getElementById('mobile-menu-btn')?.addEventListener('click', () => {
                 document.getElementById('sidebar').classList.add('open');
                 document.getElementById('sidebar-overlay').classList.add('show');
@@ -1474,9 +1430,11 @@
                 this.classList.remove('show');
             });
             
+            // Logout
             document.getElementById('logout-btn')?.addEventListener('click', logout);
             document.getElementById('clear-all-subscribers')?.addEventListener('click', clearAllSubscribers);
             
+            // Settings
             document.getElementById('save-all-settings-btn')?.addEventListener('click', saveAllSettings);
             document.querySelectorAll('.settings-tab').forEach(t => {
                 t.addEventListener('click', function() {
@@ -1490,10 +1448,12 @@
             document.getElementById('primary-color')?.addEventListener('input', function() { document.getElementById('primary-color-text').value = this.value; });
             document.getElementById('secondary-color')?.addEventListener('input', function() { document.getElementById('secondary-color-text').value = this.value; });
             
+            // Logo uploads
             initLogoUpload('main-logo-area', 'main-logo-file', 'main-logo-url', 'main-logo-preview', 'mainLogo');
             initLogoUpload('favicon-area', 'favicon-file', 'favicon-url', 'favicon-preview', 'favicon');
             initProductImageUpload();
             
+            // Export/Import/Reset
             document.getElementById('export-data-btn')?.addEventListener('click', () => {
                 const d = { products, coupons, ordersLog, siteSettings };
                 const b = new Blob([JSON.stringify(d)], { type: 'application/json' });
@@ -1538,12 +1498,12 @@
                     coupons = [{ code: 'WELCOME10', discount: 10, type: 'percent', active: true, minOrder: 1000 }];
                     ordersLog = [];
                     await saveProductsToServer();
-                    await saveCouponsToServer();
                     await refreshAll();
                     showToast('تم إعادة التعيين');
                 }
             });
             
+            // Login events
             document.getElementById('request-code-btn')?.addEventListener('click', requestOTP);
             document.getElementById('resend-link')?.addEventListener('click', () => {
                 if(otpTimeLeft > 0) return;
@@ -1563,6 +1523,7 @@
                 showStep('request');
             });
             
+            // Role selection
             document.querySelectorAll('.role-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
                     const role = btn.getAttribute('data-role');
@@ -1570,6 +1531,7 @@
                 });
             });
             
+            // OTP inputs
             for(let i = 1; i <= 6; i++) {
                 const inp = document.getElementById('otp-' + i);
                 if(!inp) continue;
@@ -1594,6 +1556,7 @@
             }
         }
 
+        // ==================== PARTICLES ====================
         function createParticles() {
             const c = document.getElementById('bg-particles');
             if(!c) return;
@@ -1610,8 +1573,9 @@
             }
         }
 
+        // ==================== INITIALIZATION ====================
         async function init() {
-            console.log('🚀 بدء تشغيل لوحة التحكم - مع MongoDB API');
+            console.log('🚀 بدء تشغيل لوحة التحكم - مع Supabase');
             createParticles();
             bindEvents();
             addSpecRow();
