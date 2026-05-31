@@ -14,7 +14,6 @@
         :root {
             --font-main: 'Tajawal', sans-serif;
             --transition: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-            --transition-fast: 0.2s ease;
             --radius-xs: 6px; --radius-sm: 12px; --radius-md: 16px;
             --radius-lg: 24px; --radius-xl: 32px; --radius-full: 9999px;
         }
@@ -1499,19 +1498,16 @@
     </footer>
     
     <button class="back-to-top" id="backToTopBtn"><i class="fas fa-arrow-up"></i></button>
-    <a href="chat-bot-new.html" class="fab-btn"><i class="fas fa-robot"></i> <span>المساعدة</span></a>
+    <a href="chat-bot.html" class="fab-btn"><i class="fas fa-robot"></i> <span>المساعدة</span></a>
 
     <script>
         // ==================== CONFIGURATION ====================
         const CONFIG = {
-            STORAGE_KEY: 'dar3a_store_products',
             CART_KEY: 'dar3a_cart',
             WISHLIST_KEY: 'dar3a_wishlist',
-            SITE_SETTINGS_KEY: 'dar3a_site_settings',
             WHATSAPP_NUMBER: '0922265656',
-            ADMIN_URL: 'admin-new.html',
+            ADMIN_URL: 'admin.html',
             LONG_PRESS_MS: 3000,
-            OTP_KEY: 'dar3a_telegram_otp',
             TELEGRAM_BOT_TOKEN: '8723447348:AAGtKoujIGCtbLXuPUWAR-B-oweiOdcDCKk',
             TELEGRAM_CHAT_ID: '6776057443',
             ASSISTANT_BOT_TOKEN: '8722670397:AAFvypmlj5ebYYFWxheXbgXorOkPgthbnWo',
@@ -1525,15 +1521,9 @@
         let builder = {};
         let currentTheme = localStorage.getItem('dar3a_theme') || 'dark';
         let siteSettings = {
-            name: 'Dar3a Store', tagline: 'أفلام • مسلسلات • برامج • ألعاب',
-            currency: 'ج.س', phone: '0922265656', whatsapp: '0922265656',
-            address: 'السودان - امدرمان', hours: 'يومياً 10 ص - 10 م',
-            website: 'https://dar3a-store.vercel.app',
-            primaryColor: '#e63946', secondaryColor: '#ff6b6b',
-            logoIcon: 'fa-shield-halved', mainLogo: '', favicon: '',
-            bgAnimation: 'particles',
-            developerName: 'Mohamed Elnil', developerUrl: 'https://me-one-blue.vercel.app/about.html',
-            copyright: '© 2026 Dar3a Store. جميع الحقوق محفوظة.'
+            name: 'Dar3a Store', currency: 'ج.م', whatsapp: '0922265656',
+            primaryColor: '#e63946', mainLogo: '', favicon: '',
+            logoIcon: 'fa-shield-halved'
         };
         let currentChallengeToken = null;
         let currentLoginRole = 'admin';
@@ -1610,6 +1600,7 @@
         }
 
         function formatPrice(p) { return p.toLocaleString('en-US') + ' ' + siteSettings.currency; }
+        function escapeHtml(s) { return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
 
         function applySettings() {
             document.title = siteSettings.name + ' — درعة ستور';
@@ -1772,8 +1763,6 @@
         function closeModal() { $('#product-modal-overlay').classList.remove('open'); }
 
         // ==================== PRODUCT CARD ====================
-        function escapeHtml(s) { return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
-
         function createProductCard(product) {
             const card = document.createElement('div');
             card.className = 'product-card';
@@ -1974,10 +1963,10 @@
             errorDiv.classList.remove('show');
             successDiv.classList.remove('show');
             try {
-                const response = await fetch('/api/admin-auth', {
+                const response = await fetch('/api/auth/request', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action: 'request', storeName: siteSettings.name, expectedRole: currentLoginRole })
+                    body: JSON.stringify({ role: currentLoginRole, storeName: siteSettings.name })
                 });
                 const data = await response.json();
                 if (data.ok) {
@@ -2010,10 +1999,10 @@
             const entered = digits.join('');
             if (entered.length !== 6) return;
             try {
-                const response = await fetch('/api/admin-auth', {
+                const response = await fetch('/api/auth/verify', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action: 'verify', otp: entered, challengeToken: currentChallengeToken, expectedRole: currentLoginRole })
+                    body: JSON.stringify({ otp: entered, challengeToken: currentChallengeToken, role: currentLoginRole })
                 });
                 const data = await response.json();
                 if (data.ok) {
@@ -2264,7 +2253,7 @@
             renderAll();
             updateCartUI();
             updateWishlistBadge();
-            console.log('🚀 Dar3a Store Ready with MongoDB API!');
+            console.log('🚀 Dar3a Store Ready with Supabase!');
         }
         init();
     </script>
