@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
     <style>
+        /* جميع الأنماط كما هي من admin.html الأصلي - تم حفظها */
         :root {
             --primary: #e63946; --primary-dark: #c92a37; --primary-light: #ff4757;
             --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); --font: 'Tajawal', sans-serif;
@@ -34,7 +35,6 @@
         .login-logo img { width: 70%; height: 70%; object-fit: contain; border-radius: 20px; }
         @keyframes logoFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
         
-        /* Role Selection Buttons */
         .role-selector { display: flex; gap: 12px; margin: 20px 0; }
         .role-btn { flex: 1; padding: 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); color: #fff; font-family: inherit; font-weight: 700; cursor: pointer; transition: all 0.3s ease; display: flex; flex-direction: column; align-items: center; gap: 6px; }
         .role-btn i { font-size: 1.2rem; }
@@ -212,7 +212,6 @@
             <h2 id="login-store-name">Dar3a Store</h2>
             <p id="login-subtitle">لوحة التحكم - اختر طريقة الدخول</p>
             
-            <!-- Role Selection -->
             <div class="role-selector" id="role-selector">
                 <button class="role-btn" data-role="admin"><i class="fas fa-crown"></i> مدير</button>
                 <button class="role-btn assistant" data-role="assistant"><i class="fas fa-user-friends"></i> مساعد</button>
@@ -243,7 +242,7 @@
     <button class="mobile-menu-btn" id="mobile-menu-btn"><i class="fas fa-bars"></i></button>
     <div class="sidebar-overlay" id="sidebar-overlay"></div>
 
-    <a href="index.html" class="view-store-btn" id="view-store-btn" target="_blank">
+    <a href="index-new.html" class="view-store-btn" id="view-store-btn" target="_blank">
         <i class="fas fa-store"></i>
         <span>عرض المتجر</span>
         <i class="fas fa-external-link-alt" style="font-size: 0.7rem;"></i>
@@ -287,13 +286,11 @@
         </aside>
 
         <main class="main-content">
-            <!-- DASHBOARD -->
             <div class="panel active" id="panel-dashboard">
                 <div class="panel-header"><h2><i class="fas fa-th-large"></i> لوحة المعلومات</h2></div>
                 <div class="stats-grid" id="dashboard-stats"></div>
             </div>
 
-            <!-- PRODUCTS TABLE -->
             <div class="panel" id="panel-products">
                 <div class="panel-header">
                     <h2><i class="fas fa-boxes"></i> إدارة المحتوى</h2>
@@ -318,7 +315,6 @@
                 </div>
             </div>
 
-            <!-- ADD / EDIT PRODUCT -->
             <div class="panel" id="panel-add-product">
                 <div class="panel-header"><h2 id="form-title"><i class="fas fa-plus-circle"></i> إضافة منتج جديد</h2></div>
                 <form id="product-form">
@@ -367,19 +363,16 @@
                 </form>
             </div>
 
-            <!-- INVENTORY -->
             <div class="panel" id="panel-inventory">
                 <div class="panel-header"><h2><i class="fas fa-warehouse"></i> المخزون</h2></div>
                 <div class="table-container"><table id="inventory-table"><thead><tr><th>المنتج</th><th>النوع</th><th>السعر</th><th>المخزون</th><th>الحالة</th></tr></thead><tbody></tbody></table></div>
             </div>
 
-            <!-- COUPONS -->
             <div class="panel" id="panel-coupons">
                 <div class="panel-header"><h2><i class="fas fa-tags"></i> الكوبونات</h2><button class="btn btn-primary btn-sm" id="add-coupon-btn">+ كوبون</button></div>
                 <div id="coupons-list"></div>
             </div>
 
-            <!-- PC COMPONENTS -->
             <div class="panel" id="panel-pc-components">
                 <div class="panel-header"><h2><i class="fas fa-microchip"></i> قطع PC</h2></div>
                 <div class="table-container"><table id="components-table"><thead><tr><th>النوع</th><th>الاسم</th><th>السعر</th><th>إجراءات</th></tr></thead><tbody></tbody></table></div>
@@ -395,20 +388,17 @@
                 <div class="table-container"><table id="playstation-table"><thead><tr><th>الصورة</th><th>الاسم</th><th>الماركة</th><th>السعر</th><th>المخزون</th><th>إجراءات</th></tr></thead><tbody></tbody></table></div>
             </div>
 
-            <!-- ORDERS -->
             <div class="panel" id="panel-orders">
                 <div class="panel-header"><h2><i class="fas fa-receipt"></i> الطلبات</h2></div>
                 <div class="table-container"><table id="orders-table"><thead><tr><th>التاريخ</th><th>المنتجات</th><th>الإجمالي</th></tr></thead><tbody></tbody></table></div>
             </div>
 
-            <!-- NEWSLETTER -->
             <div class="panel" id="panel-newsletter">
                 <div class="panel-header"><h2><i class="fas fa-envelope"></i> المشتركين</h2><button class="btn btn-danger btn-sm" id="clear-all-subscribers"><i class="fas fa-trash"></i> حذف الكل</button></div>
                 <div class="table-container"><table id="subscribers-table"><thead><tr><th>#</th><th>البريد الإلكتروني</th><th>تاريخ الاشتراك</th><th>إجراءات</th></tr></thead><tbody id="subscribers-list"></tbody></table></div>
                 <div class="stats-grid" style="margin-top:20px;"><div class="stat-card"><div class="stat-icon">📧</div><div class="stat-number" id="subscribers-count">0</div><div class="stat-label">إجمالي المشتركين</div></div></div>
             </div>
 
-            <!-- SETTINGS -->
             <div class="panel" id="panel-settings">
                 <div class="panel-header"><h2><i class="fas fa-cog"></i> إعدادات المتجر</h2></div>
                 <div class="settings-tabs">
@@ -441,15 +431,10 @@
     <script>
         // ==================== CONFIGURATION ====================
         const CONFIG = {
-            STORAGE_KEY: 'dar3a_store_products',
-            SITE_SETTINGS_KEY: 'dar3a_site_settings',
             WHATSAPP_NUMBER: '0922265656',
-            OTP_KEY: 'dar3a_telegram_otp',
             ADMIN_SESSION_KEY: 'dar3a_admin_session',
-            // MAIN ADMIN (First Manager)
             TELEGRAM_BOT_TOKEN: '8723447348:AAGtKoujIGCtbLXuPUWAR-B-oweiOdcDCKk',
             TELEGRAM_CHAT_ID: '6776057443',
-            // ASSISTANT ADMIN (Second Manager)
             ASSISTANT_BOT_TOKEN: '8722670397:AAFvypmlj5ebYYFWxheXbgXorOkPgthbnWo',
             ASSISTANT_CHAT_ID: '665454768'
         };
@@ -459,9 +444,11 @@
         let coupons = [];
         let ordersLog = [];
         let editingId = null;
-        let currentLoginRole = null; // 'admin' or 'assistant'
+        let currentLoginRole = null;
         let otpTimer = null;
         let otpTimeLeft = 0;
+        let currentChallengeToken = null;
+        let sessionToken = null;
 
         let siteSettings = {
             name: 'Dar3a Store', tagline: 'أفلام • مسلسلات • برامج • ألعاب',
@@ -475,19 +462,192 @@
             copyright: '© 2026 Dar3a Store. جميع الحقوق محفوظة.', chatbotUrl: 'chat-bot.html'
         };
 
-        // Load data from localStorage
-        function loadData() {
-            products = JSON.parse(localStorage.getItem(CONFIG.STORAGE_KEY) || '[]');
-            coupons = JSON.parse(localStorage.getItem('dar3a_store_coupons') || '[]');
-            ordersLog = JSON.parse(localStorage.getItem('dar3a_orders_log') || '[]');
-            try { const s = localStorage.getItem(CONFIG.SITE_SETTINGS_KEY); if (s) siteSettings = { ...siteSettings, ...JSON.parse(s) }; } catch(e) {}
-            if (!coupons.length) coupons = [{ code:'WELCOME10', discount:10, type:'percent', active:true, minOrder:1000 }];
+        // ==================== API FUNCTIONS ====================
+        async function apiFetch(endpoint, options = {}) {
+            const headers = {
+                'Content-Type': 'application/json',
+                ...options.headers
+            };
+            if (sessionToken) {
+                headers['X-Session-Token'] = sessionToken;
+            }
+            const response = await fetch(endpoint, { ...options, headers });
+            if (!response.ok) {
+                const error = await response.json().catch(() => ({}));
+                throw new Error(error.error || 'Request failed');
+            }
+            return response.json();
         }
 
-        function saveProducts() { localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(products)); window.dispatchEvent(new Event('storage')); }
-        function saveCoupons() { localStorage.setItem('dar3a_store_coupons', JSON.stringify(coupons)); }
+        async function loadProductsFromServer() {
+            try {
+                const data = await apiFetch('/api/products');
+                products = data;
+                return true;
+            } catch (e) {
+                console.error('Failed to load products:', e);
+                products = [];
+                return false;
+            }
+        }
 
-        // Helper functions
+        async function saveProductsToServer() {
+            if (!sessionToken) return false;
+            try {
+                await apiFetch('/api/products', {
+                    method: 'POST',
+                    body: JSON.stringify({ products })
+                });
+                return true;
+            } catch (e) {
+                console.error('Failed to save products:', e);
+                showToast('❌ فشل حفظ المنتجات في الخادم');
+                return false;
+            }
+        }
+
+        async function loadSettingsFromServer() {
+            try {
+                const data = await apiFetch('/api/settings');
+                siteSettings = { ...siteSettings, ...data };
+                return true;
+            } catch (e) {
+                console.error('Failed to load settings:', e);
+                return false;
+            }
+        }
+
+        async function saveSettingsToServer() {
+            if (!sessionToken) return false;
+            try {
+                await apiFetch('/api/settings', {
+                    method: 'POST',
+                    body: JSON.stringify(siteSettings)
+                });
+                return true;
+            } catch (e) {
+                console.error('Failed to save settings:', e);
+                showToast('❌ فشل حفظ الإعدادات');
+                return false;
+            }
+        }
+
+        async function loadCouponsFromServer() {
+            try {
+                coupons = await apiFetch('/api/coupons');
+                return true;
+            } catch (e) {
+                console.error('Failed to load coupons:', e);
+                coupons = [];
+                return false;
+            }
+        }
+
+        async function saveCouponsToServer() {
+            if (!sessionToken) return false;
+            try {
+                await apiFetch('/api/coupons', {
+                    method: 'POST',
+                    body: JSON.stringify({ coupons })
+                });
+                return true;
+            } catch (e) {
+                console.error('Failed to save coupons:', e);
+                return false;
+            }
+        }
+
+        async function loadOrdersFromServer() {
+            try {
+                ordersLog = await apiFetch('/api/orders');
+                return true;
+            } catch (e) {
+                console.error('Failed to load orders:', e);
+                ordersLog = [];
+                return false;
+            }
+        }
+
+        async function loadSubscribersFromServer() {
+            try {
+                const subscribers = await apiFetch('/api/newsletter');
+                return subscribers;
+            } catch (e) {
+                console.error('Failed to load subscribers:', e);
+                return [];
+            }
+        }
+
+        async function addSubscriberToServer(email) {
+            try {
+                await apiFetch('/api/newsletter', {
+                    method: 'POST',
+                    body: JSON.stringify({ email })
+                });
+                return true;
+            } catch (e) {
+                console.error('Failed to add subscriber:', e);
+                return false;
+            }
+        }
+
+        async function deleteSubscriberFromServer(email) {
+            if (!sessionToken) return false;
+            try {
+                await apiFetch('/api/newsletter', {
+                    method: 'DELETE',
+                    body: JSON.stringify({ email })
+                });
+                return true;
+            } catch (e) {
+                console.error('Failed to delete subscriber:', e);
+                return false;
+            }
+        }
+
+        async function clearAllSubscribersFromServer() {
+            if (!sessionToken) return false;
+            try {
+                await apiFetch('/api/newsletter', {
+                    method: 'DELETE',
+                    body: JSON.stringify({ email: 'all' })
+                });
+                return true;
+            } catch (e) {
+                console.error('Failed to clear subscribers:', e);
+                return false;
+            }
+        }
+
+        async function addCouponToServer(coupon) {
+            if (!sessionToken) return false;
+            try {
+                await apiFetch('/api/coupons', {
+                    method: 'POST',
+                    body: JSON.stringify({ coupon })
+                });
+                return true;
+            } catch (e) {
+                console.error('Failed to add coupon:', e);
+                return false;
+            }
+        }
+
+        async function deleteCouponFromServer(couponCode) {
+            if (!sessionToken) return false;
+            try {
+                await apiFetch('/api/coupons', {
+                    method: 'DELETE',
+                    body: JSON.stringify({ couponCode })
+                });
+                return true;
+            } catch (e) {
+                console.error('Failed to delete coupon:', e);
+                return false;
+            }
+        }
+
+        // ==================== LOCAL HELPER FUNCTIONS ====================
         function showToast(msg) {
             const t = document.getElementById('toast');
             t.textContent = msg;
@@ -509,13 +669,15 @@
             }[t]||''; 
         }
 
-        // Newsletter Functions
-        const NEWSLETTER_KEY = 'dar3a_newsletter_subscribers';
-        function getSubscribers() { try { return JSON.parse(localStorage.getItem(NEWSLETTER_KEY) || '[]'); } catch(e) { return []; } }
-        function saveSubscribers(subscribers) { localStorage.setItem(NEWSLETTER_KEY, JSON.stringify(subscribers)); }
-        
+        // Newsletter Functions (local with server sync)
+        let subscribers = [];
+
+        async function loadAndRenderSubscribers() {
+            subscribers = await loadSubscribersFromServer();
+            renderSubscribersTable();
+        }
+
         function renderSubscribersTable() {
-            const subscribers = getSubscribers();
             const tbody = document.getElementById('subscribers-list');
             const countEl = document.getElementById('subscribers-count');
             if (countEl) countEl.textContent = subscribers.length;
@@ -530,21 +692,23 @@
                 </tr>
             `).join('');
             document.querySelectorAll('.delete-subscriber').forEach(btn => {
-                btn.addEventListener('click', function() {
+                btn.addEventListener('click', async function() {
                     const email = this.getAttribute('data-email');
                     if (confirm(`حذف ${email}؟`)) {
-                        let subscribers = getSubscribers();
-                        subscribers = subscribers.filter(s => s.email !== email);
-                        saveSubscribers(subscribers);
-                        renderSubscribersTable();
+                        await deleteSubscriberFromServer(email);
+                        await loadAndRenderSubscribers();
                         showToast('✅ تم حذف المشترك');
                     }
                 });
             });
         }
         
-        function clearAllSubscribers() {
-            if (confirm('⚠️ حذف جميع المشتركين؟')) { saveSubscribers([]); renderSubscribersTable(); showToast('🗑️ تم حذف الكل'); }
+        async function clearAllSubscribers() {
+            if (confirm('⚠️ حذف جميع المشتركين؟')) {
+                await clearAllSubscribersFromServer();
+                await loadAndRenderSubscribers();
+                showToast('🗑️ تم حذف الكل');
+            }
         }
 
         // Settings
@@ -603,7 +767,7 @@
             document.getElementById('dev-chatbot').value = siteSettings.chatbotUrl;
         }
 
-        function saveAllSettings() {
+        async function saveAllSettings() {
             siteSettings.name = document.getElementById('site-name').value.trim();
             siteSettings.tagline = document.getElementById('site-tagline').value.trim();
             siteSettings.currency = document.getElementById('site-currency').value;
@@ -622,7 +786,8 @@
             siteSettings.developerUrl = document.getElementById('dev-url').value.trim();
             siteSettings.copyright = document.getElementById('dev-copyright').value.trim();
             siteSettings.chatbotUrl = document.getElementById('dev-chatbot').value.trim();
-            localStorage.setItem(CONFIG.SITE_SETTINGS_KEY, JSON.stringify(siteSettings));
+            
+            await saveSettingsToServer();
             applyAllSettings();
             showToast('✅ تم حفظ جميع الإعدادات!');
         }
@@ -697,7 +862,6 @@
             const tc = products.filter(p => p.type==='component').length;
             const tpcgames = products.filter(p => p.type==='pcgames').length;
             const tps = products.filter(p => p.type==='playstation').length;
-            const subscribers = getSubscribers().length;
             document.getElementById('dashboard-stats').innerHTML = `
                 <div class="stat-card"><div class="stat-icon">📺</div><div class="stat-number">${ts}</div><div class="stat-label">مسلسلات</div></div>
                 <div class="stat-card"><div class="stat-icon">🎬</div><div class="stat-number">${tm}</div><div class="stat-label">أفلام</div></div>
@@ -705,7 +869,7 @@
                 <div class="stat-card"><div class="stat-icon">🔧</div><div class="stat-number">${tc}</div><div class="stat-label">قطع PC</div></div>
                 <div class="stat-card"><div class="stat-icon">🖥️</div><div class="stat-number">${tpcgames}</div><div class="stat-label">ألعاب PC</div></div>
                 <div class="stat-card"><div class="stat-icon">🎮</div><div class="stat-number">${tps}</div><div class="stat-label">ألعاب بلايستيشن</div></div>
-                <div class="stat-card"><div class="stat-icon">📧</div><div class="stat-number">${subscribers}</div><div class="stat-label">مشتركين</div></div>`;
+                <div class="stat-card"><div class="stat-icon">📧</div><div class="stat-number">${subscribers.length}</div><div class="stat-label">مشتركين</div></div>`;
         }
 
         function renderProductsTable(filter='all') {
@@ -825,8 +989,20 @@
                 <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:18px;display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
                     <span style="font-family:monospace;font-weight:700;">${escapeHtml(c.code)}</span>
                     <span>${c.discount}${c.type==='percent'?'%':' '+siteSettings.currency}</span>
-                    <button class="btn btn-danger btn-xs" onclick="if(confirm('حذف؟')){coupons.splice(${i},1);saveCoupons();renderCoupons();}">🗑️</button>
+                    <button class="btn btn-danger btn-xs delete-coupon-btn" data-code="${escapeHtml(c.code)}">🗑️</button>
                 </div>`).join('') : '<p style="text-align:center;padding:30px;">لا توجد كوبونات</p>';
+            
+            document.querySelectorAll('.delete-coupon-btn').forEach(btn => {
+                btn.addEventListener('click', async function() {
+                    const code = this.getAttribute('data-code');
+                    if (confirm(`حذف كوبون ${code}؟`)) {
+                        await deleteCouponFromServer(code);
+                        await loadCouponsFromServer();
+                        renderCoupons();
+                        showToast('✅ تم حذف الكوبون');
+                    }
+                });
+            });
         }
 
         function resetForm() {
@@ -898,13 +1074,13 @@
             showToast('🖊️ جاري تعديل: ' + p.name);
         }
         
-        function deleteProduct(id) {
+        async function deleteProduct(id) {
             const p = products.find(pr => pr.id === id);
             if(!p) return;
             if(confirm(`هل أنت متأكد من حذف "${p.name}"؟`)) {
                 products = products.filter(pr => pr.id !== id);
-                saveProducts();
-                refreshAll();
+                await saveProductsToServer();
+                await refreshAll();
                 if(editingId === id) resetForm();
                 showToast('🗑️ تم حذف: ' + p.name);
             }
@@ -922,7 +1098,7 @@
             c.appendChild(r);
         }
         
-        function saveProduct(e) {
+        async function saveProduct(e) {
             e.preventDefault();
             const name = document.getElementById('prod-name').value.trim();
             const price = parseFloat(document.getElementById('prod-price').value);
@@ -955,9 +1131,9 @@
                 products.push(product);
                 showToast('✅ تمت الإضافة!');
             }
-            saveProducts();
+            await saveProductsToServer();
             resetForm();
-            refreshAll();
+            await refreshAll();
             if(type === 'pcgames') switchPanel('pcgames');
             else if(type === 'playstation') switchPanel('playstation');
             else switchPanel('products');
@@ -995,14 +1171,17 @@
             }
         }
 
-        function refreshAll() {
+        async function refreshAll() {
+            await loadProductsFromServer();
+            await loadCouponsFromServer();
+            await loadOrdersFromServer();
+            await loadAndRenderSubscribers();
             refreshDashboard();
             renderProductsTable(document.getElementById('filter-type').value);
             renderComponentsTable();
             renderInventoryTable();
             renderOrdersTable();
             renderGamesTables();
-            renderSubscribersTable();
             document.getElementById('products-count').textContent = products.length;
         }
 
@@ -1014,6 +1193,7 @@
                     const data = JSON.parse(session);
                     if(data.expires > Date.now()) {
                         currentLoginRole = data.role;
+                        sessionToken = data.sessionToken;
                         document.getElementById('login-overlay').classList.add('hidden');
                         document.getElementById('user-info-sidebar').style.display = 'flex';
                         const roleBadge = document.getElementById('role-badge');
@@ -1053,7 +1233,6 @@
             
             loginOverlay.classList.remove('hidden');
             showStep('request');
-            sessionStorage.removeItem(CONFIG.OTP_KEY + '_' + role);
             for(let i = 1; i <= 6; i++) {
                 const inp = document.getElementById('otp-' + i);
                 if(inp) inp.value = '';
@@ -1088,43 +1267,31 @@
             errorDiv.classList.remove('show');
             successDiv.classList.remove('show');
             
-            const otp = Math.floor(100000 + Math.random() * 900000).toString();
-            
-            let botToken, chatId;
-            if(currentLoginRole === 'assistant') {
-                botToken = CONFIG.ASSISTANT_BOT_TOKEN;
-                chatId = CONFIG.ASSISTANT_CHAT_ID;
-                if(!botToken || botToken === 'YOUR_ASSISTANT_BOT_TOKEN_HERE') {
-                    if(btn) { btn.disabled = false; btn.innerHTML = '<i class="fab fa-telegram-plane"></i> طلب كود التحقق'; }
-                    errorDiv.textContent = '⚠️ لم يتم إعداد بوت المساعد بعد! الرجاء مراجعة الإعدادات.';
-                    errorDiv.classList.add('show');
-                    return;
-                }
-            } else {
-                botToken = CONFIG.TELEGRAM_BOT_TOKEN;
-                chatId = CONFIG.TELEGRAM_CHAT_ID;
-            }
-            
-            sessionStorage.setItem(CONFIG.OTP_KEY + '_' + currentLoginRole, JSON.stringify({ code: otp, expires: Date.now() + 300000, attempts: 0 }));
-            
             try {
-                const res = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+                const response = await fetch('/api/admin-auth', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ chat_id: chatId, text: `🔐 *رمز تحقق ${currentLoginRole === 'assistant' ? 'المساعد' : 'المدير'}*\n🔢 *${otp}*\nصالح 5 دقائق`, parse_mode: 'Markdown' })
+                    body: JSON.stringify({
+                        action: 'request',
+                        storeName: siteSettings.name,
+                        expectedRole: currentLoginRole
+                    })
                 });
                 
-                if(res.ok) {
+                const data = await response.json();
+                
+                if (data.ok) {
+                    currentChallengeToken = data.challengeToken;
                     successDiv.textContent = '✅ تم إرسال الكود بنجاح!';
                     successDiv.classList.add('show');
                     setTimeout(() => {
                         showStep('verify');
-                        startTimer(300);
+                        startTimer(data.expiresIn);
                         const firstOtp = document.getElementById('otp-1');
                         if(firstOtp) firstOtp.focus();
                     }, 600);
                 } else {
-                    errorDiv.textContent = '❌ فشل الإرسال، تأكد من إعدادات البوت';
+                    errorDiv.textContent = data.error || '❌ فشل الإرسال';
                     errorDiv.classList.add('show');
                 }
             } catch(e) {
@@ -1139,62 +1306,79 @@
             }
         }
         
-        function verifyOTP() {
+        async function verifyOTP() {
             const digits = [];
             for(let i = 1; i <= 6; i++) digits.push(document.getElementById('otp-' + i)?.value || '');
             const entered = digits.join('');
             if(entered.length !== 6) return;
             
-            const od = JSON.parse(sessionStorage.getItem(CONFIG.OTP_KEY + '_' + currentLoginRole) || '{}');
-            if(!od.code || Date.now() > od.expires) {
-                const errorDiv = document.getElementById('step2-error');
-                errorDiv.textContent = '⚠️ الكود منتهي الصلاحية، اطلب كود جديد';
-                errorDiv.classList.add('show');
-                return;
-            }
-            
-            if(entered === od.code) {
-                sessionStorage.removeItem(CONFIG.OTP_KEY + '_' + currentLoginRole);
-                clearInterval(otpTimer);
+            try {
+                const response = await fetch('/api/admin-auth', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        action: 'verify',
+                        otp: entered,
+                        challengeToken: currentChallengeToken,
+                        expectedRole: currentLoginRole
+                    })
+                });
                 
-                // Store session
-                sessionStorage.setItem(CONFIG.ADMIN_SESSION_KEY, JSON.stringify({
-                    role: currentLoginRole,
-                    expires: Date.now() + 8 * 60 * 60 * 1000 // 8 hours
-                }));
+                const data = await response.json();
                 
-                showToast('✅ تم التحقق بنجاح!');
-                document.getElementById('login-overlay').classList.add('hidden');
-                document.getElementById('user-info-sidebar').style.display = 'flex';
-                
-                const roleBadge = document.getElementById('role-badge');
-                const userRoleName = document.getElementById('user-role-name');
-                const userAvatarIcon = document.getElementById('user-avatar-icon');
-                if(currentLoginRole === 'assistant') {
-                    roleBadge.textContent = 'مساعد';
-                    roleBadge.className = 'role-badge assistant';
-                    userRoleName.textContent = 'المساعد';
-                    userAvatarIcon.className = 'fas fa-user-friends';
+                if (data.ok) {
+                    sessionToken = data.sessionToken;
+                    currentChallengeToken = null;
+                    clearInterval(otpTimer);
+                    
+                    sessionStorage.setItem(CONFIG.ADMIN_SESSION_KEY, JSON.stringify({
+                        role: currentLoginRole,
+                        sessionToken: data.sessionToken,
+                        expires: data.expiresAt
+                    }));
+                    
+                    showToast('✅ تم التحقق بنجاح!');
+                    document.getElementById('login-overlay').classList.add('hidden');
+                    document.getElementById('user-info-sidebar').style.display = 'flex';
+                    
+                    const roleBadge = document.getElementById('role-badge');
+                    const userRoleName = document.getElementById('user-role-name');
+                    const userAvatarIcon = document.getElementById('user-avatar-icon');
+                    if(currentLoginRole === 'assistant') {
+                        roleBadge.textContent = 'مساعد';
+                        roleBadge.className = 'role-badge assistant';
+                        userRoleName.textContent = 'المساعد';
+                        userAvatarIcon.className = 'fas fa-user-friends';
+                    } else {
+                        roleBadge.textContent = 'مدير';
+                        roleBadge.className = 'role-badge admin';
+                        userRoleName.textContent = 'مدير النظام';
+                        userAvatarIcon.className = 'fas fa-crown';
+                    }
+                    
+                    await loadSettingsFromServer();
+                    await refreshAll();
+                    applyAllSettings();
                 } else {
-                    roleBadge.textContent = 'مدير';
-                    roleBadge.className = 'role-badge admin';
-                    userRoleName.textContent = 'مدير النظام';
-                    userAvatarIcon.className = 'fas fa-crown';
+                    const errorDiv = document.getElementById('step2-error');
+                    if (data.challengeToken) currentChallengeToken = data.challengeToken;
+                    errorDiv.textContent = data.error || '❌ كود غير صحيح';
+                    errorDiv.classList.add('show');
+                    if (data.attemptsLeft) {
+                        setTimeout(() => errorDiv.classList.remove('show'), 2000);
+                    }
                 }
-                
-                loadData();
-                refreshAll();
-                applyAllSettings();
-            } else {
+            } catch(e) {
+                console.error(e);
                 const errorDiv = document.getElementById('step2-error');
-                errorDiv.textContent = '❌ كود غير صحيح';
+                errorDiv.textContent = '❌ خطأ في التحقق';
                 errorDiv.classList.add('show');
                 setTimeout(() => errorDiv.classList.remove('show'), 2000);
             }
         }
         
-        function startTimer(s) {
-            otpTimeLeft = s;
+        function startTimer(seconds) {
+            otpTimeLeft = seconds;
             updateTimerDisplay();
             clearInterval(otpTimer);
             const rl = document.getElementById('resend-link');
@@ -1220,6 +1404,8 @@
             if(confirm('هل تريد تسجيل الخروج؟')) {
                 sessionStorage.removeItem(CONFIG.ADMIN_SESSION_KEY);
                 currentLoginRole = null;
+                sessionToken = null;
+                currentChallengeToken = null;
                 document.getElementById('login-overlay').classList.remove('hidden');
                 document.getElementById('user-info-sidebar').style.display = 'none';
                 showStep('request');
@@ -1233,7 +1419,6 @@
 
         // ==================== BIND EVENTS ====================
         function bindEvents() {
-            // Navigation
             document.querySelectorAll('.sidebar-nav a[data-panel]').forEach(l => {
                 l.addEventListener('click', function(e) {
                     e.preventDefault();
@@ -1249,7 +1434,6 @@
                 });
             });
             
-            // Games submenu toggle
             const gamesParent = document.getElementById('games-parent');
             const gamesSubmenu = document.getElementById('games-submenu');
             if(gamesParent && gamesSubmenu) {
@@ -1261,7 +1445,6 @@
                 });
             }
             
-            // Product form
             document.getElementById('add-product-btn')?.addEventListener('click', () => { resetForm(); switchPanel('add-product'); });
             document.getElementById('add-pcgames-btn')?.addEventListener('click', () => { resetForm(); document.getElementById('prod-type').value = 'pcgames'; switchPanel('add-product'); });
             document.getElementById('add-playstation-btn')?.addEventListener('click', () => { resetForm(); document.getElementById('prod-type').value = 'playstation'; switchPanel('add-product'); });
@@ -1271,16 +1454,17 @@
             document.getElementById('add-spec-btn')?.addEventListener('click', () => addSpecRow());
             document.getElementById('prod-type')?.addEventListener('change', function() { document.getElementById('comp-type-group').style.display = this.value === 'component' ? 'block' : 'none'; });
             document.getElementById('filter-type')?.addEventListener('change', function() { renderProductsTable(this.value); });
-            document.getElementById('add-coupon-btn')?.addEventListener('click', () => {
+            
+            document.getElementById('add-coupon-btn')?.addEventListener('click', async () => {
                 const c = prompt('كود الكوبون:'); if(!c) return;
                 const d = parseFloat(prompt('قيمة الخصم:')); if(!d) return;
-                coupons.push({ code: c, discount: d, type: 'percent', active: true, minOrder: 0 });
-                saveCoupons();
+                const newCoupon = { code: c.toUpperCase(), discount: d, type: 'percent', active: true, minOrder: 0 };
+                await addCouponToServer(newCoupon);
+                await loadCouponsFromServer();
                 renderCoupons();
                 showToast('✅ تم إضافة الكوبون');
             });
             
-            // Mobile menu
             document.getElementById('mobile-menu-btn')?.addEventListener('click', () => {
                 document.getElementById('sidebar').classList.add('open');
                 document.getElementById('sidebar-overlay').classList.add('show');
@@ -1290,11 +1474,9 @@
                 this.classList.remove('show');
             });
             
-            // Logout
             document.getElementById('logout-btn')?.addEventListener('click', logout);
             document.getElementById('clear-all-subscribers')?.addEventListener('click', clearAllSubscribers);
             
-            // Settings
             document.getElementById('save-all-settings-btn')?.addEventListener('click', saveAllSettings);
             document.querySelectorAll('.settings-tab').forEach(t => {
                 t.addEventListener('click', function() {
@@ -1308,12 +1490,10 @@
             document.getElementById('primary-color')?.addEventListener('input', function() { document.getElementById('primary-color-text').value = this.value; });
             document.getElementById('secondary-color')?.addEventListener('input', function() { document.getElementById('secondary-color-text').value = this.value; });
             
-            // Logo uploads
             initLogoUpload('main-logo-area', 'main-logo-file', 'main-logo-url', 'main-logo-preview', 'mainLogo');
             initLogoUpload('favicon-area', 'favicon-file', 'favicon-url', 'favicon-preview', 'favicon');
             initProductImageUpload();
             
-            // Export/Import/Reset
             document.getElementById('export-data-btn')?.addEventListener('click', () => {
                 const d = { products, coupons, ordersLog, siteSettings };
                 const b = new Blob([JSON.stringify(d)], { type: 'application/json' });
@@ -1324,26 +1504,26 @@
                 URL.revokeObjectURL(a.href);
                 showToast('تم التصدير!');
             });
-            document.getElementById('import-data-btn')?.addEventListener('click', () => {
+            
+            document.getElementById('import-data-btn')?.addEventListener('click', async () => {
                 const inp = document.createElement('input');
                 inp.type = 'file';
                 inp.accept = '.json';
-                inp.onchange = function(e) {
+                inp.onchange = async function(e) {
                     const f = e.target.files[0];
                     if(!f) return;
                     const r = new FileReader();
-                    r.onload = function(ev) {
+                    r.onload = async function(ev) {
                         try {
                             const d = JSON.parse(ev.target.result);
                             if(d.products) products = d.products;
                             if(d.coupons) coupons = d.coupons;
                             if(d.ordersLog) ordersLog = d.ordersLog;
                             if(d.siteSettings) siteSettings = { ...siteSettings, ...d.siteSettings };
-                            saveProducts();
-                            saveCoupons();
-                            localStorage.setItem(CONFIG.SITE_SETTINGS_KEY, JSON.stringify(siteSettings));
+                            await saveProductsToServer();
+                            await saveSettingsToServer();
                             applyAllSettings();
-                            refreshAll();
+                            await refreshAll();
                             showToast('تم الاستيراد!');
                         } catch(ex) { showToast('ملف غير صالح'); }
                     };
@@ -1351,23 +1531,22 @@
                 };
                 inp.click();
             });
-            document.getElementById('reset-data-btn')?.addEventListener('click', () => {
+            
+            document.getElementById('reset-data-btn')?.addEventListener('click', async () => {
                 if(confirm('حذف جميع البيانات؟')) {
                     products = [];
                     coupons = [{ code: 'WELCOME10', discount: 10, type: 'percent', active: true, minOrder: 1000 }];
                     ordersLog = [];
-                    saveProducts();
-                    saveCoupons();
-                    refreshAll();
+                    await saveProductsToServer();
+                    await saveCouponsToServer();
+                    await refreshAll();
                     showToast('تم إعادة التعيين');
                 }
             });
             
-            // Login events
             document.getElementById('request-code-btn')?.addEventListener('click', requestOTP);
             document.getElementById('resend-link')?.addEventListener('click', () => {
                 if(otpTimeLeft > 0) return;
-                sessionStorage.removeItem(CONFIG.OTP_KEY + '_' + currentLoginRole);
                 clearInterval(otpTimer);
                 for(let i = 1; i <= 6; i++) {
                     const inp = document.getElementById('otp-' + i);
@@ -1377,7 +1556,6 @@
             });
             document.getElementById('back-btn')?.addEventListener('click', () => {
                 clearInterval(otpTimer);
-                sessionStorage.removeItem(CONFIG.OTP_KEY + '_' + currentLoginRole);
                 for(let i = 1; i <= 6; i++) {
                     const inp = document.getElementById('otp-' + i);
                     if(inp) inp.value = '';
@@ -1385,7 +1563,6 @@
                 showStep('request');
             });
             
-            // Role selection buttons
             document.querySelectorAll('.role-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
                     const role = btn.getAttribute('data-role');
@@ -1393,7 +1570,6 @@
                 });
             });
             
-            // OTP inputs
             for(let i = 1; i <= 6; i++) {
                 const inp = document.getElementById('otp-' + i);
                 if(!inp) continue;
@@ -1402,10 +1578,22 @@
                     if(this.value.length === 1 && i < 6) document.getElementById('otp-' + (i + 1))?.focus();
                     if(i === 6 && this.value.length === 1) setTimeout(verifyOTP, 200);
                 });
+                
+                inp.addEventListener('paste', function(e) {
+                    e.preventDefault();
+                    const pastedText = (e.clipboardData || window.clipboardData).getData('text');
+                    const digits = pastedText.replace(/\D/g, '').slice(0, 6);
+                    for (let j = 0; j < digits.length; j++) {
+                        const field = document.getElementById('otp-' + (j + 1));
+                        if (field) field.value = digits[j];
+                    }
+                    if (digits.length === 6) {
+                        setTimeout(verifyOTP, 100);
+                    }
+                });
             }
         }
 
-        // ==================== PARTICLES ====================
         function createParticles() {
             const c = document.getElementById('bg-particles');
             if(!c) return;
@@ -1422,9 +1610,8 @@
             }
         }
 
-        // ==================== INITIALIZATION ====================
-        function init() {
-            console.log('🚀 بدء تشغيل لوحة التحكم - Dual Admin System');
+        async function init() {
+            console.log('🚀 بدء تشغيل لوحة التحكم - مع MongoDB API');
             createParticles();
             bindEvents();
             addSpecRow();
@@ -1433,8 +1620,8 @@
                 document.getElementById('login-overlay').classList.remove('hidden');
                 document.getElementById('user-info-sidebar').style.display = 'none';
             } else {
-                loadData();
-                refreshAll();
+                await loadSettingsFromServer();
+                await refreshAll();
                 applyAllSettings();
                 console.log('✅ تم تسجيل الدخول تلقائياً كـ: ' + currentLoginRole);
             }
