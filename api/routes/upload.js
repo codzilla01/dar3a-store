@@ -2,13 +2,10 @@
 const express = require('express');
 const router = express.Router();
 const multer = require('multer');
-const path = require('path');
-const { verifyAdmin } = require('../middleware/auth');
+const { requireAdmin } = require('../admin-auth');
 
-// تخزين الصور في الذاكرة (للتحويل إلى Base64)
 const storage = multer.memoryStorage();
 
-// فلتر الصور
 const fileFilter = (req, file, cb) => {
     const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
     if (allowedTypes.includes(file.mimetype)) {
@@ -20,20 +17,17 @@ const fileFilter = (req, file, cb) => {
 
 const upload = multer({
     storage: storage,
-    limits: {
-        fileSize: 5 * 1024 * 1024 // 5MB
-    },
+    limits: { fileSize: 5 * 1024 * 1024 },
     fileFilter: fileFilter
 });
 
 // POST رفع صورة واحدة (مدير فقط)
-router.post('/', verifyAdmin, upload.single('image'), (req, res) => {
+router.post('/', requireAdmin, upload.single('image'), (req, res) => {
     try {
         if (!req.file) {
             return res.status(400).json({ error: 'لم يتم رفع صورة' });
         }
 
-        // تحويل الصورة إلى Base64
         const base64Image = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
         
         res.json({
@@ -48,14 +42,13 @@ router.post('/', verifyAdmin, upload.single('image'), (req, res) => {
 });
 
 // POST رفع صورة من رابط (مدير فقط)
-router.post('/url', verifyAdmin, (req, res) => {
+router.post('/url', requireAdmin, (req, res) => {
     try {
         const { url } = req.body;
         if (!url) {
             return res.status(400).json({ error: 'الرابط مطلوب' });
         }
         
-        // التحقق من أن الرابط صالح
         const isValidUrl = url.startsWith('http') || url.startsWith('data:image');
         if (!isValidUrl) {
             return res.status(400).json({ error: 'رابط غير صالح' });
