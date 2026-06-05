@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Dar3a Store | لوحة التحكم - Supabase</title>
+    <title>Dar3a Store | لوحة التحكم</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🛡️</text></svg>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
@@ -12,7 +12,6 @@
             --primary: #e63946; --primary-dark: #c92a37; --primary-light: #ff4757;
             --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); --font: 'Tajawal', sans-serif;
             --success: #22c55e; --warning: #f59e0b; --error: #ef4444;
-            --assistant: #4f46e5; --assistant-light: #6366f1;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -38,12 +37,6 @@
         @keyframes loginIn { from{opacity:0;transform:translateY(40px) scale(0.9)} to{opacity:1;transform:translateY(0) scale(1)} }
         .login-logo { width: 80px; height: 80px; background: linear-gradient(135deg, #e63946, #ff6b6b); border-radius: 20px; display: inline-flex; align-items: center; justify-content: center; font-size: 2.2rem; color: #fff; margin-bottom: 20px; }
         
-        .role-selector { display: flex; gap: 12px; margin: 20px 0; }
-        .role-btn { flex: 1; padding: 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); color: #fff; font-weight: 700; cursor: pointer; transition: all 0.3s; }
-        .role-btn:hover { border-color: var(--primary); background: rgba(230,57,70,0.2); }
-        .role-btn.selected { background: linear-gradient(135deg, #e63946, #ff6b6b); border-color: transparent; }
-        .role-btn.assistant:hover, .role-btn.assistant.selected { background: linear-gradient(135deg, #4f46e5, #6366f1); }
-        
         .telegram-btn { display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; padding: 16px; border: none; border-radius: 12px; background: linear-gradient(135deg, #0088cc, #00b4d8); cursor: pointer; font-weight: 700; color: #fff; transition: all 0.3s; }
         .telegram-btn:disabled { opacity: 0.5; cursor: not-allowed; }
         .auth-step { display: none; } .auth-step.active { display: block; }
@@ -57,13 +50,11 @@
         .error-text.show { display: block; }
         .back-btn { background: none; border: none; color: #94a3b8; cursor: pointer; font-size: 0.8rem; margin-top: 12px; }
 
-        /* Sidebar */
+        /* Sidebar - نفس الأنماط السابقة */
         .sidebar { width: 280px; background: linear-gradient(180deg, rgba(15,23,42,0.98), rgba(30,41,59,0.98)); backdrop-filter: blur(20px); border-left: 1px solid rgba(255,255,255,0.08); position: fixed; top: 0; right: 0; height: 100vh; z-index: 100; display: flex; flex-direction: column; transition: all 0.4s; overflow-y: auto; }
         .sidebar-header { padding: 28px 24px 20px; border-bottom: 1px solid rgba(255,255,255,0.08); text-align: center; }
         .sidebar-logo-icon { width: 56px; height: 56px; background: linear-gradient(135deg, #e63946, #ff6b6b); border-radius: 16px; display: inline-flex; align-items: center; justify-content: center; font-size: 1.6rem; color: #fff; margin-bottom: 12px; overflow: hidden; }
-        .role-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; font-weight: 700; margin-top: 8px; }
-        .role-badge.admin { background: linear-gradient(135deg, #e63946, #ff6b6b); }
-        .role-badge.assistant { background: linear-gradient(135deg, #4f46e5, #6366f1); }
+        .role-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; font-weight: 700; margin-top: 8px; background: linear-gradient(135deg, #e63946, #ff6b6b); }
         .sidebar-nav { flex: 1; padding: 12px; display: flex; flex-direction: column; gap: 4px; }
         .sidebar-nav a { display: flex; align-items: center; gap: 12px; padding: 12px 16px; color: #94a3b8; text-decoration: none; border-radius: 10px; transition: all 0.3s; font-weight: 500; font-size: 0.9rem; cursor: pointer; }
         .sidebar-nav a:hover { background: rgba(255,255,255,0.08); color: #fff; }
@@ -172,17 +163,12 @@
 <body>
     <div class="bg-particles" id="bg-particles"></div>
 
-    <!-- LOGIN OVERLAY -->
+    <!-- LOGIN OVERLAY - مدير واحد فقط -->
     <div class="login-overlay" id="login-overlay">
         <div class="login-card">
             <div class="login-logo" id="login-logo-main"><i class="fas fa-shield-halved"></i></div>
             <h2 id="login-store-name">Dar3a Store</h2>
-            <p id="login-subtitle">لوحة التحكم - اختر طريقة الدخول</p>
-            
-            <div class="role-selector" id="role-selector">
-                <button class="role-btn" data-role="admin"><i class="fas fa-crown"></i> مدير</button>
-                <button class="role-btn assistant" data-role="assistant"><i class="fas fa-user-friends"></i> مساعد</button>
-            </div>
+            <p id="login-subtitle">لوحة التحكم - دخول المدير</p>
             
             <div class="auth-step active" id="step-request">
                 <button class="telegram-btn" id="request-code-btn"><i class="fab fa-telegram-plane"></i> طلب كود التحقق</button>
@@ -220,11 +206,11 @@
             <div class="sidebar-header">
                 <div class="sidebar-logo-icon" id="sidebar-logo-icon-el"><i class="fas fa-shield-halved"></i></div>
                 <div style="font-size:1.3rem;font-weight:900;" id="sidebar-store-name">Dar3a Store</div>
-                <div><span class="role-badge" id="role-badge">مدير</span></div>
+                <div><span class="role-badge">مدير النظام</span></div>
             </div>
             <div class="user-info" id="user-info-sidebar" style="display:none;">
-                <div class="user-avatar"><i class="fas fa-user" id="user-avatar-icon"></i></div>
-                <div style="flex:1;"><div style="font-weight:700;" id="user-role-name">مدير النظام</div></div>
+                <div class="user-avatar"><i class="fas fa-user-cog"></i></div>
+                <div style="flex:1;"><div style="font-weight:700;">مدير النظام</div></div>
                 <button class="logout-btn" id="logout-btn"><i class="fas fa-sign-out-alt"></i> خروج</button>
             </div>
             <nav class="sidebar-nav">
@@ -329,66 +315,166 @@
                 </form>
             </div>
 
-            <!-- Inventory Panel -->
+            <!-- INVENTORY -->
             <div class="panel" id="panel-inventory">
-                <div class="panel-header"><h2><i class="fas fa-warehouse"></i> المخزون</h2></div>
-                <div class="table-container"><table id="inventory-table"><thead><tr><th>المنتج</th><th>النوع</th><th>السعر</th><th>المخزون</th><th>الحالة</th></tr></thead><tbody></tbody></table></div>
-            </div>
-
-            <!-- Coupons Panel -->
-            <div class="panel" id="panel-coupons">
-                <div class="panel-header"><h2><i class="fas fa-tags"></i> الكوبونات</h2><button class="btn btn-primary btn-sm" id="add-coupon-btn">+ كوبون</button></div>
-                <div id="coupons-list"></div>
-            </div>
-
-            <!-- PC Components Panel -->
-            <div class="panel" id="panel-pc-components">
-                <div class="panel-header"><h2><i class="fas fa-microchip"></i> قطع PC</h2></div>
-                <div class="table-container"><table id="components-table"><thead><tr><th>النوع</th><th>الاسم</th><th>السعر</th><th>إجراءات</th></tr></thead><tbody></tbody></table></div>
-            </div>
-
-            <!-- PC Games Panel -->
-            <div class="panel" id="panel-pcgames">
-                <div class="panel-header"><h2><i class="fas fa-desktop"></i> PC Games</h2><button class="btn btn-primary btn-sm" id="add-pcgames-btn"><i class="fas fa-plus"></i> إضافة لعبة PC</button></div>
-                <div class="table-container"><table id="pcgames-table"><thead><tr><th>الصورة</th><th>الاسم</th><th>الماركة</th><th>السعر</th><th>المخزون</th><th>إجراءات</th><tr></thead><tbody></tbody></table></div>
-            </div>
-
-            <!-- PlayStation Panel -->
-            <div class="panel" id="panel-playstation">
-                <div class="panel-header"><h2><i class="fab fa-playstation"></i> PlayStation Games</h2><button class="btn btn-primary btn-sm" id="add-playstation-btn"><i class="fas fa-plus"></i> إضافة لعبة PlayStation</button></div>
-                <div class="table-container"><table id="playstation-table"><thead><tr><th>الصورة</th><th>الاسم</th><th>الماركة</th><th>السعر</th><th>المخزون</th><th>إجراءات</th></tr></thead><tbody></tbody></table></div>
-            </div>
-
-            <!-- Orders Panel -->
-            <div class="panel" id="panel-orders">
-                <div class="panel-header"><h2><i class="fas fa-receipt"></i> الطلبات</h2></div>
-                <div class="table-container"><table id="orders-table"><thead><tr><th>التاريخ</th><th>المنتجات</th><th>الإجمالي</th></tr></thead><tbody></tbody></table></div>
-            </div>
-
-            <!-- Newsletter Panel -->
-            <div class="panel" id="panel-newsletter">
-                <div class="panel-header"><h2><i class="fas fa-envelope"></i> المشتركين</h2><button class="btn btn-danger btn-sm" id="clear-all-subscribers"><i class="fas fa-trash"></i> حذف الكل</button></div>
-                <div class="table-container"><table id="subscribers-table"><thead><tr><th>#</th><th>البريد الإلكتروني</th><th>تاريخ الاشتراك</th><th>إجراءات</th></tr></thead><tbody id="subscribers-list"></tbody></table></div>
-                <div class="stats-grid" style="margin-top:20px;"><div class="stat-card"><div class="stat-icon">📧</div><div class="stat-number" id="subscribers-count">0</div><div class="stat-label">إجمالي المشتركين</div></div></div>
-            </div>
-
-            <!-- Settings Panel -->
-            <div class="panel" id="panel-settings">
-                <div class="panel-header"><h2><i class="fas fa-cog"></i> إعدادات المتجر</h2></div>
-                <div class="settings-tabs">
-                    <button class="settings-tab active" data-stab="general"><i class="fas fa-store"></i> عام</button>
-                    <button class="settings-tab" data-stab="appearance"><i class="fas fa-palette"></i> المظهر</button>
-                    <button class="settings-tab" data-stab="logos"><i class="fas fa-image"></i> الشعارات</button>
-                    <button class="settings-tab" data-stab="developer"><i class="fas fa-code"></i> المطور</button>
+                <div class="panel-header"><h2><i class="fas fa-warehouse"></i> إدارة المخزون</h2></div>
+                <p style="color:#94a3b8;margin:12px 0;">تنبيهات تلقائية عند انخفاض المخزون (أقل من 5 قطع)</p>
+                <div class="table-container" style="margin-top:16px;">
+                    <table id="inventory-table">
+                        <thead><tr><th>المنتج</th><th>النوع</th><th>السعر</th><th>المخزون</th><th>الحالة</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
                 </div>
-                <div class="settings-section active" id="ss-general"><div class="form-grid"><div class="form-group"><label>اسم المتجر</label><input type="text" id="site-name" class="form-control"></div><div class="form-group"><label>الشعار النصي</label><input type="text" id="site-tagline" class="form-control"></div><div class="form-group"><label>العملة</label><select id="site-currency" class="form-control"><option value="ج.س">جنيه سوداني</option><option value="ج.م">جنيه مصري</option><option value="$">دولار</option></select></div><div class="form-group"><label>الهاتف</label><input type="text" id="store-phone" class="form-control"></div><div class="form-group"><label>واتساب</label><input type="text" id="store-whatsapp" class="form-control"></div><div class="form-group"><label>العنوان</label><input type="text" id="store-address" class="form-control"></div><div class="form-group"><label>ساعات العمل</label><input type="text" id="store-hours" class="form-control"></div><div class="form-group"><label>رابط المتجر</label><input type="url" id="store-website" class="form-control"></div></div></div>
-                <div class="settings-section" id="ss-appearance"><div class="form-grid"><div class="form-group"><label>اللون الأساسي</label><div class="color-picker-group"><input type="color" id="primary-color"><input type="text" id="primary-color-text" class="form-control"></div></div><div class="form-group"><label>اللون الثانوي</label><div class="color-picker-group"><input type="color" id="secondary-color"><input type="text" id="secondary-color-text" class="form-control"></div></div><div class="form-group"><label>تأثير الخلفية</label><select id="bg-animation" class="form-control"><option value="particles">جسيمات متحركة</option><option value="none">بدون</option></select></div></div></div>
-                <div class="settings-section" id="ss-logos"><div class="form-grid"><div class="form-group"><label>شعار المتجر</label><div class="logo-upload-area" id="main-logo-area"><i class="fas fa-cloud-upload-alt"></i><br><span style="font-size:0.8rem;">انقر للرفع</span><input type="file" id="main-logo-file" accept="image/*"></div><input type="text" id="main-logo-url" class="form-control" placeholder="رابط الشعار" style="margin-top:8px;"><img id="main-logo-preview" class="logo-preview" style="display:none;"></div><div class="form-group"><label>أيقونة Favicon</label><div class="logo-upload-area" id="favicon-area"><i class="fas fa-cloud-upload-alt"></i><br><span style="font-size:0.8rem;">انقر للرفع</span><input type="file" id="favicon-file" accept="image/*"></div><input type="text" id="favicon-url" class="form-control" placeholder="رابط Favicon" style="margin-top:8px;"><img id="favicon-preview" class="logo-preview" style="display:none;"></div><div class="form-group"><label>أيقونة المتجر</label><select id="logo-icon-select" class="form-control"><option value="fa-shield-halved">🛡️ درع</option><option value="fa-microchip">💻 معالج</option><option value="fa-store">🏪 متجر</option><option value="fa-crown">👑 تاج</option></select></div></div></div>
-                <div class="settings-section" id="ss-developer"><div class="form-grid"><div class="form-group"><label>اسم المطور</label><input type="text" id="dev-name" class="form-control"></div><div class="form-group"><label>رابط المطور</label><input type="url" id="dev-url" class="form-control"></div><div class="form-group"><label>نص الحقوق</label><input type="text" id="dev-copyright" class="form-control"></div><div class="form-group"><label>رابط المساعد الذكي</label><input type="url" id="dev-chatbot" class="form-control"></div></div></div>
-                <button class="btn btn-primary" id="save-all-settings-btn" style="margin-top:20px;width:100%;"><i class="fas fa-save"></i> حفظ جميع الإعدادات</button>
-                <hr style="border-color:rgba(255,255,255,0.08);margin:24px 0;">
-                <div style="display:flex;gap:8px;flex-wrap:wrap;"><button class="btn btn-primary" id="export-data-btn"><i class="fas fa-download"></i> تصدير</button><button class="btn btn-outline" id="import-data-btn"><i class="fas fa-upload"></i> استيراد</button><button class="btn btn-danger" id="reset-data-btn"><i class="fas fa-exclamation-triangle"></i> إعادة تعيين</button></div>
             </div>
+
+            <!-- COUPONS -->
+            <div class="panel" id="panel-coupons">
+                <div class="panel-header">
+                    <h2><i class="fas fa-tags"></i> إدارة الكوبونات</h2>
+                    <button class="btn btn-primary btn-sm" id="add-coupon-btn"><i class="fas fa-plus"></i> كوبون جديد</button>
+                </div>
+                <div id="coupons-list"></div>
+                <div id="coupon-form" style="display:none;background:rgba(255,255,255,0.03);padding:20px;border-radius:12px;margin-top:16px;border:1px solid rgba(255,255,255,0.08);">
+                    <h3 style="margin-bottom:14px;">كوبون جديد</h3>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                        <div class="form-group"><label>الكود *</label><input type="text" id="coupon-code" class="form-control" placeholder="مثال: WELCOME10" required></div>
+                        <div class="form-group"><label>النوع *</label><select id="coupon-type" class="form-control"><option value="percent">نسبة مئوية (%)</option><option value="fixed">مبلغ ثابت</option></select></div>
+                        <div class="form-group"><label>القيمة *</label><input type="number" id="coupon-value" class="form-control" min="1" required></div>
+                        <div class="form-group"><label>الحد الأدنى للطلب</label><input type="number" id="coupon-min" class="form-control" min="0" value="0"></div>
+                    </div>
+                    <div style="display:flex;gap:8px;margin-top:12px;">
+                        <button class="btn btn-primary btn-sm" id="save-coupon-btn"><i class="fas fa-save"></i> حفظ</button>
+                        <button class="btn btn-outline btn-sm" id="cancel-coupon-btn">إلغاء</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PC COMPONENTS -->
+            <div class="panel" id="panel-pc-components">
+                <div class="panel-header"><h2><i class="fas fa-microchip"></i> قطع تجميع PC</h2></div>
+                <div class="table-container" style="margin-top:16px;">
+                    <table id="components-table">
+                        <thead><tr><th>النوع</th><th>الاسم</th><th>السعر</th><th>إجراءات</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- PC GAMES -->
+            <div class="panel" id="panel-pcgames">
+                <div class="panel-header">
+                    <h2><i class="fas fa-desktop"></i> ألعاب الكمبيوتر</h2>
+                    <button class="btn btn-primary btn-sm" id="add-pcgames-btn"><i class="fas fa-plus"></i> إضافة لعبة PC</button>
+                </div>
+                <div class="table-container" style="margin-top:16px;">
+                    <table id="pcgames-table">
+                        <thead><tr><th>الصورة</th><th>الاسم</th><th>السعر</th><th>المخزون</th><th>إجراءات</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- PLAYSTATION -->
+            <div class="panel" id="panel-playstation">
+                <div class="panel-header">
+                    <h2><i class="fab fa-playstation"></i> ألعاب بلايستيشن</h2>
+                    <button class="btn btn-primary btn-sm" id="add-playstation-btn"><i class="fas fa-plus"></i> إضافة لعبة PS</button>
+                </div>
+                <div class="table-container" style="margin-top:16px;">
+                    <table id="playstation-table">
+                        <thead><tr><th>الصورة</th><th>الاسم</th><th>السعر</th><th>المخزون</th><th>إجراءات</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ORDERS -->
+            <div class="panel" id="panel-orders">
+                <div class="panel-header">
+                    <h2><i class="fas fa-receipt"></i> سجل الطلبات</h2>
+                    <button class="btn btn-danger btn-sm" id="clear-orders-btn"><i class="fas fa-trash"></i> مسح الكل</button>
+                </div>
+                <div class="table-container" style="margin-top:16px;">
+                    <table id="orders-table">
+                        <thead><tr><th>التاريخ</th><th>عدد المنتجات</th><th>الإجمالي</th><th>الكوبون</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+                <p id="no-orders-msg" style="text-align:center;padding:30px;color:#94a3b8;display:none;">لا توجد طلبات مسجلة</p>
+            </div>
+
+            <!-- NEWSLETTER -->
+            <div class="panel" id="panel-newsletter">
+                <div class="panel-header">
+                    <h2><i class="fas fa-envelope"></i> المشتركين في النشرة البريدية</h2>
+                    <button class="btn btn-danger btn-sm" id="clear-all-subscribers"><i class="fas fa-trash"></i> حذف الكل</button>
+                </div>
+                <div class="table-container" style="margin-top:16px;">
+                    <table>
+                        <thead><tr><th>#</th><th>البريد الإلكتروني</th><th>تاريخ الاشتراك</th><th>إجراءات</th></tr></thead>
+                        <tbody id="subscribers-list"></tbody>
+                    </table>
+                </div>
+                <p style="text-align:center;color:#94a3b8;margin-top:12px;">إجمالي المشتركين: <strong id="subscribers-count">0</strong></p>
+            </div>
+
+            <!-- SETTINGS -->
+            <div class="panel" id="panel-settings">
+                <div class="panel-header"><h2><i class="fas fa-cog"></i> الإعدادات</h2></div>
+                <div class="settings-tabs">
+                    <button class="settings-tab active" data-stab="general">⚙️ عام</button>
+                    <button class="settings-tab" data-stab="appearance">🎨 المظهر</button>
+                    <button class="settings-tab" data-stab="developer">👨‍💻 المطور</button>
+                </div>
+
+                <div class="settings-section active" id="ss-general">
+                    <div class="form-grid">
+                        <div class="form-group"><label>اسم المتجر</label><input type="text" id="site-name" class="form-control" placeholder="Dar3a Store"></div>
+                        <div class="form-group"><label>الشعار</label><input type="text" id="site-tagline" class="form-control" placeholder="أفلام • مسلسلات • برامج • ألعاب"></div>
+                        <div class="form-group"><label>العملة</label><input type="text" id="site-currency" class="form-control" placeholder="ج.س" maxlength="10"></div>
+                        <div class="form-group"><label>رقم الهاتف</label><input type="text" id="store-phone" class="form-control" placeholder="0922265656"></div>
+                        <div class="form-group"><label>رقم واتساب</label><input type="text" id="store-whatsapp" class="form-control" placeholder="0922265656"></div>
+                        <div class="form-group"><label>العنوان</label><input type="text" id="store-address" class="form-control" placeholder="السودان - امدرمان"></div>
+                        <div class="form-group"><label>ساعات العمل</label><input type="text" id="store-hours" class="form-control" placeholder="يومياً 10 ص - 10 م"></div>
+                        <div class="form-group"><label>الموقع الإلكتروني</label><input type="text" id="store-website" class="form-control" placeholder="https://dar3a-store.vercel.app"></div>
+                    </div>
+                </div>
+
+                <div class="settings-section" id="ss-appearance">
+                    <div class="form-grid">
+                        <div class="form-group"><label>اللون الأساسي</label><div class="color-picker-group"><input type="color" id="primary-color"><input type="text" id="primary-color-text" class="form-control" style="flex:1;" maxlength="7"></div></div>
+                        <div class="form-group"><label>اللون الثانوي</label><div class="color-picker-group"><input type="color" id="secondary-color"><input type="text" id="secondary-color-text" class="form-control" style="flex:1;" maxlength="7"></div></div>
+                        <div class="form-group"><label>أيقونة الشعار</label><select id="logo-icon-select" class="form-control"><option value="fa-shield-halved">🛡️ Shield</option><option value="fa-store">🏪 Store</option><option value="fa-crown">👑 Crown</option><option value="fa-rocket">🚀 Rocket</option><option value="fa-star">⭐ Star</option></select></div>
+                        <div class="form-group">
+                            <label>شعار المتجر (صورة)</label>
+                            <div class="logo-upload-area" id="main-logo-area"><i class="fas fa-cloud-upload-alt" style="font-size:1.5rem;display:block;margin-bottom:8px;"></i><span style="font-size:0.8rem;">انقر لرفع الشعار</span><input type="file" id="main-logo-file" accept="image/*"></div>
+                            <div style="display:flex;gap:8px;margin-top:8px;"><input type="text" id="main-logo-url" class="form-control" placeholder="أو رابط الشعار"><img id="main-logo-preview" class="logo-preview" style="display:none;"></div>
+                        </div>
+                        <div class="form-group">
+                            <label>أيقونة المتجر (Favicon)</label>
+                            <div class="logo-upload-area" id="favicon-area"><i class="fas fa-cloud-upload-alt" style="font-size:1.5rem;display:block;margin-bottom:8px;"></i><span style="font-size:0.8rem;">انقر لرفع الأيقونة</span><input type="file" id="favicon-file" accept="image/*"></div>
+                            <div style="display:flex;gap:8px;margin-top:8px;"><input type="text" id="favicon-url" class="form-control" placeholder="أو رابط الأيقونة"><img id="favicon-preview" class="logo-preview" style="display:none;"></div>
+                        </div>
+                        <div class="form-group"><label>خلفية متحركة</label><select id="bg-animation" class="form-control"><option value="particles">جزيئات</option><option value="none">بدون</option></select></div>
+                    </div>
+                </div>
+
+                <div class="settings-section" id="ss-developer">
+                    <div class="form-grid">
+                        <div class="form-group"><label>اسم المطور</label><input type="text" id="dev-name" class="form-control" placeholder="Mohamed Elnil"></div>
+                        <div class="form-group"><label>رابط المطور</label><input type="text" id="dev-url" class="form-control" placeholder="https://me-one-blue.vercel.app/about.html"></div>
+                        <div class="form-group"><label>حقوق النشر</label><input type="text" id="dev-copyright" class="form-control" placeholder="© 2026 Dar3a Store"></div>
+                        <div class="form-group"><label>رابط Chatbot</label><input type="text" id="dev-chatbot" class="form-control" placeholder="chat-bot.html"></div>
+                    </div>
+                    <div style="display:flex;gap:8px;margin-top:20px;flex-wrap:wrap;">
+                        <button class="btn btn-primary" id="save-all-settings-btn"><i class="fas fa-save"></i> حفظ جميع الإعدادات</button>
+                        <button class="btn btn-primary" id="export-data-btn"><i class="fas fa-download"></i> تصدير البيانات</button>
+                        <button class="btn btn-outline" id="import-data-btn"><i class="fas fa-upload"></i> استيراد بيانات</button>
+                        <button class="btn btn-danger" id="reset-data-btn"><i class="fas fa-trash-alt"></i> إعادة تعيين</button>
+                    </div>
+                </div>
+            </div>
+
         </main>
     </div>
 
@@ -408,9 +494,7 @@
             WHATSAPP_NUMBER: '0922265656',
             ADMIN_SESSION_KEY: 'dar3a_admin_session',
             TELEGRAM_BOT_TOKEN: '8723447348:AAGtKoujIGCtbLXuPUWAR-B-oweiOdcDCKk',
-            TELEGRAM_CHAT_ID: '6776057443',
-            ASSISTANT_BOT_TOKEN: '8722670397:AAFvypmlj5ebYYFWxheXbgXorOkPgthbnWo',
-            ASSISTANT_CHAT_ID: '665454768'
+            TELEGRAM_CHAT_ID: '6776057443'
         };
 
         // ==================== GLOBAL VARIABLES ====================
@@ -419,7 +503,6 @@
         let ordersLog = [];
         let subscribers = [];
         let editingId = null;
-        let currentLoginRole = null;
         let otpTimer = null;
         let otpTimeLeft = 0;
         let currentChallengeToken = null;
@@ -636,15 +719,14 @@
             const countEl = document.getElementById('subscribers-count');
             if (countEl) countEl.textContent = subscribers.length;
             if (!tbody) return;
-            if (subscribers.length === 0) { tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:40px;">لا يوجد مشتركين</td></tr>'; return; }
+            if (subscribers.length === 0) { tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:40px;">لا يوجد مشتركين</div></td>'; return; }
             tbody.innerHTML = subscribers.map((sub, index) => `
                 <tr>
-                    <td>${index + 1}</td>
-                    <td>${escapeHtml(sub.email)}</td>
-                    <td>${new Date(sub.date).toLocaleString('ar-EG')}</td>
-                    <td><button class="btn btn-danger btn-xs delete-subscriber" data-email="${escapeHtml(sub.email)}"><i class="fas fa-trash"></i> حذف</button></td>
-                </tr>
-            `).join('');
+                    <td>${index + 1}</div></td>
+                    <td>${escapeHtml(sub.email)}</div></td>
+                    <td>${new Date(sub.date).toLocaleString('ar-EG')}</div></td>
+                    <td><button class="btn btn-danger btn-xs delete-subscriber" data-email="${escapeHtml(sub.email)}"><i class="fas fa-trash"></i> حذف</button></div></td>
+                </tr>`).join('');
             document.querySelectorAll('.delete-subscriber').forEach(btn => {
                 btn.addEventListener('click', async function() {
                     const email = this.getAttribute('data-email');
@@ -826,137 +908,138 @@
                 <div class="stat-card"><div class="stat-icon">📧</div><div class="stat-number">${subscribers.length}</div><div class="stat-label">مشتركين</div></div>`;
         }
 
-        function renderProductsTable(filter='all') {
-            let f = filter==='all'?products:products.filter(p=>p.type===filter);
-            const tb = document.querySelector('#products-table tbody');
-            if(f.length===0){tb.innerHTML='<tr><td colspan="7" style="text-align:center;padding:40px;">لا توجد منتجات</td></tr>';return;}
-            tb.innerHTML = f.map(p=>`
+        function renderProductsTable(filterType = 'all') {
+            const tbody = document.querySelector('#products-table tbody');
+            if (!tbody) return;
+            const filtered = filterType === 'all' ? products : products.filter(p => p.type === filterType);
+            if (filtered.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:40px;">لا توجد منتجات</td></tr>';
+                return;
+            }
+            tbody.innerHTML = filtered.map(p => `
                 <tr>
-                    <td>${p.image?`<img src="${escapeHtml(p.image)}" class="product-thumb" onerror="this.style.display='none'">`:'📷'}</td>
-                    <td><strong>${escapeHtml(p.name)}</strong></td>
+                    <td><img src="${p.image || 'https://via.placeholder.com/48'}" class="product-thumb" onerror="this.src='https://via.placeholder.com/48'"></td>
+                    <td>${escapeHtml(p.name)}</td>
                     <td><span class="badge ${getBadgeClass(p.type)}">${getTypeLabel(p.type)}</span></td>
-                    <td>${escapeHtml(p.brand||'-')}</td>
-                    <td style="font-weight:700;color:var(--primary);">${formatPrice(p.price)}</td>
-                    <td>${p.stock||0}</td>
-                    <td style="display:flex;gap:6px;"><button class="btn btn-edit btn-xs edit-btn" data-id="${p.id}"><i class="fas fa-edit"></i> تعديل</button><button class="btn btn-danger btn-xs delete-btn" data-id="${p.id}"><i class="fas fa-trash"></i> حذف</button></td>
-                </tr>`).join('');
-            tb.querySelectorAll('.edit-btn').forEach(b=>b.addEventListener('click',function(){editProduct(this.dataset.id);}));
-            tb.querySelectorAll('.delete-btn').forEach(b=>b.addEventListener('click',function(){deleteProduct(this.dataset.id);}));
-        }
-
-        function renderGamesTables() {
-            const pcGames = products.filter(p => p.type === 'pcgames');
-            const pcTbody = document.querySelector('#pcgames-table tbody');
-            if(pcTbody) {
-                if(pcGames.length === 0) {
-                    pcTbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:40px;">لا توجد ألعاب PC</td></tr>';
-                } else {
-                    pcTbody.innerHTML = pcGames.map(p => `
-                        <tr>
-                            <td>${p.image?`<img src="${escapeHtml(p.image)}" class="product-thumb" onerror="this.style.display='none'">`:'📷'}</td>
-                            <td><strong>${escapeHtml(p.name)}</strong></td>
-                            <td>${escapeHtml(p.brand||'-')}</td>
-                            <td style="font-weight:700;color:var(--primary);">${formatPrice(p.price)}</td>
-                            <td>${p.stock||0}</td>
-                            <td style="display:flex;gap:6px;"><button class="btn btn-edit btn-xs edit-pcgames-btn" data-id="${p.id}"><i class="fas fa-edit"></i> تعديل</button><button class="btn btn-danger btn-xs delete-pcgames-btn" data-id="${p.id}"><i class="fas fa-trash"></i> حذف</button></td>
-                        </tr>`).join('');
-                    pcTbody.querySelectorAll('.edit-pcgames-btn').forEach(b=>b.addEventListener('click',function(){editProduct(this.dataset.id);}));
-                    pcTbody.querySelectorAll('.delete-pcgames-btn').forEach(b=>b.addEventListener('click',function(){deleteProduct(this.dataset.id);}));
-                }
-            }
-            
-            const psGames = products.filter(p => p.type === 'playstation');
-            const psTbody = document.querySelector('#playstation-table tbody');
-            if(psTbody) {
-                if(psGames.length === 0) {
-                    psTbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:40px;">لا توجد ألعاب PlayStation</td></tr>';
-                } else {
-                    psTbody.innerHTML = psGames.map(p => `
-                        <tr>
-                            <td>${p.image?`<img src="${escapeHtml(p.image)}" class="product-thumb" onerror="this.style.display='none'">`:'📷'}</td>
-                            <td><strong>${escapeHtml(p.name)}</strong></td>
-                            <td>${escapeHtml(p.brand||'-')}</td>
-                            <td style="font-weight:700;color:var(--primary);">${formatPrice(p.price)}</td>
-                            <td>${p.stock||0}</td>
-                            <td style="display:flex;gap:6px;"><button class="btn btn-edit btn-xs edit-psgames-btn" data-id="${p.id}"><i class="fas fa-edit"></i> تعديل</button><button class="btn btn-danger btn-xs delete-psgames-btn" data-id="${p.id}"><i class="fas fa-trash"></i> حذف</button></td>
-                        </tr>`).join('');
-                    psTbody.querySelectorAll('.edit-psgames-btn').forEach(b=>b.addEventListener('click',function(){editProduct(this.dataset.id);}));
-                    psTbody.querySelectorAll('.delete-psgames-btn').forEach(b=>b.addEventListener('click',function(){deleteProduct(this.dataset.id);}));
-                }
-            }
-        }
-
-        function renderComponentsTable() {
-            const comps = products.filter(p=>p.type==='component');
-            const tb = document.querySelector('#components-table tbody');
-            const labels = { cpu:'🧠 معالج', motherboard:'📟 لوحة أم', gpu:'🎮 كرت شاشة', ram:'🧮 ذاكرة', storage:'💾 تخزين', psu:'⚡ مزود طاقة', case:'📦 صندوق' };
-            if(!tb) return;
-            if(comps.length === 0) {
-                tb.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:30px;">لا توجد قطع</div></td>';
-            } else {
-                tb.innerHTML = comps.map(p => `
-                    <tr>
-                        <td><span class="badge badge-component">${labels[p.componentType] || p.componentType}</span></td>
-                        <td>${escapeHtml(p.name)}</div></td>
-                        <td>${formatPrice(p.price)}</div></td>
-                        <td><button class="btn btn-edit btn-xs edit-btn" data-id="${p.id}">تعديل</button><button class="btn btn-danger btn-xs delete-btn" data-id="${p.id}">حذف</button></td>
-                    </tr>`).join('');
-                tb.querySelectorAll('.edit-btn').forEach(b=>b.addEventListener('click',function(){editProduct(this.dataset.id);}));
-                tb.querySelectorAll('.delete-btn').forEach(b=>b.addEventListener('click',function(){deleteProduct(this.dataset.id);}));
-            }
+                    <td>${escapeHtml(p.brand || '-')}</td>
+                    <td>${formatPrice(p.price)}</td>
+                    <td><span style="color:${(p.stock || 0) < 5 ? '#ef4444' : '#22c55e'};font-weight:700;">${p.stock || 0}</span></td>
+                    <td><div style="display:flex;gap:6px;"><button class="btn btn-edit btn-xs edit-product" data-id="${p.id}"><i class="fas fa-edit"></i></button><button class="btn btn-danger btn-xs delete-product" data-id="${p.id}"><i class="fas fa-trash"></i></button></div></td>
+                </tr>
+            `).join('');
+            document.querySelectorAll('.edit-product').forEach(btn => btn.addEventListener('click', function() { editProduct(this.getAttribute('data-id')); }));
+            document.querySelectorAll('.delete-product').forEach(btn => btn.addEventListener('click', function() { deleteProduct(this.getAttribute('data-id')); }));
         }
 
         function renderInventoryTable() {
-            const tb = document.querySelector('#inventory-table tbody');
-            if(!tb) return;
-            tb.innerHTML = products.map(p => {
-                const s = p.stock || 0;
-                let st, sc;
-                if(s > 10) { st = 'متوفر'; sc = 'badge-active'; }
-                else if(s > 0) { st = 'منخفض'; sc = 'badge-programs'; }
-                else { st = 'نفذ'; sc = 'badge-inactive'; }
-                return `
-                    <tr>
-                        <td>${escapeHtml(p.name)}</div></td>
-                        <td><span class="badge ${getBadgeClass(p.type)}">${getTypeLabel(p.type)}</span></div></td>
-                        <td>${formatPrice(p.price)}</div></td>
-                        <td>${s}</div></td>
-                        <td><span class="badge ${sc}">${st}</span></div></td>
-                    </tr>`}).join('');
+            const tbody = document.querySelector('#inventory-table tbody');
+            if (!tbody) return;
+            const lowStock = products.filter(p => (p.stock || 0) < 10);
+            if (lowStock.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:40px;color:#22c55e;">✅ جميع المنتجات متوفرة بكمية كافية</td></tr>';
+                return;
+            }
+            tbody.innerHTML = lowStock.map(p => {
+                const stock = p.stock || 0;
+                const status = stock === 0 ? '❌ نفد' : stock < 5 ? '⚠️ منخفض' : '⚠️ محدود';
+                return `<tr>
+                    <td>${escapeHtml(p.name)}</td>
+                    <td><span class="badge ${getBadgeClass(p.type)}">${getTypeLabel(p.type)}</span></td>
+                    <td>${formatPrice(p.price)}</td>
+                    <td><span style="color:${stock === 0 ? '#ef4444' : '#f59e0b'};font-weight:700;">${stock}</span></td>
+                    <td style="color:${stock === 0 ? '#ef4444' : '#f59e0b'};">${status}</td>
+                </tr>`;
+            }).join('');
+        }
+
+        function renderComponentsTable() {
+            const tbody = document.querySelector('#components-table tbody');
+            if (!tbody) return;
+            const comps = products.filter(p => p.type === 'component');
+            if (comps.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:40px;">لا توجد قطع</td></tr>';
+                return;
+            }
+            const typeLabels = { cpu: '🧠 معالج', motherboard: '📟 لوحة أم', gpu: '🎮 كرت شاشة', ram: '🧮 ذاكرة', storage: '💾 تخزين', psu: '⚡ مزود طاقة', case: '📦 صندوق' };
+            tbody.innerHTML = comps.map(p => `
+                <tr>
+                    <td>${typeLabels[p.componentType] || p.componentType || '-'}</td>
+                    <td>${escapeHtml(p.name)}</td>
+                    <td>${formatPrice(p.price)}</td>
+                    <td><button class="btn btn-edit btn-xs edit-product" data-id="${p.id}"><i class="fas fa-edit"></i></button></td>
+                </tr>
+            `).join('');
+            document.querySelectorAll('#components-table .edit-product').forEach(btn => btn.addEventListener('click', function() { editProduct(this.getAttribute('data-id')); }));
+        }
+
+        function renderGamesTables() {
+            renderGameTable('pcgames', 'pcgames-table');
+            renderGameTable('playstation', 'playstation-table');
+        }
+
+        function renderGameTable(type, tableId) {
+            const tbody = document.querySelector('#' + tableId + ' tbody');
+            if (!tbody) return;
+            const items = products.filter(p => p.type === type);
+            if (items.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:40px;">لا توجد ألعاب</td></tr>';
+                return;
+            }
+            tbody.innerHTML = items.map(p => `
+                <tr>
+                    <td><img src="${p.image || 'https://via.placeholder.com/48'}" class="product-thumb" onerror="this.src='https://via.placeholder.com/48'"></td>
+                    <td>${escapeHtml(p.name)}</td>
+                    <td>${formatPrice(p.price)}</td>
+                    <td><span style="color:${(p.stock || 0) < 5 ? '#ef4444' : '#22c55e'};font-weight:700;">${p.stock || 0}</span></td>
+                    <td><div style="display:flex;gap:6px;"><button class="btn btn-edit btn-xs edit-product" data-id="${p.id}"><i class="fas fa-edit"></i></button><button class="btn btn-danger btn-xs delete-product" data-id="${p.id}"><i class="fas fa-trash"></i></button></div></td>
+                </tr>
+            `).join('');
+            document.querySelectorAll('#' + tableId + ' .edit-product').forEach(btn => btn.addEventListener('click', function() { editProduct(this.getAttribute('data-id')); }));
+            document.querySelectorAll('#' + tableId + ' .delete-product').forEach(btn => btn.addEventListener('click', function() { deleteProduct(this.getAttribute('data-id')); }));
         }
 
         function renderOrdersTable() {
-            const tb = document.querySelector('#orders-table tbody');
-            if(!tb) return;
-            tb.innerHTML = ordersLog.length ? ordersLog.map(o => `
+            const tbody = document.querySelector('#orders-table tbody');
+            const noMsg = document.getElementById('no-orders-msg');
+            if (!tbody) return;
+            if (ordersLog.length === 0) {
+                tbody.innerHTML = '';
+                if (noMsg) noMsg.style.display = 'block';
+                return;
+            }
+            if (noMsg) noMsg.style.display = 'none';
+            tbody.innerHTML = ordersLog.slice().reverse().map(o => `
                 <tr>
                     <td>${new Date(o.date).toLocaleString('ar-EG')}</td>
-                    <td>${o.items?.length || 0}</td>
-                    <td>${formatPrice(o.finalTotal)}</div></td>
-                </tr>`).join('') : '<tr><td colspan="3" style="text-align:center;padding:30px;">لا توجد طلبات</div></tr>';
+                    <td>${o.itemCount || o.items?.length || 0}</td>
+                    <td style="color:var(--primary);font-weight:700;">${formatPrice(o.total)}</td>
+                    <td>${o.coupon || '-'}</td>
+                </tr>
+            `).join('');
         }
 
         function renderCoupons() {
-            const l = document.getElementById('coupons-list');
-            if(!l) return;
-            l.innerHTML = coupons.length ? coupons.map((c,i) => `
-                <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:18px;display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-                    <span style="font-family:monospace;font-weight:700;">${escapeHtml(c.code)}</span>
-                    <span>${c.discount}${c.type==='percent'?'%':' '+siteSettings.currency}</span>
-                    <button class="btn btn-danger btn-xs delete-coupon-btn" data-code="${escapeHtml(c.code)}">🗑️</button>
-                </div>`).join('') : '<p style="text-align:center;padding:30px;">لا توجد كوبونات</p>';
-            
-            document.querySelectorAll('.delete-coupon-btn').forEach(btn => {
-                btn.addEventListener('click', async function() {
-                    const code = this.getAttribute('data-code');
-                    if (confirm(`حذف كوبون ${code}؟`)) {
-                        await deleteCouponFromServer(code);
-                        await loadCouponsFromServer();
-                        renderCoupons();
-                        showToast('✅ تم حذف الكوبون');
-                    }
-                });
-            });
+            const list = document.getElementById('coupons-list');
+            if (!list) return;
+            if (coupons.length === 0) {
+                list.innerHTML = '<div style="text-align:center;padding:30px;color:var(--text-muted);">لا توجد كوبونات</div>';
+                return;
+            }
+            list.innerHTML = coupons.map((c, i) => `
+                <div style="display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:16px;margin-bottom:8px;">
+                    <div><strong style="color:#22c55e;">${escapeHtml(c.code)}</strong><br><span style="font-size:0.8rem;color:var(--text-muted);">${c.type === 'percent' ? c.discount + '%' : formatPrice(c.discount)} خصم ${c.minOrder > 0 ? ' (أدنى طلب: ' + formatPrice(c.minOrder) + ')' : ''}</span></div>
+                    <button class="btn btn-danger btn-xs delete-coupon" data-code="${escapeHtml(c.code)}"><i class="fas fa-trash"></i></button>
+                </div>
+            `).join('');
+            document.querySelectorAll('.delete-coupon').forEach(btn => btn.addEventListener('click', async function() {
+                const code = this.getAttribute('data-code');
+                if (confirm(`حذف الكوبون ${code}؟`)) {
+                    await deleteCouponFromServer(code);
+                    await loadCouponsFromServer();
+                    renderCoupons();
+                    showToast('✅ تم حذف الكوبون');
+                }
+            }));
         }
 
         // ==================== PRODUCT FORM ====================
@@ -1141,31 +1224,16 @@
             document.getElementById('products-count').textContent = products.length;
         }
 
-        // ==================== DUAL ADMIN LOGIN SYSTEM ====================
+        // ==================== SINGLE ADMIN LOGIN SYSTEM ====================
         function checkExistingSession() {
             const session = sessionStorage.getItem(CONFIG.ADMIN_SESSION_KEY);
             if(session) {
                 try {
                     const data = JSON.parse(session);
                     if(data.expires > Date.now()) {
-                        currentLoginRole = data.role;
                         sessionToken = data.sessionToken;
                         document.getElementById('login-overlay').classList.add('hidden');
                         document.getElementById('user-info-sidebar').style.display = 'flex';
-                        const roleBadge = document.getElementById('role-badge');
-                        const userRoleName = document.getElementById('user-role-name');
-                        const userAvatarIcon = document.getElementById('user-avatar-icon');
-                        if(currentLoginRole === 'assistant') {
-                            roleBadge.textContent = 'مساعد';
-                            roleBadge.className = 'role-badge assistant';
-                            userRoleName.textContent = 'المساعد';
-                            userAvatarIcon.className = 'fas fa-user-friends';
-                        } else {
-                            roleBadge.textContent = 'مدير';
-                            roleBadge.className = 'role-badge admin';
-                            userRoleName.textContent = 'مدير النظام';
-                            userAvatarIcon.className = 'fas fa-crown';
-                        }
                         return true;
                     }
                 } catch(e) {}
@@ -1173,37 +1241,6 @@
             return false;
         }
 
-        function openAdminLogin(role = 'admin') {
-            currentLoginRole = role;
-            const loginOverlay = document.getElementById('login-overlay');
-            const roleSelector = document.getElementById('role-selector');
-            const subtitle = document.getElementById('login-subtitle');
-            
-            if(role === 'assistant') {
-                roleSelector.style.display = 'none';
-                subtitle.textContent = 'لوحة التحكم - دخول المساعد';
-            } else {
-                roleSelector.style.display = 'flex';
-                subtitle.textContent = 'لوحة التحكم - اختر طريقة الدخول';
-            }
-            
-            loginOverlay.classList.remove('hidden');
-            showStep('request');
-            for(let i = 1; i <= 6; i++) {
-                const inp = document.getElementById('otp-' + i);
-                if(inp) inp.value = '';
-            }
-        }
-        
-        function closeAdminLogin() {
-            document.getElementById('login-overlay').classList.add('hidden');
-            clearInterval(otpTimer);
-            for(let i = 1; i <= 6; i++) {
-                const inp = document.getElementById('otp-' + i);
-                if(inp) inp.value = '';
-            }
-        }
-        
         function showStep(step) {
             document.querySelectorAll('.auth-step').forEach(s => s.classList.remove('active'));
             const el = document.getElementById('step-' + step);
@@ -1228,7 +1265,7 @@
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        role: currentLoginRole,
+                        role: 'admin',
                         storeName: siteSettings.name
                     })
                 });
@@ -1274,7 +1311,7 @@
                     body: JSON.stringify({
                         otp: entered,
                         challengeToken: currentChallengeToken,
-                        role: currentLoginRole
+                        role: 'admin'
                     })
                 });
                 
@@ -1286,7 +1323,6 @@
                     clearInterval(otpTimer);
                     
                     sessionStorage.setItem(CONFIG.ADMIN_SESSION_KEY, JSON.stringify({
-                        role: currentLoginRole,
                         sessionToken: data.sessionToken,
                         expires: data.expiresAt
                     }));
@@ -1294,21 +1330,6 @@
                     showToast('✅ تم التحقق بنجاح!');
                     document.getElementById('login-overlay').classList.add('hidden');
                     document.getElementById('user-info-sidebar').style.display = 'flex';
-                    
-                    const roleBadge = document.getElementById('role-badge');
-                    const userRoleName = document.getElementById('user-role-name');
-                    const userAvatarIcon = document.getElementById('user-avatar-icon');
-                    if(currentLoginRole === 'assistant') {
-                        roleBadge.textContent = 'مساعد';
-                        roleBadge.className = 'role-badge assistant';
-                        userRoleName.textContent = 'المساعد';
-                        userAvatarIcon.className = 'fas fa-user-friends';
-                    } else {
-                        roleBadge.textContent = 'مدير';
-                        roleBadge.className = 'role-badge admin';
-                        userRoleName.textContent = 'مدير النظام';
-                        userAvatarIcon.className = 'fas fa-crown';
-                    }
                     
                     await loadSettingsFromServer();
                     await refreshAll();
@@ -1357,7 +1378,6 @@
         function logout() {
             if(confirm('هل تريد تسجيل الخروج؟')) {
                 sessionStorage.removeItem(CONFIG.ADMIN_SESSION_KEY);
-                currentLoginRole = null;
                 sessionToken = null;
                 currentChallengeToken = null;
                 document.getElementById('login-overlay').classList.remove('hidden');
@@ -1410,14 +1430,33 @@
             document.getElementById('filter-type')?.addEventListener('change', function() { renderProductsTable(this.value); });
             
             // Coupons
-            document.getElementById('add-coupon-btn')?.addEventListener('click', async () => {
-                const c = prompt('كود الكوبون:'); if(!c) return;
-                const d = parseFloat(prompt('قيمة الخصم:')); if(!d) return;
-                const newCoupon = { code: c.toUpperCase(), discount: d, type: 'percent', active: true, minOrder: 0 };
+            document.getElementById('add-coupon-btn')?.addEventListener('click', () => {
+                document.getElementById('coupon-form').style.display = 'block';
+            });
+            document.getElementById('save-coupon-btn')?.addEventListener('click', async () => {
+                const code = document.getElementById('coupon-code').value.trim().toUpperCase();
+                const type = document.getElementById('coupon-type').value;
+                const value = parseFloat(document.getElementById('coupon-value').value);
+                const minOrder = parseFloat(document.getElementById('coupon-min').value) || 0;
+                if (!code || !value) { showToast('❌ أكمل البيانات'); return; }
+                const newCoupon = { code, discount: value, type, active: true, minOrder };
                 await addCouponToServer(newCoupon);
                 await loadCouponsFromServer();
                 renderCoupons();
+                document.getElementById('coupon-form').style.display = 'none';
+                document.getElementById('coupon-code').value = '';
+                document.getElementById('coupon-value').value = '';
                 showToast('✅ تم إضافة الكوبون');
+            });
+            document.getElementById('cancel-coupon-btn')?.addEventListener('click', () => {
+                document.getElementById('coupon-form').style.display = 'none';
+            });
+            document.getElementById('clear-orders-btn')?.addEventListener('click', async () => {
+                if (confirm('⚠️ مسح جميع الطلبات؟')) {
+                    ordersLog = [];
+                    renderOrdersTable();
+                    showToast('🗑️ تم مسح الطلبات');
+                }
             });
             
             // Mobile menu
@@ -1523,14 +1562,6 @@
                 showStep('request');
             });
             
-            // Role selection
-            document.querySelectorAll('.role-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const role = btn.getAttribute('data-role');
-                    openAdminLogin(role);
-                });
-            });
-            
             // OTP inputs
             for(let i = 1; i <= 6; i++) {
                 const inp = document.getElementById('otp-' + i);
@@ -1575,7 +1606,7 @@
 
         // ==================== INITIALIZATION ====================
         async function init() {
-            console.log('🚀 بدء تشغيل لوحة التحكم - مع Supabase');
+            console.log('🚀 بدء تشغيل لوحة التحكم - مدير واحد');
             createParticles();
             bindEvents();
             addSpecRow();
@@ -1587,7 +1618,7 @@
                 await loadSettingsFromServer();
                 await refreshAll();
                 applyAllSettings();
-                console.log('✅ تم تسجيل الدخول تلقائياً كـ: ' + currentLoginRole);
+                console.log('✅ تم تسجيل الدخول تلقائياً');
             }
         }
         
