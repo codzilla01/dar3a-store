@@ -2,7 +2,7 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../database');
-const { verifyAdmin } = require('../middleware/auth');
+const { requireAdmin } = require('../admin-auth');
 
 // GET جميع المنتجات (عام)
 router.get('/', async (req, res) => {
@@ -30,7 +30,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // POST حفظ جميع المنتجات (مدير فقط)
-router.post('/', verifyAdmin, async (req, res) => {
+router.post('/', requireAdmin, async (req, res) => {
     try {
         const { products } = req.body;
         if (!Array.isArray(products)) {
@@ -45,7 +45,7 @@ router.post('/', verifyAdmin, async (req, res) => {
 });
 
 // POST إضافة منتج (مدير فقط)
-router.post('/add', verifyAdmin, async (req, res) => {
+router.post('/add', requireAdmin, async (req, res) => {
     try {
         const product = req.body;
         if (!product.name || !product.price) {
@@ -63,7 +63,7 @@ router.post('/add', verifyAdmin, async (req, res) => {
 });
 
 // PUT تحديث منتج (مدير فقط)
-router.put('/:id', verifyAdmin, async (req, res) => {
+router.put('/:id', requireAdmin, async (req, res) => {
     try {
         const product = req.body;
         const result = await db.updateProduct(req.params.id, product);
@@ -78,7 +78,7 @@ router.put('/:id', verifyAdmin, async (req, res) => {
 });
 
 // DELETE حذف منتج (مدير فقط)
-router.delete('/:id', verifyAdmin, async (req, res) => {
+router.delete('/:id', requireAdmin, async (req, res) => {
     try {
         const success = await db.deleteProduct(req.params.id);
         if (!success) {
