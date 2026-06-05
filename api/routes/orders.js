@@ -2,10 +2,10 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../database');
-const { verifyAdmin } = require('../middleware/auth');
+const { requireAdmin } = require('../admin-auth');
 
 // GET جميع الطلبات (مدير فقط)
-router.get('/', verifyAdmin, async (req, res) => {
+router.get('/', requireAdmin, async (req, res) => {
     try {
         const orders = await db.getOrders();
         res.json(orders);
@@ -36,7 +36,7 @@ router.post('/', async (req, res) => {
 });
 
 // DELETE حذف طلب (مدير فقط)
-router.delete('/:id', verifyAdmin, async (req, res) => {
+router.delete('/:id', requireAdmin, async (req, res) => {
     try {
         const success = await db.deleteOrder(req.params.id);
         if (!success) {
@@ -50,7 +50,7 @@ router.delete('/:id', verifyAdmin, async (req, res) => {
 });
 
 // DELETE مسح جميع الطلبات (مدير فقط)
-router.delete('/clear/all', verifyAdmin, async (req, res) => {
+router.delete('/clear/all', requireAdmin, async (req, res) => {
     try {
         await db.clearAllOrders();
         res.json({ success: true, message: 'تم مسح جميع الطلبات' });
