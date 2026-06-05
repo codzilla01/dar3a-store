@@ -2,10 +2,10 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../database');
-const { verifyAdmin } = require('../middleware/auth');
+const { requireAdmin } = require('../admin-auth');
 
 // GET جميع الكوبونات (مدير فقط)
-router.get('/', verifyAdmin, async (req, res) => {
+router.get('/', requireAdmin, async (req, res) => {
     try {
         const coupons = await db.getCoupons();
         res.json(coupons);
@@ -16,14 +16,13 @@ router.get('/', verifyAdmin, async (req, res) => {
 });
 
 // POST إضافة كوبون جديد (مدير فقط)
-router.post('/', verifyAdmin, async (req, res) => {
+router.post('/', requireAdmin, async (req, res) => {
     try {
         const coupon = req.body;
         if (!coupon.code || !coupon.discount) {
             return res.status(400).json({ error: 'الكود والخصم مطلوبان' });
         }
         
-        // التحقق من وجود الكوبون مسبقاً
         const existing = await db.getCouponByCode(coupon.code);
         if (existing) {
             return res.status(400).json({ error: 'الكوبون موجود بالفعل' });
@@ -42,7 +41,7 @@ router.post('/', verifyAdmin, async (req, res) => {
 });
 
 // DELETE حذف كوبون (مدير فقط)
-router.delete('/', verifyAdmin, async (req, res) => {
+router.delete('/', requireAdmin, async (req, res) => {
     try {
         const { couponCode } = req.body;
         if (!couponCode) {
