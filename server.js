@@ -21,7 +21,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // تشغيل الخادم
 app.listen(PORT, () => {
-    console.log(`🚀 متجر Dar3a يعمل على المنفذ ${PORT}`);
-    console.log(`🌐 http://localhost:${PORT}`);
-    console.log(`📁 الملفات الثابتة: ${path.join(__dirname, 'public')}`);
+    console.log('🚀 متجر Dar3a Store يعمل على المنفذ ' + PORT);
+    console.log('🌐 http://localhost:' + PORT);
+    console.log('✅ المفتاح السري موجود وطوله:', process.env.ADMIN_JWT_SECRET ? process.env.ADMIN_JWT_SECRET.length : 'غير موجود');
 });
