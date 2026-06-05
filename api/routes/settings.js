@@ -2,7 +2,7 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../database');
-const { verifyAdmin } = require('../middleware/auth');
+const { requireAdmin } = require('../admin-auth');
 
 // GET إعدادات المتجر (عام)
 router.get('/', async (req, res) => {
@@ -24,7 +24,7 @@ router.get('/', async (req, res) => {
 });
 
 // POST حفظ الإعدادات (مدير فقط)
-router.post('/', verifyAdmin, async (req, res) => {
+router.post('/', requireAdmin, async (req, res) => {
     try {
         const settings = req.body;
         const success = await db.saveSettings(settings);
