@@ -2,7 +2,7 @@
   "version": 2,
   "builds": [
     {
-      "src": "server.js",
+      "src": "index.js",
       "use": "@vercel/node"
     },
     {
@@ -13,7 +13,7 @@
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "/server.js"
+      "dest": "/index.js"
     },
     {
       "src": "/(.*)",
@@ -23,7 +23,7 @@
   "env": {
     "SUPABASE_URL": "https://xymosmtvavwsgqzgepjm.supabase.co",
     "SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5bW9zbXR2YXZ3c2dxemdlcGlqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkzMjU1NDYsImV4cCI6MjA2NDkwMTU0Nn0.B4NxX6kR74_1pK-i38o_dXgCvYpzU1CnVt3T4w-OiY",
-    "ADMIN_JWT_SECRET": "dvpHiueQCQAkzFqoNzfQLkGuEXNMJfRh",
+    "ADMIN_JWT_SECRET": "admin_jwt_secret",
     "TELEGRAM_BOT_TOKEN": "8723447348:AAGtKoujIGCtbLXuPUWAR-B-oweiOdcDCKk",
     "TELEGRAM_CHAT_ID": "6776057443"
   }
