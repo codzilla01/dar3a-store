@@ -1,12 +1,12 @@
-// database.js
+// database.js - نسخة Vercel فقط
 const { createClient } = require('@supabase/supabase-js');
 
+// تهيئة اتصال Supabase
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_ANON_KEY;
 
 if (!supabaseUrl || !supabaseKey) {
-    console.error('❌ SUPABASE_URL و SUPABASE_ANON_KEY مطلوبان في متغيرات البيئة');
-    process.exit(1);
+    throw new Error('❌ SUPABASE_URL و SUPABASE_ANON_KEY مطلوبان في متغيرات البيئة');
 }
 
 const supabase = createClient(supabaseUrl, supabaseKey);
@@ -79,6 +79,7 @@ async function deleteProduct(id) {
 }
 
 async function replaceAllProducts(products) {
+    // حذف الكل أولاً
     const { error: deleteError } = await supabase
         .from('products')
         .delete()
@@ -86,6 +87,7 @@ async function replaceAllProducts(products) {
     
     if (deleteError) throw new Error(`خطأ في حذف المنتجات: ${deleteError.message}`);
     
+    // إدراج المنتجات الجديدة
     if (products && products.length > 0) {
         const { error: insertError } = await supabase
             .from('products')
@@ -95,17 +97,6 @@ async function replaceAllProducts(products) {
     }
     
     return true;
-}
-
-async function getProductsByType(type) {
-    const products = await getProducts();
-    return products.filter(p => p.type === type);
-}
-
-async function searchProducts(query) {
-    const products = await getProducts();
-    const searchTerm = query.toLowerCase();
-    return products.filter(p => p.name && p.name.toLowerCase().includes(searchTerm));
 }
 
 // ============================================
@@ -203,6 +194,7 @@ async function getSubscribers() {
 }
 
 async function addSubscriber(email) {
+    // التحقق من وجود البريد بالفعل
     const { data: existing, error: checkError } = await supabase
         .from('subscribers')
         .select('email')
@@ -293,6 +285,59 @@ async function clearAllOrders() {
 }
 
 // ============================================
+// دوال جلسات المدير
+// ============================================
+
+async function saveAdminSession(sessionToken, expiresAt) {
+    const { error } = await supabase
+        .from('admin_sessions')
+        .upsert({
+            token: sessionToken,
+            expires_at: new Date(expiresAt).toISOString(),
+            created_at: new Date().toISOString()
+        });
+    
+    if (error) throw new Error(`خطأ في حفظ جلسة المدير: ${error.message}`);
+    return true;
+}
+
+async function verifyAdminSession(sessionToken) {
+    const { data, error } = await supabase
+        .from('admin_sessions')
+        .select('*')
+        .eq('token', sessionToken)
+        .single();
+    
+    if (error && error.code !== 'PGRST116') {
+        throw new Error(`خطأ في التحقق من جلسة المدير: ${error.message}`);
+    }
+    
+    if (!data) return false;
+    if (new Date(data.expires_at) < new Date()) return false;
+    return true;
+}
+
+async function deleteAdminSession(sessionToken) {
+    const { error } = await supabase
+        .from('admin_sessions')
+        .delete()
+        .eq('token', sessionToken);
+    
+    if (error) throw new Error(`خطأ في حذف جلسة المدير: ${error.message}`);
+    return true;
+}
+
+async function cleanExpiredSessions() {
+    const { error } = await supabase
+        .from('admin_sessions')
+        .delete()
+        .lt('expires_at', new Date().toISOString());
+    
+    if (error) throw new Error(`خطأ في تنظيف الجلسات: ${error.message}`);
+    return true;
+}
+
+// ============================================
 // تصدير الدوال
 // ============================================
 
@@ -303,8 +348,6 @@ module.exports = {
     updateProduct,
     deleteProduct,
     replaceAllProducts,
-    getProductsByType,
-    searchProducts,
     getSettings,
     saveSettings,
     getCoupons,
@@ -319,5 +362,9 @@ module.exports = {
     addOrder,
     deleteOrder,
     clearAllOrders,
+    saveAdminSession,
+    verifyAdminSession,
+    deleteAdminSession,
+    cleanExpiredSessions,
     supabase
 };
