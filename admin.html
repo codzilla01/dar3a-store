@@ -507,7 +507,6 @@
 
                 <!-- قسم إدارة البيانات الجديد -->
                 <div class="settings-section" id="ss-data">
-                    <!-- النسخ الاحتياطي الكامل -->
                     <div class="data-management-section">
                         <h4><i class="fas fa-database"></i> النسخ الاحتياطي الكامل</h4>
                         <div class="btn-grid">
@@ -520,7 +519,6 @@
                         </div>
                     </div>
 
-                    <!-- تصدير البيانات -->
                     <div class="data-management-section">
                         <h4><i class="fas fa-download"></i> تصدير البيانات</h4>
                         <h5><i class="fas fa-boxes"></i> تصدير حسب النوع</h5>
@@ -543,7 +541,6 @@
                         </div>
                     </div>
 
-                    <!-- استيراد البيانات -->
                     <div class="data-management-section">
                         <h4><i class="fas fa-upload"></i> استيراد البيانات</h4>
                         <h5><i class="fas fa-boxes"></i> استيراد المنتجات</h5>
@@ -563,7 +560,6 @@
                         </div>
                     </div>
 
-                    <!-- أدوات إضافية -->
                     <div class="data-management-section">
                         <h4><i class="fas fa-tools"></i> أدوات إضافية</h4>
                         <div class="btn-grid">
@@ -661,19 +657,34 @@
             }
         }
 
-        // ✅ تم التعديل: تنظيف المنتجات من الحقول غير المتوافقة مع قاعدة البيانات
+        // ✅ تنظيف المنتجات: تحويل جميع حقول camelCase إلى snake_case
+        function cleanProductForDB(p) {
+            const cleaned = {};
+            for (const key in p) {
+                if (key === 'createdAt') {
+                    cleaned['created_at'] = p.created_at || p.createdAt || new Date().toISOString();
+                } else if (key === 'updatedAt') {
+                    cleaned['updated_at'] = p.updated_at || p.updatedAt || new Date().toISOString();
+                } else if (key === 'componentType') {
+                    cleaned['component_type'] = p.componentType || p.component_type || null;
+                } else {
+                    cleaned[key] = p[key];
+                }
+            }
+            // ضمان وجود التواريخ
+            if (!cleaned.created_at) cleaned.created_at = new Date().toISOString();
+            if (!cleaned.updated_at) cleaned.updated_at = new Date().toISOString();
+            // حذف أي حقول camelCase متبقية
+            delete cleaned.createdAt;
+            delete cleaned.updatedAt;
+            delete cleaned.componentType;
+            return cleaned;
+        }
+
         async function saveProductsToServer() {
             if (!sessionToken) return false;
             try {
-                // تنظيف المنتجات: إزالة الحقول غير الموجودة في قاعدة البيانات
-                const cleanedProducts = products.map(p => {
-                    const { createdAt, updatedAt, ...rest } = p;
-                    return {
-                        ...rest,
-                        created_at: p.created_at || p.createdAt || new Date().toISOString(),
-                        updated_at: new Date().toISOString()
-                    };
-                });
+                const cleanedProducts = products.map(cleanProductForDB);
                 
                 await apiFetch('/api/products', {
                     method: 'POST',
@@ -698,21 +709,20 @@
             }
         }
 
-        // ✅ تم التعديل: إرسال settings بدون حقل updated_at (الخادم يضيفه)
         async function saveSettingsToServer() {
-    if (!sessionToken) return false;
-    try {
-        await apiFetch('/api/settings', {
-            method: 'POST',
-            body: JSON.stringify(siteSettings)
-        });
-        return true;
-    } catch (e) {
-        console.error('Failed to save settings:', e);
-        showToast('❌ فشل حفظ الإعدادات');
-        return false;
-    }
-}
+            if (!sessionToken) return false;
+            try {
+                await apiFetch('/api/settings', {
+                    method: 'POST',
+                    body: JSON.stringify(siteSettings)
+                });
+                return true;
+            } catch (e) {
+                console.error('Failed to save settings:', e);
+                showToast('❌ فشل حفظ الإعدادات');
+                return false;
+            }
+        }
 
         async function loadCouponsFromServer() {
             try {
@@ -1082,7 +1092,7 @@
             const typeLabels = { cpu: '🧠 معالج', motherboard: '📟 لوحة أم', gpu: '🎮 كرت شاشة', ram: '🧮 ذاكرة', storage: '💾 تخزين', psu: '⚡ مزود طاقة', case: '📦 صندوق' };
             tbody.innerHTML = comps.map(p => `
                 <tr>
-                    <td>${typeLabels[p.componentType] || p.componentType || '-'}</td>
+                    <td>${typeLabels[p.component_type] || typeLabels[p.componentType] || p.component_type || p.componentType || '-'}</td>
                     <td>${escapeHtml(p.name)}</td>
                     <td>${formatPrice(p.price)}</td>
                     <td><button class="btn btn-edit btn-xs edit-product" data-id="${p.id}"><i class="fas fa-edit"></i></button></td>
@@ -1215,7 +1225,8 @@
             }
             
             document.getElementById('comp-type-group').style.display = p.type === 'component' ? 'block' : 'none';
-            if(p.type === 'component') document.getElementById('comp-type').value = p.componentType || 'cpu';
+            // ✅ استخدام component_type (snake_case)
+            if(p.type === 'component') document.getElementById('comp-type').value = p.component_type || p.componentType || 'cpu';
             const sc = document.getElementById('specs-container');
             sc.innerHTML = '';
             if(p.specs && Object.keys(p.specs).length) {
@@ -1255,7 +1266,7 @@
             c.appendChild(r);
         }
         
-        // ✅ تم التعديل: استخدام created_at و updated_at فقط (بدون createdAt)
+        // ✅ استخدام component_type (snake_case) بالكامل
         async function saveProduct(e) {
             e.preventDefault();
             const name = document.getElementById('prod-name').value.trim();
@@ -1281,11 +1292,15 @@
                 created_at: editingId ? (products.find(p => p.id === editingId)?.created_at || new Date().toISOString()) : new Date().toISOString(),
                 updated_at: new Date().toISOString()
             };
-            // ✅ إزالة أي حقول camelCase قد تكون موجودة
+            
+            // ✅ استخدام component_type بدلاً من componentType
+            if(type === 'component') product.component_type = document.getElementById('comp-type').value || 'cpu';
+            
+            // ✅ حذف أي حقول camelCase
             delete product.createdAt;
             delete product.updatedAt;
+            delete product.componentType;
             
-            if(type === 'component') product.componentType = document.getElementById('comp-type').value || 'cpu';
             if(editingId) {
                 const idx = products.findIndex(p => p.id === editingId);
                 if(idx !== -1) { products[idx] = product; showToast('✅ تم تحديث المنتج!'); }
@@ -1550,7 +1565,7 @@
             }
         }
 
-        // ✅ تم التعديل: تنظيف المنتجات المستوردة من حقول camelCase
+        // ✅ تنظيف المنتجات المستوردة
         async function importProductsOnly(merge = true) {
             const input = document.createElement('input');
             input.type = 'file';
@@ -1569,14 +1584,7 @@
                         else throw new Error('تنسيق ملف غير صالح');
                         
                         // ✅ تنظيف المنتجات المستوردة
-                        newProducts = newProducts.map(p => {
-                            const { createdAt, updatedAt, ...rest } = p;
-                            return {
-                                ...rest,
-                                created_at: p.created_at || p.createdAt || new Date().toISOString(),
-                                updated_at: p.updated_at || p.updatedAt || new Date().toISOString()
-                            };
-                        });
+                        newProducts = newProducts.map(cleanProductForDB);
                         
                         if (merge) {
                             const existingIds = new Set(products.map(p => p.id));
