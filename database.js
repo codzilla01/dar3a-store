@@ -1,7 +1,6 @@
 // database.js - نسخة Vercel فقط
 const { createClient } = require('@supabase/supabase-js');
 
-// تهيئة اتصال Supabase
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_ANON_KEY;
 
@@ -11,6 +10,32 @@ if (!supabaseUrl || !supabaseKey) {
 
 const supabase = createClient(supabaseUrl, supabaseKey);
 console.log('✅ Supabase initialized successfully');
+
+// ============================================
+// دالة تنظيف المنتج - تحويل camelCase إلى snake_case
+// ============================================
+function cleanProduct(p) {
+    const cleaned = {};
+    // قائمة الحقول المسموحة فقط
+    const allowedFields = ['id', 'type', 'name', 'price', 'brand', 'image', 'description', 'specs', 'stock', 'created_at', 'updated_at', 'component_type'];
+    
+    for (const key of allowedFields) {
+        if (p[key] !== undefined) {
+            cleaned[key] = p[key];
+        }
+    }
+    
+    // التعامل مع componentType إذا كان موجوداً
+    if (p.componentType !== undefined && cleaned.component_type === undefined) {
+        cleaned.component_type = p.componentType;
+    }
+    
+    // ضمان وجود التواريخ
+    if (!cleaned.created_at) cleaned.created_at = new Date().toISOString();
+    if (!cleaned.updated_at) cleaned.updated_at = new Date().toISOString();
+    
+    return cleaned;
+}
 
 // ============================================
 // دوال المنتجات
@@ -46,29 +71,28 @@ async function addProduct(product) {
     product.created_at = new Date().toISOString();
     product.updated_at = new Date().toISOString();
     
-    // ✅ حذف أي حقول camelCase قد تكون موجودة
-    delete product.createdAt;
-    delete product.updatedAt;
+    const cleaned = cleanProduct(product);
     
     const { data, error } = await supabase
         .from('products')
-        .insert([product])
+        .insert([cleaned])
         .select();
     
-    if (error) throw new Error(`خطأ في إضافة المنتج: ${error.message}`);
+    if (error) {
+        console.error('Insert error details:', error);
+        throw new Error(`خطأ في إضافة المنتج: ${error.message}`);
+    }
     return data && data[0] ? data[0] : null;
 }
 
 async function updateProduct(id, product) {
     product.updated_at = new Date().toISOString();
     
-    // ✅ حذف أي حقول camelCase قد تكون موجودة
-    delete product.createdAt;
-    delete product.updatedAt;
+    const cleaned = cleanProduct(product);
     
     const { data, error } = await supabase
         .from('products')
-        .update(product)
+        .update(cleaned)
         .eq('id', id)
         .select();
     
@@ -87,15 +111,8 @@ async function deleteProduct(id) {
 }
 
 async function replaceAllProducts(products) {
-    // ✅ تنظيف المنتجات قبل الإدراج
-    const cleanedProducts = products.map(p => {
-        const { createdAt, updatedAt, ...rest } = p;
-        return {
-            ...rest,
-            created_at: p.created_at || p.createdAt || new Date().toISOString(),
-            updated_at: p.updated_at || p.updatedAt || new Date().toISOString()
-        };
-    });
+    // تنظيف جميع المنتجات
+    const cleanedProducts = products.map(cleanProduct);
     
     // حذف الكل أولاً
     const { error: deleteError } = await supabase
@@ -111,7 +128,10 @@ async function replaceAllProducts(products) {
             .from('products')
             .insert(cleanedProducts);
         
-        if (insertError) throw new Error(`خطأ في إدراج المنتجات: ${insertError.message}`);
+        if (insertError) {
+            console.error('ReplaceAll insert error:', insertError);
+            throw new Error(`خطأ في إدراج المنتجات: ${insertError.message}`);
+        }
     }
     
     return true;
@@ -141,7 +161,7 @@ async function saveSettings(settings) {
             key: 'site_settings',
             value: settings,
             updated_at: new Date().toISOString()
-        }, { onConflict: 'key' });  // ✅ تحديد عمود التعارض
+        }, { onConflict: 'key' });
     
     if (error) throw new Error(`خطأ في حفظ الإعدادات: ${error.message}`);
     return true;
@@ -178,13 +198,16 @@ async function addCoupon(coupon) {
     coupon.code = coupon.code.toUpperCase();
     coupon.created_at = new Date().toISOString();
     
-    // ✅ حذف حقول camelCase
-    delete coupon.createdAt;
-    delete coupon.updatedAt;
-    
     const { data, error } = await supabase
         .from('coupons')
-        .insert([coupon])
+        .insert([{
+            code: coupon.code,
+            type: coupon.type,
+            discount: coupon.discount,
+            active: coupon.active,
+            min_order: coupon.min_order || 0,
+            created_at: coupon.created_at
+        }])
         .select();
     
     if (error) throw new Error(`خطأ في إضافة الكوبون: ${error.message}`);
@@ -216,7 +239,6 @@ async function getSubscribers() {
 }
 
 async function addSubscriber(email) {
-    // التحقق من وجود البريد بالفعل
     const { data: existing, error: checkError } = await supabase
         .from('subscribers')
         .select('email')
@@ -277,13 +299,15 @@ async function getOrders() {
 async function addOrder(order) {
     order.created_at = new Date().toISOString();
     
-    // ✅ حذف حقول camelCase
-    delete order.createdAt;
-    delete order.updatedAt;
-    
     const { data, error } = await supabase
         .from('orders')
-        .insert([order])
+        .insert([{
+            id: order.id,
+            items: order.items,
+            total: order.total,
+            coupon: order.coupon,
+            created_at: order.created_at
+        }])
         .select();
     
     if (error) throw new Error(`خطأ في إضافة الطلب: ${error.message}`);
@@ -321,7 +345,7 @@ async function saveAdminSession(sessionToken, expiresAt) {
             token: sessionToken,
             expires_at: new Date(expiresAt).toISOString(),
             created_at: new Date().toISOString()
-        }, { onConflict: 'token' });  // ✅ تحديد عمود التعارض
+        }, { onConflict: 'token' });
     
     if (error) throw new Error(`خطأ في حفظ جلسة المدير: ${error.message}`);
     return true;
