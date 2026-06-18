@@ -46,6 +46,10 @@ async function addProduct(product) {
     product.created_at = new Date().toISOString();
     product.updated_at = new Date().toISOString();
     
+    // ✅ حذف أي حقول camelCase قد تكون موجودة
+    delete product.createdAt;
+    delete product.updatedAt;
+    
     const { data, error } = await supabase
         .from('products')
         .insert([product])
@@ -57,6 +61,10 @@ async function addProduct(product) {
 
 async function updateProduct(id, product) {
     product.updated_at = new Date().toISOString();
+    
+    // ✅ حذف أي حقول camelCase قد تكون موجودة
+    delete product.createdAt;
+    delete product.updatedAt;
     
     const { data, error } = await supabase
         .from('products')
@@ -79,6 +87,16 @@ async function deleteProduct(id) {
 }
 
 async function replaceAllProducts(products) {
+    // ✅ تنظيف المنتجات قبل الإدراج
+    const cleanedProducts = products.map(p => {
+        const { createdAt, updatedAt, ...rest } = p;
+        return {
+            ...rest,
+            created_at: p.created_at || p.createdAt || new Date().toISOString(),
+            updated_at: p.updated_at || p.updatedAt || new Date().toISOString()
+        };
+    });
+    
     // حذف الكل أولاً
     const { error: deleteError } = await supabase
         .from('products')
@@ -88,10 +106,10 @@ async function replaceAllProducts(products) {
     if (deleteError) throw new Error(`خطأ في حذف المنتجات: ${deleteError.message}`);
     
     // إدراج المنتجات الجديدة
-    if (products && products.length > 0) {
+    if (cleanedProducts && cleanedProducts.length > 0) {
         const { error: insertError } = await supabase
             .from('products')
-            .insert(products);
+            .insert(cleanedProducts);
         
         if (insertError) throw new Error(`خطأ في إدراج المنتجات: ${insertError.message}`);
     }
@@ -123,7 +141,7 @@ async function saveSettings(settings) {
             key: 'site_settings',
             value: settings,
             updated_at: new Date().toISOString()
-        });
+        }, { onConflict: 'key' });  // ✅ تحديد عمود التعارض
     
     if (error) throw new Error(`خطأ في حفظ الإعدادات: ${error.message}`);
     return true;
@@ -159,6 +177,10 @@ async function getCouponByCode(code) {
 async function addCoupon(coupon) {
     coupon.code = coupon.code.toUpperCase();
     coupon.created_at = new Date().toISOString();
+    
+    // ✅ حذف حقول camelCase
+    delete coupon.createdAt;
+    delete coupon.updatedAt;
     
     const { data, error } = await supabase
         .from('coupons')
@@ -255,6 +277,10 @@ async function getOrders() {
 async function addOrder(order) {
     order.created_at = new Date().toISOString();
     
+    // ✅ حذف حقول camelCase
+    delete order.createdAt;
+    delete order.updatedAt;
+    
     const { data, error } = await supabase
         .from('orders')
         .insert([order])
@@ -295,7 +321,7 @@ async function saveAdminSession(sessionToken, expiresAt) {
             token: sessionToken,
             expires_at: new Date(expiresAt).toISOString(),
             created_at: new Date().toISOString()
-        });
+        }, { onConflict: 'token' });  // ✅ تحديد عمود التعارض
     
     if (error) throw new Error(`خطأ في حفظ جلسة المدير: ${error.message}`);
     return true;
