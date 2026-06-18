@@ -700,25 +700,19 @@
 
         // ✅ تم التعديل: إرسال settings بدون حقل updated_at (الخادم يضيفه)
         async function saveSettingsToServer() {
-            if (!sessionToken) return false;
-            try {
-                // إرسال الإعدادات فقط بدون حقول زمنية
-                const settingsToSend = { ...siteSettings };
-                delete settingsToSend.updated_at;
-                delete settingsToSend.created_at;
-                delete settingsToSend.id;
-                
-                await apiFetch('/api/settings', {
-                    method: 'POST',
-                    body: JSON.stringify(settingsToSend)
-                });
-                return true;
-            } catch (e) {
-                console.error('Failed to save settings:', e);
-                showToast('❌ فشل حفظ الإعدادات');
-                return false;
-            }
-        }
+    if (!sessionToken) return false;
+    try {
+        await apiFetch('/api/settings', {
+            method: 'POST',
+            body: JSON.stringify(siteSettings)
+        });
+        return true;
+    } catch (e) {
+        console.error('Failed to save settings:', e);
+        showToast('❌ فشل حفظ الإعدادات');
+        return false;
+    }
+}
 
         async function loadCouponsFromServer() {
             try {
