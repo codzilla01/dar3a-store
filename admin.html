@@ -661,12 +661,23 @@
             }
         }
 
+        // ✅ تم التعديل: تنظيف المنتجات من الحقول غير المتوافقة مع قاعدة البيانات
         async function saveProductsToServer() {
             if (!sessionToken) return false;
             try {
+                // تنظيف المنتجات: إزالة الحقول غير الموجودة في قاعدة البيانات
+                const cleanedProducts = products.map(p => {
+                    const { createdAt, updatedAt, ...rest } = p;
+                    return {
+                        ...rest,
+                        created_at: p.created_at || p.createdAt || new Date().toISOString(),
+                        updated_at: new Date().toISOString()
+                    };
+                });
+                
                 await apiFetch('/api/products', {
                     method: 'POST',
-                    body: JSON.stringify({ products })
+                    body: JSON.stringify({ products: cleanedProducts })
                 });
                 return true;
             } catch (e) {
@@ -687,12 +698,19 @@
             }
         }
 
+        // ✅ تم التعديل: إرسال settings بدون حقل updated_at (الخادم يضيفه)
         async function saveSettingsToServer() {
             if (!sessionToken) return false;
             try {
+                // إرسال الإعدادات فقط بدون حقول زمنية
+                const settingsToSend = { ...siteSettings };
+                delete settingsToSend.updated_at;
+                delete settingsToSend.created_at;
+                delete settingsToSend.id;
+                
                 await apiFetch('/api/settings', {
                     method: 'POST',
-                    body: JSON.stringify(siteSettings)
+                    body: JSON.stringify(settingsToSend)
                 });
                 return true;
             } catch (e) {
@@ -1026,12 +1044,12 @@
             tbody.innerHTML = filtered.map(p => `
                 <tr>
                     <td><img src="${p.image || 'https://via.placeholder.com/48'}" class="product-thumb" onerror="this.src='https://via.placeholder.com/48'"></td>
-                    <td>${escapeHtml(p.name)}</div></td>
-                    <td><span class="badge ${getBadgeClass(p.type)}">${getTypeLabel(p.type)}</span></div></td>
-                    <td>${escapeHtml(p.brand || '-')}</div></td>
-                    <td>${formatPrice(p.price)}</div></td>
-                    <td><span style="color:${(p.stock || 0) < 5 ? '#ef4444' : '#22c55e'};font-weight:700;">${p.stock || 0}</span></div></td>
-                    <td><div style="display:flex;gap:6px;"><button class="btn btn-edit btn-xs edit-product" data-id="${p.id}"><i class="fas fa-edit"></i></button><button class="btn btn-danger btn-xs delete-product" data-id="${p.id}"><i class="fas fa-trash"></i></button></div></div>
+                    <td>${escapeHtml(p.name)}</td>
+                    <td><span class="badge ${getBadgeClass(p.type)}">${getTypeLabel(p.type)}</span></td>
+                    <td>${escapeHtml(p.brand || '-')}</td>
+                    <td>${formatPrice(p.price)}</td>
+                    <td><span style="color:${(p.stock || 0) < 5 ? '#ef4444' : '#22c55e'};font-weight:700;">${p.stock || 0}</span></td>
+                    <td><div style="display:flex;gap:6px;"><button class="btn btn-edit btn-xs edit-product" data-id="${p.id}"><i class="fas fa-edit"></i></button><button class="btn btn-danger btn-xs delete-product" data-id="${p.id}"><i class="fas fa-trash"></i></button></div></td>
                 </tr>
             `).join('');
             document.querySelectorAll('.edit-product').forEach(btn => btn.addEventListener('click', function() { editProduct(this.getAttribute('data-id')); }));
@@ -1050,11 +1068,11 @@
                 const stock = p.stock || 0;
                 const status = stock === 0 ? '❌ نفد' : stock < 5 ? '⚠️ منخفض' : '⚠️ محدود';
                 return `<tr>
-                    <td>${escapeHtml(p.name)}</div></td>
-                    <td><span class="badge ${getBadgeClass(p.type)}">${getTypeLabel(p.type)}</span></div></td>
-                    <td>${formatPrice(p.price)}</div></td>
-                    <td><span style="color:${stock === 0 ? '#ef4444' : '#f59e0b'};font-weight:700;">${stock}</span></div></td>
-                    <td style="color:${stock === 0 ? '#ef4444' : '#f59e0b'};">${status}</div></td>
+                    <td>${escapeHtml(p.name)}</td>
+                    <td><span class="badge ${getBadgeClass(p.type)}">${getTypeLabel(p.type)}</span></td>
+                    <td>${formatPrice(p.price)}</td>
+                    <td><span style="color:${stock === 0 ? '#ef4444' : '#f59e0b'};font-weight:700;">${stock}</span></td>
+                    <td style="color:${stock === 0 ? '#ef4444' : '#f59e0b'};">${status}</td>
                 </tr>`;
             }).join('');
         }
@@ -1070,10 +1088,10 @@
             const typeLabels = { cpu: '🧠 معالج', motherboard: '📟 لوحة أم', gpu: '🎮 كرت شاشة', ram: '🧮 ذاكرة', storage: '💾 تخزين', psu: '⚡ مزود طاقة', case: '📦 صندوق' };
             tbody.innerHTML = comps.map(p => `
                 <tr>
-                    <td>${typeLabels[p.componentType] || p.componentType || '-'}</div></td>
-                    <td>${escapeHtml(p.name)}</div></td>
-                    <td>${formatPrice(p.price)}</div></td>
-                    <td><button class="btn btn-edit btn-xs edit-product" data-id="${p.id}"><i class="fas fa-edit"></i></button></div></td>
+                    <td>${typeLabels[p.componentType] || p.componentType || '-'}</td>
+                    <td>${escapeHtml(p.name)}</td>
+                    <td>${formatPrice(p.price)}</td>
+                    <td><button class="btn btn-edit btn-xs edit-product" data-id="${p.id}"><i class="fas fa-edit"></i></button></td>
                 </tr>
             `).join('');
             document.querySelectorAll('#components-table .edit-product').forEach(btn => btn.addEventListener('click', function() { editProduct(this.getAttribute('data-id')); }));
@@ -1094,11 +1112,11 @@
             }
             tbody.innerHTML = items.map(p => `
                 <tr>
-                    <td><img src="${p.image || 'https://via.placeholder.com/48'}" class="product-thumb" onerror="this.src='https://via.placeholder.com/48'"></div></td>
-                    <td>${escapeHtml(p.name)}</div></td>
-                    <td>${formatPrice(p.price)}</div></td>
-                    <td><span style="color:${(p.stock || 0) < 5 ? '#ef4444' : '#22c55e'};font-weight:700;">${p.stock || 0}</span></div></td>
-                    <td><div style="display:flex;gap:6px;"><button class="btn btn-edit btn-xs edit-product" data-id="${p.id}"><i class="fas fa-edit"></i></button><button class="btn btn-danger btn-xs delete-product" data-id="${p.id}"><i class="fas fa-trash"></i></button></div></div></td>
+                    <td><img src="${p.image || 'https://via.placeholder.com/48'}" class="product-thumb" onerror="this.src='https://via.placeholder.com/48'"></td>
+                    <td>${escapeHtml(p.name)}</td>
+                    <td>${formatPrice(p.price)}</td>
+                    <td><span style="color:${(p.stock || 0) < 5 ? '#ef4444' : '#22c55e'};font-weight:700;">${p.stock || 0}</span></td>
+                    <td><div style="display:flex;gap:6px;"><button class="btn btn-edit btn-xs edit-product" data-id="${p.id}"><i class="fas fa-edit"></i></button><button class="btn btn-danger btn-xs delete-product" data-id="${p.id}"><i class="fas fa-trash"></i></button></div></td>
                 </tr>
             `).join('');
             document.querySelectorAll('#' + tableId + ' .edit-product').forEach(btn => btn.addEventListener('click', function() { editProduct(this.getAttribute('data-id')); }));
@@ -1117,10 +1135,10 @@
             if (noMsg) noMsg.style.display = 'none';
             tbody.innerHTML = ordersLog.slice().reverse().map(o => `
                 <tr>
-                    <td>${new Date(o.created_at || o.date).toLocaleString('ar-EG')}</div></td>
-                    <td>${o.itemCount || o.items?.length || 0}</div></td>
-                    <td style="color:var(--primary);font-weight:700;">${formatPrice(o.total)}</div></td>
-                    <td>${o.coupon || '-'}</div></td>
+                    <td>${new Date(o.created_at || o.date).toLocaleString('ar-EG')}</td>
+                    <td>${o.itemCount || o.items?.length || 0}</td>
+                    <td style="color:var(--primary);font-weight:700;">${formatPrice(o.total)}</td>
+                    <td>${o.coupon || '-'}</td>
                 </tr>
             `).join('');
         }
@@ -1243,6 +1261,7 @@
             c.appendChild(r);
         }
         
+        // ✅ تم التعديل: استخدام created_at و updated_at فقط (بدون createdAt)
         async function saveProduct(e) {
             e.preventDefault();
             const name = document.getElementById('prod-name').value.trim();
@@ -1268,6 +1287,10 @@
                 created_at: editingId ? (products.find(p => p.id === editingId)?.created_at || new Date().toISOString()) : new Date().toISOString(),
                 updated_at: new Date().toISOString()
             };
+            // ✅ إزالة أي حقول camelCase قد تكون موجودة
+            delete product.createdAt;
+            delete product.updatedAt;
+            
             if(type === 'component') product.componentType = document.getElementById('comp-type').value || 'cpu';
             if(editingId) {
                 const idx = products.findIndex(p => p.id === editingId);
@@ -1533,6 +1556,7 @@
             }
         }
 
+        // ✅ تم التعديل: تنظيف المنتجات المستوردة من حقول camelCase
         async function importProductsOnly(merge = true) {
             const input = document.createElement('input');
             input.type = 'file';
@@ -1549,6 +1573,16 @@
                         else if (data.products) newProducts = data.products;
                         else if (Array.isArray(data)) newProducts = data;
                         else throw new Error('تنسيق ملف غير صالح');
+                        
+                        // ✅ تنظيف المنتجات المستوردة
+                        newProducts = newProducts.map(p => {
+                            const { createdAt, updatedAt, ...rest } = p;
+                            return {
+                                ...rest,
+                                created_at: p.created_at || p.createdAt || new Date().toISOString(),
+                                updated_at: p.updated_at || p.updatedAt || new Date().toISOString()
+                            };
+                        });
                         
                         if (merge) {
                             const existingIds = new Set(products.map(p => p.id));
