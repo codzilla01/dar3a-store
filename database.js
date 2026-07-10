@@ -1,15 +1,26 @@
-// database.js - نسخة Vercel فقط
+// database.js - النسخة المصححة والموافقة لبيئة Vercel السحابية
 const { createClient } = require('@supabase/supabase-js');
 
-const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_ANON_KEY;
+// تنظيف المتغيرات البيئية تلقائياً من أي مسافات زائدة قد تسبب فشل الاتصال
+const supabaseUrl = process.env.SUPABASE_URL ? process.env.SUPABASE_URL.trim() : null;
+const supabaseKey = process.env.SUPABASE_ANON_KEY ? process.env.SUPABASE_ANON_KEY.trim() : null;
 
 if (!supabaseUrl || !supabaseKey) {
-    throw new Error('❌ SUPABASE_URL و SUPABASE_ANON_KEY مطلوبان في متغيرات البيئة');
+    throw new Error('❌ SUPABASE_URL و SUPABASE_ANON_KEY مطلوبان في متغيرات البيئة بـ Vercel');
 }
 
-const supabase = createClient(supabaseUrl, supabaseKey);
-console.log('✅ Supabase initialized successfully');
+// إنشاء الاتصال وحقن الـ Fetch الصريح لحل مشكلة TypeError: fetch failed في Vercel
+const supabase = createClient(supabaseUrl, supabaseKey, {
+    auth: {
+        persistSession: false,
+        autoRefreshToken: false
+    },
+    global: {
+        fetch: (...args) => globalThis.fetch(...args) // إجبار Supabase على استخدام الـ fetch الأصلي للسيرفر
+    }
+});
+
+console.log('✅ Supabase initialized successfully with explicit fetch');
 
 // ============================================
 // دالة تنظيف المنتج - تحويل camelCase إلى snake_case
@@ -42,13 +53,18 @@ function cleanProduct(p) {
 // ============================================
 
 async function getProducts() {
-    const { data, error } = await supabase
-        .from('products')
-        .select('*')
-        .order('created_at', { ascending: false });
-    
-    if (error) throw new Error(`خطأ في جلب المنتجات: ${error.message}`);
-    return data || [];
+    try {
+        const { data, error } = await supabase
+            .from('products')
+            .select('*')
+            .order('created_at', { ascending: false });
+        
+        if (error) throw error;
+        return data || [];
+    } catch (err) {
+        console.error('🔴 Error inside getProducts:', err);
+        throw new Error(`خطأ في جلب المنتجات: ${err.message || err}`);
+    }
 }
 
 async function getProductById(id) {
@@ -111,10 +127,8 @@ async function deleteProduct(id) {
 }
 
 async function replaceAllProducts(products) {
-    // تنظيف جميع المنتجات
     const cleanedProducts = products.map(cleanProduct);
     
-    // حذف الكل أولاً
     const { error: deleteError } = await supabase
         .from('products')
         .delete()
@@ -122,7 +136,6 @@ async function replaceAllProducts(products) {
     
     if (deleteError) throw new Error(`خطأ في حذف المنتجات: ${deleteError.message}`);
     
-    // إدراج المنتجات الجديدة
     if (cleanedProducts && cleanedProducts.length > 0) {
         const { error: insertError } = await supabase
             .from('products')
