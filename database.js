@@ -2,8 +2,9 @@
 const { createClient } = require('@supabase/supabase-js');
 
 // تنظيف المتغيرات البيئية تلقائياً من أي مسافات زائدة قد تسبب فشل الاتصال
+// يقبل إما SERVICE_KEY (يُفضَّل للخادم) أو ANON_KEY
 const supabaseUrl = process.env.SUPABASE_URL ? process.env.SUPABASE_URL.trim() : null;
-const supabaseKey = process.env.SUPABASE_ANON_KEY ? process.env.SUPABASE_ANON_KEY.trim() : null;
+const supabaseKey = (process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_ANON_KEY || '').trim() || null;
 
 if (!supabaseUrl || !supabaseKey) {
     throw new Error('❌ SUPABASE_URL و SUPABASE_ANON_KEY مطلوبان في متغيرات البيئة بـ Vercel');

@@ -4,7 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dar3a Store | المساعد الذكي - باللهجة السودانية</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🤖</text></svg>">
+    <meta name="description" content="مساعد درعة ستور الذكي — اسأل عن الأفلام والمسلسلات والبرامج والألعاب باللهجة السودانية.">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="theme-color" content="#0a0e17">
+    <link rel="icon" type="image/png" href="images/logo.png">
+    <link rel="apple-touch-icon" href="images/logo.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
     <style>
@@ -223,7 +227,7 @@
 <body>
     <div class="chat-container">
         <div class="chat-header">
-            <a href="index-new.html" class="brand">
+            <a href="index.html" class="brand">
                 <div class="brand-icon"><i class="fas fa-robot"></i></div>
                 <div class="brand-text">
                     <h3>Dar3a Store</h3>
@@ -241,7 +245,7 @@
                 <button id="voiceBtn" title="بحث صوتي"><i class="fas fa-microphone"></i></button>
                 <button id="recommendBtn" title="توصية"><i class="fas fa-magic"></i></button>
                 <button id="refreshChatBtn" title="تحديث"><i class="fas fa-sync-alt"></i></button>
-                <a href="index-new.html" title="المتجر" style="width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;color:#fff;text-decoration:none;font-size:0.85rem;"><i class="fas fa-home"></i></a>
+                <a href="index.html" title="المتجر" style="width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;color:#fff;text-decoration:none;font-size:0.85rem;"><i class="fas fa-home"></i></a>
             </div>
         </div>
 
@@ -261,9 +265,9 @@
         </div>
 
         <div class="chat-footer">
-            📞 واتساب: <a href="https://wa.me/0922265656" id="whatsapp-link">0922265656</a> | 
+            📞 واتساب: <a href="https://wa.me/249922265656" id="whatsapp-link">0922265656</a> | 
             📍 السودان - امدرمان | 
-            <a href="index-new.html">العودة للمتجر</a>
+            <a href="index.html">العودة للمتجر</a>
         </div>
     </div>
 
@@ -316,8 +320,12 @@
             function applySettings() {
                 const whatsappLink = document.getElementById('whatsapp-link');
                 if (whatsappLink && siteSettings.whatsapp) {
+                    // تحويل الرقم إلى صيغة دولية لضمان عمل الرابط
+                    let num = String(siteSettings.whatsapp).replace(/\D/g, '');
+                    if (num.startsWith('00')) num = num.slice(2);
+                    if (num.startsWith('0')) num = '249' + num.slice(1);
                     whatsappLink.textContent = siteSettings.whatsapp;
-                    whatsappLink.href = `https://wa.me/${siteSettings.whatsapp}`;
+                    whatsappLink.href = `https://wa.me/${num}`;
                 }
             }
 

@@ -4,8 +4,51 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Dar3a Store — درعة ستور</title>
-    <meta name="description" content="متجر درعة ستور - أفضل الأفلام والمسلسلات والبرامج الهندسية والألعاب">
+    <meta name="description" content="درعة ستور — وجهتك الأولى للأفلام والمسلسلات والبرامج الهندسية والألعاب وتجميعات الكمبيوتر في السودان. تسوق آمن، دفع مرن، ودعم متواصل.">
+    <meta name="keywords" content="Dar3a Store, درعة ستور, أفلام, مسلسلات, ألعاب, برامج هندسية, تجميع كمبيوتر, متجر إلكتروني, السودان">
+    <meta name="author" content="Dar3a Store">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://dar3a-store.vercel.app/">
     <meta name="theme-color" content="#0a0e17">
+    <meta name="color-scheme" content="dark light">
+
+    <!-- ===== Open Graph / Social sharing ===== -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Dar3a Store — درعة ستور">
+    <meta property="og:title" content="Dar3a Store — درعة ستور | أفلام • مسلسلات • ألعاب • برامج">
+    <meta property="og:description" content="كل ما تحتاجه في مكان واحد: أفلام، مسلسلات، برامج هندسية، ألعاب، وتجميعات PC بأفضل الأسعار.">
+    <meta property="og:url" content="https://dar3a-store.vercel.app/">
+    <meta property="og:image" content="images/og-cover.jpg">
+    <meta property="og:locale" content="ar_AR">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Dar3a Store — درعة ستور">
+    <meta name="twitter:description" content="أفلام • مسلسلات • برامج هندسية • ألعاب — كل ما تحتاجه في مكان واحد">
+    <meta name="twitter:image" content="images/og-cover.jpg">
+
+    <!-- ===== Icons / PWA ===== -->
+    <link rel="icon" type="image/png" href="images/logo.png">
+    <link rel="apple-touch-icon" href="images/logo.png">
+    <link rel="manifest" href="manifest.webmanifest">
+
+    <!-- ===== Structured data (SEO) ===== -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Store",
+        "name": "Dar3a Store — درعة ستور",
+        "description": "متجر إلكتروني متكامل: أفلام، مسلسلات، برامج هندسية، ألعاب، وتجميعات كمبيوتر.",
+        "url": "https://dar3a-store.vercel.app/",
+        "logo": "https://dar3a-store.vercel.app/images/logo.png",
+        "telephone": "+249922265656",
+        "address": { "@type": "PostalAddress", "addressLocality": "أمدرمان", "addressCountry": "SD" },
+        "sameAs": [
+            "https://www.facebook.com/share/1Cvi8PXwFU/",
+            "https://www.tiktok.com/@dar3astore"
+        ],
+        "openingHours": "Mo-Su 10:00-22:00",
+        "priceRange": "ج.س"
+    }
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
@@ -1597,9 +1640,413 @@
             .games-col { padding: 12px; }
             .admin-card { padding: 20px 16px; }
         }
+
+        /* ============================================================
+           PREMIUM UX LAYER — طبقة التجربة الفاخرة
+           ============================================================ */
+
+        /* ---------- Accessibility ---------- */
+        .skip-link {
+            position: fixed; top: -60px; right: 16px; z-index: 20000;
+            background: var(--accent); color: #fff; padding: 10px 20px;
+            border-radius: 0 0 12px 12px; font-weight: 700; text-decoration: none;
+            transition: top 0.3s ease;
+        }
+        .skip-link:focus { top: 0; }
+        :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+
+        /* ---------- Page Preloader ---------- */
+        .page-preloader {
+            position: fixed; inset: 0; z-index: 30000;
+            background: var(--bg-primary);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            gap: 18px; transition: opacity 0.6s ease, visibility 0.6s ease;
+        }
+        .page-preloader.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+        .preloader-logo {
+            width: 84px; height: 84px; border-radius: 22px; overflow: hidden;
+            background: var(--gradient-accent); display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 20px 60px var(--accent-glow);
+            animation: preloaderPulse 1.4s ease-in-out infinite;
+        }
+        .preloader-logo img { width: 100%; height: 100%; object-fit: contain; }
+        @keyframes preloaderPulse {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.08) rotate(3deg); }
+        }
+        .preloader-text { font-weight: 800; letter-spacing: 1px; color: var(--text-secondary); }
+        .preloader-bar {
+            width: 180px; height: 4px; border-radius: 4px; overflow: hidden;
+            background: var(--border-color);
+        }
+        .preloader-bar::after {
+            content: ''; display: block; width: 40%; height: 100%;
+            background: var(--gradient-accent); border-radius: 4px;
+            animation: preloaderSlide 1s ease-in-out infinite;
+        }
+        @keyframes preloaderSlide {
+            0% { transform: translateX(-120%); }
+            100% { transform: translateX(320%); }
+        }
+
+        /* ---------- Gradient text & orbs ---------- */
+        .gradient-text {
+            background: linear-gradient(120deg, var(--accent) 0%, #ff8fa3 45%, #ffb347 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero-orb {
+            position: absolute; border-radius: 50%; filter: blur(70px);
+            opacity: 0.35; z-index: 1; pointer-events: none;
+            animation: orbFloat 12s ease-in-out infinite;
+        }
+        .hero-orb.orb-1 { width: 340px; height: 340px; background: var(--accent); top: -80px; right: -80px; }
+        .hero-orb.orb-2 { width: 280px; height: 280px; background: #4f7cff; bottom: -90px; left: -60px; animation-delay: -6s; }
+        @keyframes orbFloat {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(-30px, 24px) scale(1.12); }
+        }
+
+        /* ---------- Hero stats & trust chips ---------- */
+        .hero-stats {
+            display: flex; gap: clamp(18px, 5vw, 52px); justify-content: center;
+            margin: 30px auto 8px; flex-wrap: wrap;
+        }
+        .hero-stat { text-align: center; min-width: 90px; }
+        .hero-stat-num {
+            font-size: clamp(1.5rem, 4.5vw, 2.3rem); font-weight: 900; line-height: 1.1;
+            background: linear-gradient(120deg, #fff, #ffd7db);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .hero-stat-label { font-size: 0.78rem; opacity: 0.85; font-weight: 500; }
+        .hero-trust {
+            display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 18px;
+        }
+        .hero-trust .chip {
+            display: inline-flex; align-items: center; gap: 7px;
+            padding: 7px 16px; border-radius: var(--radius-full);
+            background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.18);
+            backdrop-filter: blur(8px); font-size: 0.78rem; font-weight: 600;
+        }
+        .scroll-cue {
+            position: absolute; bottom: 26px; left: 50%; transform: translateX(-50%);
+            z-index: 3; color: #fff; opacity: 0.8; text-align: center; font-size: 0.72rem;
+        }
+        .scroll-cue .mouse {
+            width: 26px; height: 42px; border: 2px solid rgba(255,255,255,0.7);
+            border-radius: 14px; margin: 0 auto 6px; position: relative;
+        }
+        .scroll-cue .mouse::after {
+            content: ''; position: absolute; top: 8px; left: 50%; width: 4px; height: 8px;
+            background: #fff; border-radius: 4px; transform: translateX(-50%);
+            animation: wheel 1.6s ease-in-out infinite;
+        }
+        @keyframes wheel { 0% { opacity: 1; transform: translate(-50%, 0); } 100% { opacity: 0; transform: translate(-50%, 14px); } }
+
+        /* ---------- Features strip ---------- */
+        .features-strip { padding: 56px 0; background: var(--bg-secondary); }
+        .features-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 18px;
+        }
+        .feature-card {
+            background: var(--bg-card); border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg); padding: 26px 20px; text-align: center;
+            transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
+            position: relative; overflow: hidden;
+        }
+        .feature-card::before {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(135deg, var(--accent-glow), transparent 60%);
+            opacity: 0; transition: opacity 0.35s ease;
+        }
+        .feature-card:hover { transform: translateY(-8px); box-shadow: var(--glass-shadow); border-color: var(--accent); }
+        .feature-card:hover::before { opacity: 1; }
+        .feature-icon {
+            width: 62px; height: 62px; margin: 0 auto 14px; border-radius: 18px;
+            background: var(--gradient-accent); color: #fff; font-size: 1.5rem;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 10px 26px var(--accent-glow);
+            transition: transform 0.35s ease;
+        }
+        .feature-card:hover .feature-icon { transform: scale(1.12) rotate(-6deg); }
+        .feature-card h3 { font-size: 1.02rem; font-weight: 800; margin-bottom: 8px; }
+        .feature-card p { font-size: 0.82rem; color: var(--text-secondary); line-height: 1.8; }
+
+        /* ---------- Nav search button ---------- */
+        .nav-btn .search-pulse { position: absolute; inset: -3px; border-radius: inherit; }
+
+        /* ---------- Search overlay ---------- */
+        .search-overlay {
+            position: fixed; inset: 0; z-index: 7000;
+            background: rgba(5, 8, 15, 0.82); backdrop-filter: blur(14px);
+            display: none; padding: 80px 16px 24px;
+        }
+        .search-overlay.open { display: block; animation: fadeIn 0.25s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .search-panel {
+            max-width: 720px; margin: 0 auto; background: var(--bg-card);
+            border: 1px solid var(--glass-border); border-radius: var(--radius-xl);
+            box-shadow: 0 30px 80px rgba(0,0,0,0.5); overflow: hidden;
+            animation: modalIn 0.35s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+        }
+        .search-input-wrap {
+            display: flex; align-items: center; gap: 12px;
+            padding: 18px 22px; border-bottom: 1px solid var(--border-light);
+        }
+        .search-input-wrap i { color: var(--accent); font-size: 1.15rem; }
+        .search-input-wrap input {
+            flex: 1; background: transparent; border: none; outline: none;
+            font-size: 1.15rem; font-weight: 600; color: var(--text-primary); font-family: inherit;
+        }
+        .search-input-wrap input::placeholder { color: var(--text-muted); font-weight: 500; }
+        .search-close-btn {
+            background: var(--bg-tertiary); border: none; width: 36px; height: 36px;
+            border-radius: 50%; color: var(--text-secondary); cursor: pointer; font-size: 1rem;
+            transition: all 0.3s;
+        }
+        .search-close-btn:hover { background: var(--accent); color: #fff; transform: rotate(90deg); }
+        .search-results {
+            max-height: min(56vh, 520px); overflow-y: auto; padding: 12px;
+        }
+        .search-hint { padding: 26px; text-align: center; color: var(--text-muted); font-size: 0.88rem; }
+        .search-result-item {
+            display: flex; align-items: center; gap: 14px; padding: 12px 14px;
+            border-radius: var(--radius-md); cursor: pointer;
+            transition: background 0.25s ease, transform 0.25s ease;
+        }
+        .search-result-item:hover { background: var(--bg-tertiary); transform: translateX(-4px); }
+        .search-result-item img {
+            width: 58px; height: 58px; border-radius: 12px; object-fit: cover;
+            background: var(--bg-tertiary); flex-shrink: 0;
+        }
+        .search-result-info { flex: 1; min-width: 0; }
+        .search-result-info h4 {
+            font-size: 0.92rem; font-weight: 700; margin-bottom: 3px;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .search-result-info .type-tag {
+            font-size: 0.68rem; color: var(--text-muted); font-weight: 600;
+        }
+        .search-result-price { color: var(--accent); font-weight: 800; font-size: 0.9rem; white-space: nowrap; }
+        .search-footer {
+            padding: 10px 18px; border-top: 1px solid var(--border-light);
+            font-size: 0.72rem; color: var(--text-muted); display: flex; gap: 14px; justify-content: center;
+        }
+        .search-footer kbd {
+            background: var(--bg-tertiary); padding: 2px 8px; border-radius: 6px;
+            font-family: inherit; border: 1px solid var(--border-color); font-size: 0.68rem;
+        }
+
+        /* ---------- Skeletons grid ---------- */
+        .skeleton-card {
+            height: 330px; width: 100%;
+            display: flex; flex-direction: column; gap: 10px;
+            background: var(--bg-card); border: 1px solid var(--glass-border);
+            border-radius: var(--radius-md); padding: 0; overflow: hidden;
+        }
+        .skeleton-card .sk-img { height: 190px; width: 100%; border-radius: 0; }
+        .skeleton-card .sk-line { height: 12px; margin: 0 14px; border-radius: 6px; }
+        .skeleton-card .sk-line.short { width: 45%; }
+        .skeleton-card .sk-btn { height: 36px; margin: 8px 14px 14px; border-radius: 10px; }
+
+        /* ---------- Empty / error states ---------- */
+        .empty-state {
+            text-align: center; padding: 48px 20px; color: var(--text-muted);
+            grid-column: 1 / -1;
+        }
+        .empty-state .empty-icon {
+            width: 84px; height: 84px; margin: 0 auto 16px; border-radius: 26px;
+            background: var(--bg-tertiary); display: flex; align-items: center; justify-content: center;
+            font-size: 2.2rem; opacity: 0.85;
+        }
+        .empty-state h4 { color: var(--text-primary); font-size: 1.05rem; margin-bottom: 6px; }
+        .empty-state p { font-size: 0.85rem; margin-bottom: 16px; }
+
+        /* ---------- Product badges & rating ---------- */
+        .badge-new {
+            background: linear-gradient(135deg, #22c55e, #4ade80);
+        }
+        .badge-soldout {
+            background: linear-gradient(135deg, #475569, #64748b);
+        }
+        .stock-indicator {
+            display: inline-flex; align-items: center; gap: 5px;
+            font-size: 0.7rem; font-weight: 700; color: var(--success);
+        }
+        .stock-indicator.low { color: var(--warning); }
+        .stock-indicator.out { color: var(--error); }
+        .stock-dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+
+        /* ---------- Buttons ripple & fly-to-cart ---------- */
+        .ripple-ink {
+            position: absolute; border-radius: 50%; transform: scale(0);
+            background: rgba(255,255,255,0.5); animation: rippleAnim 0.6s ease-out;
+            pointer-events: none;
+        }
+        @keyframes rippleAnim { to { transform: scale(3.2); opacity: 0; } }
+        .fly-dot {
+            position: fixed; z-index: 25000; width: 18px; height: 18px;
+            border-radius: 50%; background: var(--gradient-accent);
+            box-shadow: 0 4px 14px var(--accent-glow); pointer-events: none;
+            transition: all 0.75s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* ---------- Toast variants ---------- */
+        .toast.t-success { border-right: 4px solid var(--success); }
+        .toast.t-error { border-right: 4px solid var(--error); }
+        .toast.t-info { border-right: 4px solid #3b82f6; }
+
+        /* ---------- Checkout modal ---------- */
+        .checkout-overlay {
+            position: fixed; inset: 0; z-index: 8000;
+            background: rgba(5, 8, 15, 0.78); backdrop-filter: blur(6px);
+            display: none; align-items: center; justify-content: center; padding: 16px;
+        }
+        .checkout-overlay.open { display: flex; }
+        .checkout-card {
+            width: 100%; max-width: 520px; max-height: 90dvh; overflow-y: auto;
+            background: var(--bg-card); border: 1px solid var(--glass-border);
+            border-radius: var(--radius-xl); padding: 28px 24px;
+            box-shadow: 0 30px 90px rgba(0,0,0,0.55);
+            animation: modalIn 0.35s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+        }
+        .checkout-card h3 {
+            display: flex; align-items: center; gap: 10px;
+            font-size: 1.25rem; font-weight: 900; margin-bottom: 4px;
+        }
+        .checkout-card .sub { color: var(--text-muted); font-size: 0.82rem; margin-bottom: 20px; }
+        .form-field { margin-bottom: 14px; }
+        .form-field label {
+            display: block; font-size: 0.8rem; font-weight: 700; margin-bottom: 7px;
+            color: var(--text-secondary);
+        }
+        .form-field label .req { color: var(--accent); }
+        .form-field input, .form-field textarea, .form-field select {
+            width: 100%; padding: 12px 14px; border-radius: var(--radius-sm);
+            border: 1.5px solid var(--border-color); background: var(--bg-tertiary);
+            color: var(--text-primary); font-family: inherit; font-size: 0.92rem;
+            transition: border-color 0.25s ease, box-shadow 0.25s ease;
+        }
+        .form-field input:focus, .form-field textarea:focus, .form-field select:focus {
+            outline: none; border-color: var(--accent);
+            box-shadow: 0 0 0 4px var(--accent-glow);
+        }
+        .form-field input.invalid { border-color: var(--error); }
+        .form-error-msg { color: var(--error); font-size: 0.72rem; margin-top: 5px; display: none; }
+        .form-field input.invalid + .form-error-msg { display: block; }
+        .payment-options { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+        .payment-option {
+            position: relative; cursor: pointer;
+        }
+        .payment-option input { position: absolute; opacity: 0; inset: 0; cursor: pointer; }
+        .payment-option .pay-face {
+            display: flex; flex-direction: column; align-items: center; gap: 6px;
+            padding: 12px 6px; border-radius: var(--radius-sm);
+            border: 1.5px solid var(--border-color); font-size: 0.76rem; font-weight: 700;
+            color: var(--text-secondary); transition: all 0.25s ease;
+        }
+        .payment-option input:checked + .pay-face {
+            border-color: var(--accent); color: var(--accent);
+            background: var(--accent-glow); transform: translateY(-2px);
+        }
+        .checkout-summary {
+            background: var(--bg-tertiary); border-radius: var(--radius-md);
+            padding: 14px 16px; margin: 16px 0; font-size: 0.85rem;
+        }
+        .checkout-summary .row {
+            display: flex; justify-content: space-between; padding: 4px 0;
+        }
+        .checkout-summary .row.total {
+            border-top: 1px dashed var(--border-color); margin-top: 8px; padding-top: 10px;
+            font-weight: 900; font-size: 1rem; color: var(--accent);
+        }
+        .checkout-actions { display: flex; gap: 10px; margin-top: 6px; }
+        .checkout-actions .btn { flex: 1; justify-content: center; }
+
+        /* ---------- Mobile bottom nav ---------- */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; right: 0; z-index: 5000;
+            background: var(--nav-bg); backdrop-filter: blur(20px);
+            border-top: 1px solid var(--glass-border);
+            display: none; padding: 6px 4px calc(6px + env(safe-area-inset-bottom, 0px));
+        }
+        .bottom-nav .bn-item {
+            flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px;
+            padding: 7px 2px; border: none; background: none; cursor: pointer;
+            color: var(--text-muted); font-family: inherit; font-size: 0.62rem; font-weight: 700;
+            border-radius: 12px; transition: all 0.25s ease; position: relative;
+        }
+        .bottom-nav .bn-item i { font-size: 1.15rem; transition: transform 0.25s ease; }
+        .bottom-nav .bn-item.active { color: var(--accent); }
+        .bottom-nav .bn-item.active i { transform: translateY(-3px) scale(1.12); }
+        .bottom-nav .bn-item .bn-badge {
+            position: absolute; top: 2px; right: calc(50% - 20px);
+            background: var(--accent); color: #fff; font-size: 0.58rem;
+            min-width: 16px; height: 16px; border-radius: 9px;
+            display: flex; align-items: center; justify-content: center; padding: 0 4px;
+        }
+        @media (max-width: 768px) {
+            .bottom-nav { display: flex; }
+            body { padding-bottom: 64px; }
+            .fab-btn { bottom: 76px; }
+            .search-overlay { padding-top: 56px; }
+        }
+
+        /* ---------- Image lazy fade-in ---------- */
+        .product-card-image img, .modal-image img {
+            opacity: 0; transition: opacity 0.5s ease, transform 0.45s ease;
+        }
+        .product-card-image img.img-loaded, .modal-image img.img-loaded { opacity: 1; }
+
+        /* ---------- Cart item polish ---------- */
+        .cart-item { transition: background 0.25s ease; border-radius: var(--radius-md); }
+        .cart-item:hover { background: var(--bg-tertiary); }
+
+        /* ---------- Misc ---------- */
+        .nav-links a.active::after { width: 100%; }
+        .btn:active { transform: scale(0.97); }
+        .qty-btn { transition: all 0.2s ease; }
+        .qty-btn:hover { background: var(--accent); color: #fff; transform: scale(1.1); }
+        .cart-item-img img { transition: transform 0.3s ease; }
+        .cart-item:hover .cart-item-img img { transform: scale(1.08); }
+        .section-header h2 .counter-inline { color: var(--accent); font-size: 0.8em; margin-right: 6px; }
+        .view-all-btn {
+            display: inline-flex; align-items: center; gap: 8px; margin-top: 14px;
+            padding: 9px 22px; border-radius: var(--radius-full);
+            background: var(--bg-tertiary); color: var(--text-primary);
+            border: 1px solid var(--border-color); font-weight: 700; font-size: 0.82rem;
+            cursor: pointer; font-family: inherit; transition: all 0.3s ease;
+        }
+        .view-all-btn:hover {
+            background: var(--accent); color: #fff; border-color: var(--accent);
+            transform: translateY(-2px); box-shadow: 0 8px 22px var(--accent-glow);
+        }
+        .hero-banner-fallback {
+            position: absolute; inset: 0;
+            background: var(--gradient-hero), radial-gradient(ellipse at 30% 20%, rgba(230,57,70,0.35), transparent 55%);
+            z-index: 0;
+        }
     </style>
 </head>
 <body>
+    <a href="#movies" class="skip-link">تخطَّ إلى المنتجات</a>
+
+    <!-- ===== Page Preloader ===== -->
+    <div class="page-preloader" id="pagePreloader" aria-hidden="true">
+        <div class="preloader-logo"><img src="images/logo.png" alt=""></div>
+        <div class="preloader-text">Dar3a Store</div>
+        <div class="preloader-bar"></div>
+    </div>
+
     <div class="scroll-progress" id="scrollProgress"></div>
     <div class="secret-press-bar" id="secret-press-bar"><div class="fill" id="secret-press-fill"></div></div>
     <div class="secret-hint" id="secret-hint"></div>
@@ -1620,10 +2067,11 @@
                 <li><a href="#builder">🔧 تجميع</a></li>
             </ul>
             <div class="nav-actions">
-                <button class="nav-btn" id="theme-toggle">🌙</button>
-                <button class="nav-btn" id="wishlist-btn"><i class="fas fa-heart"></i><span class="badge-dot" id="wishlist-badge">0</span></button>
-                <button class="nav-btn" id="cart-nav-btn"><i class="fas fa-shopping-cart"></i><span class="badge-dot" id="cart-badge">0</span></button>
-                <button class="hamburger" id="hamburger-btn"><i class="fas fa-bars"></i></button>
+                <button class="nav-btn" id="search-btn" aria-label="بحث"><i class="fas fa-search"></i></button>
+                <button class="nav-btn" id="theme-toggle" aria-label="تبديل المظهر">🌙</button>
+                <button class="nav-btn" id="wishlist-btn" aria-label="المفضلة"><i class="fas fa-heart"></i><span class="badge-dot" id="wishlist-badge">0</span></button>
+                <button class="nav-btn" id="cart-nav-btn" aria-label="سلة التسوق"><i class="fas fa-shopping-cart"></i><span class="badge-dot" id="cart-badge">0</span></button>
+                <button class="hamburger" id="hamburger-btn" aria-label="القائمة"><i class="fas fa-bars"></i></button>
             </div>
         </div>
     </nav>
@@ -1642,13 +2090,71 @@
     <div class="menu-overlay" id="menuOverlay"></div>
 
     <section class="hero" id="home">
-        <img src="images/Banner.png" alt="Dar3a Store Banner" class="hero-banner" onerror="this.src='https://via.placeholder.com/1920x600?text=Dar3a+Store'">
+        <div class="hero-banner-fallback"></div>
+        <img src="images/Banner.png" alt="Dar3a Store Banner" class="hero-banner" onerror="this.style.display='none'">
+        <div class="hero-orb orb-1"></div>
+        <div class="hero-orb orb-2"></div>
         <div class="container">
             <h1><span>Dar3a</span> Store</h1>
             <p id="hero-tagline">أفلام • مسلسلات • برامج هندسية • ألعاب — كل ما تحتاجه في مكان واحد</p>
             <div class="hero-btns">
                 <a href="#movies" class="btn btn-primary"><i class="fas fa-film"></i> تصفح الأفلام</a>
                 <a href="#games-section" class="btn btn-outline"><i class="fas fa-gamepad"></i> تصفح الألعاب</a>
+            </div>
+            <div class="hero-stats" id="hero-stats">
+                <div class="hero-stat">
+                    <div class="hero-stat-num"><span class="count-up" data-target="0" id="stat-products">0</span>+</div>
+                    <div class="hero-stat-label">منتج متوفر</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="hero-stat-num"><span class="count-up" data-target="5000">0</span>+</div>
+                    <div class="hero-stat-label">عميل سعيد</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="hero-stat-num"><span class="count-up" data-target="24">0</span>/7</div>
+                    <div class="hero-stat-label">دعم متواصل</div>
+                </div>
+            </div>
+            <div class="hero-trust">
+                <span class="chip"><i class="fas fa-shield-halved"></i> تسوق آمن 100%</span>
+                <span class="chip"><i class="fas fa-bolt"></i> تسليم فوري</span>
+                <span class="chip"><i class="fas fa-headset"></i> دعم عبر واتساب</span>
+            </div>
+        </div>
+        <div class="scroll-cue" aria-hidden="true">
+            <div class="mouse"></div>
+            اكتشف المزيد
+        </div>
+    </section>
+
+    <!-- ===== لماذا نحن ===== -->
+    <section class="features-strip" id="features">
+        <div class="container">
+            <div class="section-header fade-up">
+                <h2><i class="fas fa-gem"></i> لماذا <span class="gradient-text">Dar3a Store</span>؟</h2>
+                <div class="section-line"></div>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card fade-up">
+                    <div class="feature-icon"><i class="fas fa-rocket"></i></div>
+                    <h3>تسليم فوري</h3>
+                    <p>استلم طلبك بسرعة فور تأكيد الدفع — رقمي أو حسب اتفاق التوصيل.</p>
+                </div>
+                <div class="feature-card fade-up">
+                    <div class="feature-icon"><i class="fas fa-lock"></i></div>
+                    <h3>دفع آمن ومرن</h3>
+                    <p>ادفع بالطريقة التي تناسبك: كاش، بنكك، أو فوري — بكل راحة وأمان.</p>
+                </div>
+                <div class="feature-card fade-up">
+                    <div class="feature-icon"><i class="fas fa-headset"></i></div>
+                    <h3>دعم متواصل</h3>
+                    <p>فريقنا معك 24/7 عبر واتساب والدردشة الذكية لأي استفسار أو مساعدة.</p>
+                </div>
+                <div class="feature-card fade-up">
+                    <div class="feature-icon"><i class="fas fa-medal"></i></div>
+                    <h3>جودة مضمونة</h3>
+                    <p>منتجات مختارة بعناية ومضمونة — رضاك هو معيار نجاحنا.</p>
+                </div>
             </div>
         </div>
     </section>
@@ -1734,7 +2240,77 @@
 
     <div class="modal-overlay" id="product-modal-overlay"><div class="modal-content"><button class="modal-close" id="modal-close-btn">&times;</button><div class="modal-image" id="modal-product-image"></div><div class="modal-details" id="modal-product-details"></div></div></div>
     <div class="cart-overlay" id="cart-overlay"><div class="cart-drawer"><div class="cart-header"><h3><i class="fas fa-shopping-cart"></i> سلة التسوق</h3><button class="cart-close" id="cart-close-btn">&times;</button></div><div class="cart-items" id="cart-items"></div><div class="cart-empty-state" id="cart-empty-state"><i class="fas fa-shopping-cart"></i><p>السلة فارغة</p></div><div class="cart-footer" id="cart-footer"><div class="cart-total-row"><span>المجموع:</span><span id="cart-total-amount">0 ج.م</span></div><button class="btn btn-primary" id="cart-checkout-btn" style="width:100%;"><i class="fab fa-whatsapp"></i> إتمام الطلب</button></div></div></div>
-    
+
+    <!-- ===== Search Overlay ===== -->
+    <div class="search-overlay" id="search-overlay" role="dialog" aria-label="بحث في المنتجات">
+        <div class="search-panel">
+            <div class="search-input-wrap">
+                <i class="fas fa-search"></i>
+                <input type="search" id="search-input" placeholder="ابحث عن فيلم، مسلسل، لعبة، برنامج..." autocomplete="off">
+                <button class="search-close-btn" id="search-close-btn" aria-label="إغلاق"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="search-results" id="search-results">
+                <div class="search-hint">🔍 اكتب اسم المنتج أو البراند للبحث الفوري</div>
+            </div>
+            <div class="search-footer">
+                <span><kbd>Esc</kbd> إغلاق</span>
+                <span><kbd>Ctrl</kbd>+<kbd>K</kbd> بحث سريع</span>
+                <span>النتائج: <strong id="search-count">0</strong></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== Checkout Modal ===== -->
+    <div class="checkout-overlay" id="checkout-overlay" role="dialog" aria-label="إتمام الطلب">
+        <div class="checkout-card">
+            <h3><i class="fas fa-bag-shopping gradient-text"></i> إتمام الطلب</h3>
+            <p class="sub">أكمل بياناتك وسنتواصل معك للتأكيد عبر واتساب</p>
+
+            <div class="form-field">
+                <label for="co-name">الاسم الكامل <span class="req">*</span></label>
+                <input type="text" id="co-name" placeholder="مثال: محمد أحمد" autocomplete="name">
+                <div class="form-error-msg">الرجاء إدخال الاسم</div>
+            </div>
+            <div class="form-field">
+                <label for="co-phone">رقم الهاتف / واتساب <span class="req">*</span></label>
+                <input type="tel" id="co-phone" placeholder="09XXXXXXXX" inputmode="tel" autocomplete="tel">
+                <div class="form-error-msg">الرجاء إدخال رقم هاتف صحيح</div>
+            </div>
+            <div class="form-field">
+                <label for="co-address">العنوان</label>
+                <input type="text" id="co-address" placeholder="المدينة / المنطقة" autocomplete="street-address">
+            </div>
+            <div class="form-field">
+                <label>طريقة الدفع</label>
+                <div class="payment-options">
+                    <label class="payment-option">
+                        <input type="radio" name="payment" value="كاش" checked>
+                        <span class="pay-face"><i class="fas fa-money-bill-wave"></i> كاش</span>
+                    </label>
+                    <label class="payment-option">
+                        <input type="radio" name="payment" value="بنكك">
+                        <span class="pay-face"><i class="fas fa-university"></i> بنكك</span>
+                    </label>
+                    <label class="payment-option">
+                        <input type="radio" name="payment" value="فوري">
+                        <span class="pay-face"><i class="fas fa-bolt"></i> فوري</span>
+                    </label>
+                </div>
+            </div>
+            <div class="form-field">
+                <label for="co-notes">ملاحظات (اختياري)</label>
+                <textarea id="co-notes" rows="2" placeholder="أي تفاصيل إضافية..."></textarea>
+            </div>
+
+            <div class="checkout-summary" id="checkout-summary"></div>
+
+            <div class="checkout-actions">
+                <button class="btn btn-primary" id="checkout-confirm-btn"><i class="fab fa-whatsapp"></i> تأكيد عبر واتساب</button>
+                <button class="btn btn-outline" id="checkout-cancel-btn" style="color:var(--text-primary);border-color:var(--border-color);">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
     <div class="admin-overlay" id="admin-login-overlay"><div class="admin-card"><button class="admin-close" id="admin-login-close">&times;</button><div class="admin-icon" id="admin-login-icon"><i class="fas fa-shield-halved"></i></div><h3 id="admin-login-title">🔐 دخول المسؤول</h3><p class="subtitle" id="admin-login-subtitle">اختر نوع الدخول</p>
         <div class="role-selector" id="role-selector">
             <button class="role-btn" data-role="admin"><i class="fas fa-crown"></i> مدير</button>
@@ -1758,9 +2334,9 @@
                     <h4><i class="fas fa-store"></i> عن المتجر</h4>
                     <p class="footer-description" id="footer-about-text">متجر درعة ستور هو وجهتك الأولى لكل ما تحتاجه من أفلام، مسلسلات، برامج هندسية، وألعاب.</p>
                     <div class="footer-social">
-                        <a href="#" class="social-link" title="فيسبوك"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" class="social-link" title="انستغرام"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="social-link" title="تيك توك"><i class="fab fa-tiktok"></i></a>
+                        <a href="https://www.facebook.com/share/1Cvi8PXwFU/" class="social-link" title="فيسبوك" target="_blank" rel="noopener"><i class="fab fa-facebook-f"></i></a>
+                        <a href="https://www.facebook.com/share/1CxE6Bpd76/" class="social-link" title="الصفحة الرسمية" target="_blank" rel="noopener"><i class="fab fa-facebook"></i></a>
+                        <a href="https://www.tiktok.com/@dar3astore" class="social-link" title="تيك توك" target="_blank" rel="noopener"><i class="fab fa-tiktok"></i></a>
                     </div>
                     <div class="trust-badge">
                         <i class="fas fa-shield-alt"></i>
@@ -1787,7 +2363,7 @@
                     <ul class="contact-info-list">
                         <li><i class="fas fa-map-marker-alt"></i> <span id="footer-address">السودان - أمدرمان</span></li>
                         <li><i class="fas fa-phone"></i> <a href="tel:0922265656" id="footer-phone">0922265656</a></li>
-                        <li><i class="fab fa-whatsapp"></i> <a href="https://wa.me/0922265656" id="footer-whatsapp">واتساب: 0922265656</a></li>
+                        <li><i class="fab fa-whatsapp"></i> <a href="https://wa.me/249922265656" id="footer-whatsapp">واتساب: 0922265656</a></li>
                         <li><i class="fas fa-clock"></i> <span id="footer-hours">يومياً 10 ص - 10 م</span></li>
                     </ul>
                 </div>
@@ -1821,11 +2397,11 @@
             <div class="footer-bottom">
                 <div class="footer-bottom-content">
                     <div class="footer-bottom-links">
-                        <a href="#">سياسة الخصوصية</a>
+                        <a href="#" data-policy="privacy">سياسة الخصوصية</a>
                         <span class="separator">|</span>
-                        <a href="#">الشروط والأحكام</a>
+                        <a href="#" data-policy="terms">الشروط والأحكام</a>
                         <span class="separator">|</span>
-                        <a href="#">سياسة الاستبدال</a>
+                        <a href="#" data-policy="returns">سياسة الاستبدال</a>
                     </div>
                     <div class="developer-credit">
                         <span id="footer-copyright">&copy; 2026 Dar3a Store</span>
@@ -1840,18 +2416,34 @@
     <button class="back-to-top" id="backToTopBtn"><i class="fas fa-arrow-up"></i></button>
     <a href="chat-bot.html" class="fab-btn"><i class="fas fa-robot"></i> <span>المساعدة</span></a>
 
+    <!-- ===== Mobile Bottom Nav ===== -->
+    <nav class="bottom-nav" id="bottomNav" aria-label="تنقل سريع">
+        <button class="bn-item active" data-target="#home"><i class="fas fa-home"></i><span>الرئيسية</span></button>
+        <button class="bn-item" data-action="search"><i class="fas fa-search"></i><span>بحث</span></button>
+        <button class="bn-item" data-action="cart"><i class="fas fa-shopping-cart"></i><span>السلة</span><span class="bn-badge" id="bn-cart-badge" style="display:none;">0</span></button>
+        <button class="bn-item" data-action="wishlist"><i class="fas fa-heart"></i><span>المفضلة</span><span class="bn-badge" id="bn-wishlist-badge" style="display:none;">0</span></button>
+        <button class="bn-item" data-action="chat"><i class="fas fa-robot"></i><span>المساعد</span></button>
+    </nav>
+
+    <!-- ===== Policies Modal ===== -->
+    <div class="checkout-overlay" id="policy-overlay" role="dialog" aria-label="السياسات">
+        <div class="checkout-card">
+            <h3><i class="fas fa-file-shield gradient-text"></i> <span id="policy-title">السياسات</span></h3>
+            <div id="policy-body" style="font-size:0.88rem;line-height:2;color:var(--text-secondary);"></div>
+            <div class="checkout-actions">
+                <button class="btn btn-primary" id="policy-close-btn" style="flex:1;justify-content:center;">حسناً، فهمت</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // ==================== CONFIGURATION ====================
         const CONFIG = {
             CART_KEY: 'dar3a_cart',
             WISHLIST_KEY: 'dar3a_wishlist',
-            WHATSAPP_NUMBER: '0922265656',
+            WHATSAPP_NUMBER: '249922265656',
             ADMIN_URL: 'admin.html',
-            LONG_PRESS_MS: 3000,
-            TELEGRAM_BOT_TOKEN: '8723447348:AAGtKoujIGCtbLXuPUWAR-B-oweiOdcDCKk',
-            TELEGRAM_CHAT_ID: '6776057443',
-            ASSISTANT_BOT_TOKEN: '8722670397:AAFvypmlj5ebYYFWxheXbgXorOkPgthbnWo',
-            ASSISTANT_CHAT_ID: '665454768'
+            LONG_PRESS_MS: 3000
         };
 
         // ==================== GLOBAL VARIABLES ====================
@@ -1884,15 +2476,58 @@
                     apiFetch('/api/products'),
                     apiFetch('/api/settings')
                 ]);
-                allProducts = products;
+                allProducts = Array.isArray(products) ? products : [];
                 siteSettings = { ...siteSettings, ...settings };
                 applySettings();
                 return true;
             } catch (e) {
                 console.error('Failed to load data:', e);
-                showToast('⚠️ حدث خطأ في تحميل البيانات');
+                showToast('⚠️ حدث خطأ في تحميل البيانات — اضغط "إعادة المحاولة"', 'error');
+                showLoadErrorState();
                 return false;
             }
+        }
+
+        // حالة الخطأ مع زر إعادة المحاولة
+        function showLoadErrorState() {
+            const grids = ['movies-grid', 'series-grid', 'software-grid', 'pcgames-grid', 'psgames-grid'];
+            grids.forEach(id => {
+                const container = document.getElementById(id);
+                if (!container) return;
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">📡</div>
+                        <h4>تعذّر تحميل المنتجات</h4>
+                        <p>تحقق من اتصالك بالإنترنت ثم حاول مرة أخرى</p>
+                        <button class="btn btn-primary btn-sm" onclick="retryLoadData()"><i class="fas fa-redo"></i> إعادة المحاولة</button>
+                    </div>`;
+            });
+        }
+
+        async function retryLoadData() {
+            showToast('🔄 جاري إعادة التحميل...', 'info');
+            showSkeletons();
+            const ok = await loadAllData();
+            if (ok) {
+                renderAll();
+                showToast('✅ تم تحميل البيانات بنجاح', 'success');
+            }
+        }
+
+        // هياكل التحميل المتحركة
+        function showSkeletons() {
+            const grids = ['movies-grid', 'series-grid', 'software-grid', 'pcgames-grid', 'psgames-grid'];
+            grids.forEach(id => {
+                const container = document.getElementById(id);
+                if (!container) return;
+                container.innerHTML = Array.from({ length: 4 }, () => `
+                    <div class="skeleton-card">
+                        <div class="skeleton sk-img"></div>
+                        <div class="skeleton sk-line"></div>
+                        <div class="skeleton sk-line short"></div>
+                        <div class="skeleton sk-btn"></div>
+                    </div>`).join('');
+            });
         }
 
         async function subscribeToNewsletter(email) {
@@ -1929,17 +2564,20 @@
         const $ = s => document.querySelector(s);
         const $$ = s => document.querySelectorAll(s);
 
-        function showToast(msg) {
+        function showToast(msg, type = 'success') {
             const c = $('#toast-container');
             if (!c) return;
             const t = document.createElement('div');
-            t.className = 'toast';
+            t.className = 'toast t-' + type;
             t.textContent = msg;
             c.appendChild(t);
             setTimeout(() => t.remove(), 2800);
         }
 
-        function formatPrice(p) { return p.toLocaleString('en-US') + ' ' + siteSettings.currency; }
+        function formatPrice(p) {
+            const n = Number(p) || 0;
+            return n.toLocaleString('en-US') + ' ' + (siteSettings.currency || 'ج.س');
+        }
         function escapeHtml(s) { return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
 
         function applySettings() {
@@ -1951,6 +2589,7 @@
             $('#footer-address').textContent = siteSettings.address || 'السودان - أمدرمان';
             $('#footer-hours').textContent = siteSettings.hours || 'يومياً 10 ص - 10 م';
             $('#footer-whatsapp').textContent = 'واتساب: ' + (siteSettings.whatsapp || '0922265656');
+            $('#footer-whatsapp').href = 'https://wa.me/' + getWhatsAppNumber();
             $('#footer-copyright').textContent = siteSettings.copyright || '© 2026 Dar3a Store';
             const devLink = $('#footer-dev-link');
             if (devLink) {
@@ -1975,19 +2614,28 @@
                 if (!fl) { fl = document.createElement('link'); fl.rel = 'icon'; document.head.appendChild(fl); }
                 fl.href = siteSettings.favicon;
             }
+            // تحديث عدّاد المنتجات في الـ Hero بالعدد الفعلي
+            const statProducts = document.getElementById('stat-products');
+            if (statProducts) statProducts.setAttribute('data-target', String(allProducts.length || 0));
             renderAll();
         }
 
         // ==================== DATA SYNCHRONIZATION ====================
+        let lastProductsSignature = '';
         async function syncDataFromServer() {
             try {
                 const response = await apiFetch('/api/products');
                 if (response && Array.isArray(response)) {
-                    allProducts = response;
-                    renderAll();
-                    updateCartUI();
-                    updateWishlistBadge();
-                    console.log('🔄 تمت مزامنة البيانات من الخادم');
+                    // إعادة الرسم فقط عند تغيّر البيانات فعلاً (أداء أفضل وتجربة أنعم)
+                    const signature = JSON.stringify(response.map(p => [p.id, p.price, p.name, p.stock, p.image]));
+                    if (signature !== lastProductsSignature) {
+                        lastProductsSignature = signature;
+                        allProducts = response;
+                        renderAll();
+                        updateCartUI();
+                        updateWishlistBadge();
+                        console.log('🔄 تمت مزامنة البيانات من الخادم');
+                    }
                     return true;
                 }
             } catch (e) {
@@ -1997,13 +2645,41 @@
         }
 
         // ==================== CART FUNCTIONS ====================
-        function addToCart(product) {
+        function addToCart(product, sourceEl) {
             const ex = cart.find(i => i.id === product.id);
             if (ex) ex.quantity = (ex.quantity || 1) + 1;
             else cart.push({ ...product, quantity: 1 });
             saveCart();
             renderAll();
-            showToast('✓ تمت الإضافة للسلة');
+            flyToCart(sourceEl);
+            showToast('✓ تمت الإضافة للسلة', 'success');
+        }
+
+        // حركة طيران المنتج إلى السلة
+        function flyToCart(sourceEl) {
+            const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            const cartBtn = $('#cart-nav-btn');
+            if (!sourceEl || !cartBtn || reduceMotion) return;
+            const src = sourceEl.getBoundingClientRect();
+            const dst = cartBtn.getBoundingClientRect();
+            const dot = document.createElement('div');
+            dot.className = 'fly-dot';
+            dot.style.top = (src.top + src.height / 2) + 'px';
+            dot.style.left = (src.left + src.width / 2) + 'px';
+            document.body.appendChild(dot);
+            requestAnimationFrame(() => {
+                dot.style.top = (dst.top + dst.height / 2) + 'px';
+                dot.style.left = (dst.left + dst.width / 2) + 'px';
+                dot.style.transform = 'scale(0.35)';
+                dot.style.opacity = '0.4';
+            });
+            setTimeout(() => {
+                dot.remove();
+                cartBtn.animate(
+                    [{ transform: 'scale(1)' }, { transform: 'scale(1.28)' }, { transform: 'scale(1)' }],
+                    { duration: 350, easing: 'ease-out' }
+                );
+            }, 750);
         }
 
         function updateCartQty(index, delta) {
@@ -2022,6 +2698,11 @@
                 badge.classList.toggle('show', total > 0);
                 badge.textContent = total;
             }
+            const bnBadge = $('#bn-cart-badge');
+            if (bnBadge) {
+                bnBadge.style.display = total > 0 ? 'flex' : 'none';
+                bnBadge.textContent = total;
+            }
         }
 
         function updateWishlistBadge() {
@@ -2029,6 +2710,11 @@
             if (badge) {
                 badge.classList.toggle('show', wishlist.length > 0);
                 badge.textContent = wishlist.length;
+            }
+            const bnBadge = $('#bn-wishlist-badge');
+            if (bnBadge) {
+                bnBadge.style.display = wishlist.length > 0 ? 'flex' : 'none';
+                bnBadge.textContent = wishlist.length;
             }
         }
 
@@ -2082,14 +2768,93 @@
             }
         }
 
+        // ==================== CHECKOUT FLOW ====================
+        function getWhatsAppNumber() {
+            let num = String(siteSettings.whatsapp || siteSettings.phone || CONFIG.WHATSAPP_NUMBER || '').replace(/\D/g, '');
+            if (num.startsWith('00')) num = num.slice(2);
+            if (num.startsWith('0')) num = '249' + num.slice(1);
+            if (num.length < 10) num = CONFIG.WHATSAPP_NUMBER;
+            return num;
+        }
+
         function checkoutCart() {
-            if (cart.length === 0) { showToast('⚠️ السلة فارغة'); return; }
-            let message = '🛒 *طلب جديد*\n\n';
+            if (cart.length === 0) { showToast('⚠️ السلة فارغة', 'error'); return; }
+            const summary = $('#checkout-summary');
+            const subtotal = cart.reduce((s, i) => s + (i.price * (i.quantity || 1)), 0);
+            if (summary) {
+                summary.innerHTML = `
+                    ${cart.map(i => `<div class="row"><span>${escapeHtml(i.name)} × ${i.quantity || 1}</span><span>${formatPrice(i.price * (i.quantity || 1))}</span></div>`).join('')}
+                    <div class="row total"><span>الإجمالي</span><span>${formatPrice(subtotal)}</span></div>`;
+            }
+            $('#checkout-overlay')?.classList.add('open');
+        }
+
+        function closeCheckout() {
+            $('#checkout-overlay')?.classList.remove('open');
+        }
+
+        function validateCheckoutForm() {
+            let valid = true;
+            const name = $('#co-name');
+            const phone = $('#co-phone');
+            [name, phone].forEach(f => f && f.classList.remove('invalid'));
+            if (!name || !name.value.trim()) { name && name.classList.add('invalid'); valid = false; }
+            const phoneVal = (phone && phone.value || '').replace(/\D/g, '');
+            if (phoneVal.length < 9) { phone && phone.classList.add('invalid'); valid = false; }
+            return valid;
+        }
+
+        async function confirmCheckout() {
+            if (!validateCheckoutForm()) {
+                showToast('⚠️ الرجاء إكمال البيانات المطلوبة', 'error');
+                return;
+            }
+            const name = $('#co-name').value.trim();
+            const phone = $('#co-phone').value.trim();
+            const address = $('#co-address') ? $('#co-address').value.trim() : '';
+            const notes = $('#co-notes') ? $('#co-notes').value.trim() : '';
+            const payment = document.querySelector('input[name="payment"]:checked')?.value || 'كاش';
+            const subtotal = cart.reduce((s, i) => s + (i.price * (i.quantity || 1)), 0);
+
+            let message = `🛒 *طلب جديد من ${siteSettings.name || 'Dar3a Store'}*\n\n`;
+            message += `👤 *الاسم:* ${name}\n📱 *الهاتف:* ${phone}\n`;
+            if (address) message += `📍 *العنوان:* ${address}\n`;
+            message += `💳 *الدفع:* ${payment}\n\n`;
+            message += `━━━━━━━━━━━━━━\n`;
             cart.forEach(i => {
                 message += `📦 ${i.name} (×${i.quantity || 1}) — ${formatPrice(i.price * (i.quantity || 1))}\n`;
             });
-            message += `\n💰 *الإجمالي: ${formatPrice(cart.reduce((s, i) => s + (i.price * (i.quantity || 1)), 0))}*`;
-            window.open(`https://wa.me/${siteSettings.whatsapp || CONFIG.WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`, '_blank');
+            message += `━━━━━━━━━━━━━━\n`;
+            message += `💰 *الإجمالي: ${formatPrice(subtotal)}*`;
+            if (notes) message += `\n\n📝 *ملاحظات:* ${notes}`;
+
+            // حفظ الطلب في قاعدة البيانات (لا يمنع الطلب لو فشل)
+            try {
+                await apiFetch('/api/orders', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        customer_name: name,
+                        customer_phone: phone,
+                        customer_address: address,
+                        notes,
+                        payment_method: payment,
+                        items: cart.map(i => ({ id: i.id, name: i.name, price: i.price, quantity: i.quantity || 1 })),
+                        total: subtotal
+                    })
+                });
+            } catch (e) {
+                console.warn('Order save skipped:', e);
+            }
+
+            window.open(`https://wa.me/${getWhatsAppNumber()}?text=${encodeURIComponent(message)}`, '_blank');
+            cart = [];
+            saveCart();
+            renderCartItems();
+            renderAll();
+            closeCheckout();
+            closeCart();
+            showToast('✅ تم إنشاء الطلب! سيتواصل معك فريقنا قريباً', 'success');
         }
 
         window._q = updateCartQty;
@@ -2099,6 +2864,11 @@
         function openModal(product) {
             $('#product-modal-overlay').classList.add('open');
             $('#modal-product-image').innerHTML = `<img src="${product.image || 'https://via.placeholder.com/600x400'}" alt="${escapeHtml(product.name)}">`;
+            const modalImg = $('#modal-product-image img');
+            if (modalImg) {
+                if (modalImg.complete) modalImg.classList.add('img-loaded');
+                else modalImg.addEventListener('load', () => modalImg.classList.add('img-loaded'));
+            }
             const specs = product.specs ? Object.entries(product.specs).map(([k, v]) => `<span class="modal-spec-tag">${escapeHtml(k)}: ${escapeHtml(v)}</span>`).join('') : '';
             $('#modal-product-details').innerHTML = `
                 <div class="modal-brand">${escapeHtml(product.brand || 'Dar3a Store')}</div>
@@ -2113,34 +2883,159 @@
                     </div>
                 </div>
             `;
-            document.getElementById('modal-add-cart').onclick = () => { addToCart(product); closeModal(); };
+            document.getElementById('modal-add-cart').onclick = (e) => { addToCart(product, e.currentTarget); closeModal(); };
             document.getElementById('modal-buy-now').onclick = () => {
-                window.open(`https://wa.me/${siteSettings.whatsapp || CONFIG.WHATSAPP_NUMBER}?text=${encodeURIComponent(`🛒 ${product.name}\n💰 ${formatPrice(product.price)}`)}`, '_blank');
+                window.open(`https://wa.me/${getWhatsAppNumber()}?text=${encodeURIComponent(`🛒 ${product.name}\n💰 ${formatPrice(product.price)}`)}`, '_blank');
             };
         }
         function closeModal() { $('#product-modal-overlay').classList.remove('open'); }
+
+        // ==================== GLOBAL SEARCH ====================
+        const TYPE_LABELS = { movies: '🎬 فيلم', series: '📺 مسلسل', programs: '💻 برنامج', pcgames: '🎮 لعبة PC', playstation: '🕹️ PlayStation', component: '🔧 قطعة' };
+
+        function openSearch() {
+            const overlay = $('#search-overlay');
+            if (!overlay) return;
+            overlay.classList.add('open');
+            const input = $('#search-input');
+            setTimeout(() => input && input.focus(), 80);
+            if (input && !input.value) renderSearchResults('');
+        }
+
+        function closeSearch() {
+            $('#search-overlay')?.classList.remove('open');
+        }
+
+        function renderSearchResults(query) {
+            const container = $('#search-results');
+            const countEl = $('#search-count');
+            if (!container) return;
+            const q = (query || '').trim().toLowerCase();
+            if (!q) {
+                container.innerHTML = '<div class="search-hint">🔍 اكتب اسم المنتج أو البراند للبحث الفوري</div>';
+                if (countEl) countEl.textContent = '0';
+                return;
+            }
+            const results = allProducts.filter(p =>
+                (p.name || '').toLowerCase().includes(q) ||
+                (p.brand || '').toLowerCase().includes(q) ||
+                (p.description || '').toLowerCase().includes(q) ||
+                (TYPE_LABELS[p.type] || '').includes(q)
+            );
+            if (countEl) countEl.textContent = results.length;
+            if (results.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">🔍</div>
+                        <h4>لا توجد نتائج</h4>
+                        <p>لم نجد شيئاً يطابق "${escapeHtml(query)}" — جرّب كلمة أخرى</p>
+                    </div>`;
+                return;
+            }
+            container.innerHTML = results.slice(0, 20).map((p, idx) => `
+                <div class="search-result-item" data-idx="${allProducts.indexOf(p)}">
+                    <img src="${p.image || 'https://via.placeholder.com/58'}" alt="${escapeHtml(p.name)}" loading="lazy">
+                    <div class="search-result-info">
+                        <h4>${escapeHtml(p.name)}</h4>
+                        <div class="type-tag">${TYPE_LABELS[p.type] || p.type || ''} ${p.brand ? '• ' + escapeHtml(p.brand) : ''}</div>
+                    </div>
+                    <div class="search-result-price">${formatPrice(p.price)}</div>
+                </div>`).join('');
+            container.querySelectorAll('.search-result-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    const product = allProducts[Number(item.getAttribute('data-idx'))];
+                    if (product) { closeSearch(); openModal(product); }
+                });
+            });
+        }
+
+        // ==================== POLICIES ====================
+        const POLICIES = {
+            privacy: {
+                title: 'سياسة الخصوصية',
+                body: `نحترم خصوصيتك ونلتزم بحماية بياناتك:<br><br>
+                • لا نقوم ببيع أو مشاركة بياناتك الشخصية مع أي طرف ثالث.<br>
+                • البيانات التي نجمعها (الاسم، الهاتف، العنوان) تُستخدم فقط لإتمام طلبك وخدمتك.<br>
+                • بيانات الدفع تتم عبر قنوات آمنة ولا نحتفظ ببيانات البطاقات.<br>
+                • يمكنك طلب حذف بياناتك في أي وقت عبر التواصل معنا.<br><br>
+                للاستفسارات: راسلنا على واتساب وسنرد عليك في أقرب وقت.`
+            },
+            terms: {
+                title: 'الشروط والأحكام',
+                body: `باستخدامك لمتجر ${'Dar3a Store'} فأنت توافق على الآتي:<br><br>
+                • الأسعار المعروضة قابلة للتغيير مع إخطار مسبق عند التأكيد.<br>
+                • يتم تأكيد الطلب عبر واتساب قبل التنفيذ النهائي.<br>
+                • المنتجات الرقمية (أفلام، برامج، ألعاب رقمية) لا تُرد قيمتها بعد الإرسال.<br>
+                • نحتفظ بحق رفض أي طلب مشبوه أو مخالف للسياسات.<br>
+                • جميع المحتويات والعلامات التجارية مملوكة لأصحابها.`
+            },
+            returns: {
+                title: 'سياسة الاستبدال والاسترجاع',
+                body: `رضاك أولويتنا — وهذه سياسة الاستبدال:<br><br>
+                • المنتجات المادية: استبدال خلال 3 أيام من الاستلام بشرط الحالة الأصلية.<br>
+                • المنتجات الرقمية: استبدال في حال وجود عيب فني من جانبنا (مع إثبات).<br>
+                • أجهزة الكمبيوتر والتجميعات: ضمان حسب المتفق عليه في فاتورة الطلب.<br>
+                • رسوم الشحن غير قابلة للاسترجاع بعد خروج الشحنة.<br><br>
+                تواصل معنا عبر واتساب لبدء أي عملية استبدال.`
+            }
+        };
+
+        function openPolicy(key) {
+            const p = POLICIES[key];
+            if (!p) return;
+            $('#policy-title').textContent = p.title;
+            $('#policy-body').innerHTML = p.body;
+            $('#policy-overlay')?.classList.add('open');
+        }
+        function closePolicy() { $('#policy-overlay')?.classList.remove('open'); }
 
         // ==================== PRODUCT CARD ====================
         function createProductCard(product) {
             const card = document.createElement('div');
             card.className = 'product-card';
+            const stock = product.stock;
+            const isNew = product.created_at && (Date.now() - new Date(product.created_at).getTime()) < 7 * 24 * 3600 * 1000;
+            const soldOut = typeof stock === 'number' && stock <= 0;
+            const lowStock = typeof stock === 'number' && stock > 0 && stock <= 5;
+
+            let badges = '';
+            if (soldOut) badges += '<span class="badge badge-soldout">نفد المخزون</span>';
+            else if (product.discount) badges += `<span class="badge badge-sale">-${product.discount}%</span>`;
+            else if (isNew) badges += '<span class="badge badge-new">جديد</span>';
+
+            let stockHtml = '';
+            if (soldOut) stockHtml = '<div class="stock-indicator out"><span class="stock-dot"></span> غير متوفر</div>';
+            else if (lowStock) stockHtml = `<div class="stock-indicator low"><span class="stock-dot"></span> بقي ${stock} فقط</div>`;
+            else if (typeof stock === 'number') stockHtml = '<div class="stock-indicator"><span class="stock-dot"></span> متوفر</div>';
+
             card.innerHTML = `
                 <div class="product-card-image">
-                    <img src="${product.image || 'https://via.placeholder.com/400x260'}" alt="${escapeHtml(product.name)}">
-                    <div class="product-badges">${product.discount ? `<span class="badge badge-sale">-${product.discount}%</span>` : ''}</div>
+                    <img src="${product.image || 'https://via.placeholder.com/400x260'}" alt="${escapeHtml(product.name)}" loading="lazy">
+                    <div class="product-badges">${badges}</div>
                     <div class="product-quick-actions">
-                        <button class="quick-action-btn ${isInWishlist(product.id) ? 'active' : ''}"><i class="fas fa-heart"></i></button>
+                        <button class="quick-action-btn ${isInWishlist(product.id) ? 'active' : ''}" aria-label="إضافة للمفضلة"><i class="fas fa-heart"></i></button>
                     </div>
                 </div>
                 <div class="product-card-body">
                     <div class="brand">${escapeHtml(product.brand || 'Dar3a')}</div>
                     <h3>${escapeHtml(product.name)}</h3>
                     <div class="specs-pills">${product.specs ? Object.entries(product.specs).slice(0, 3).map(([k, v]) => `<span class="spec-pill">${escapeHtml(k)}:${escapeHtml(v)}</span>`).join('') : ''}</div>
+                    ${stockHtml}
                     <div class="product-price-row"><span class="product-price">${formatPrice(product.price)}</span>${product.oldPrice ? `<span class="product-price-old">${formatPrice(product.oldPrice)}</span>` : ''}</div>
-                    <button class="add-to-cart-btn ${isInCart(product.id) ? 'in-cart' : ''}">${isInCart(product.id) ? '✓ في السلة' : 'إضافة للسلة'}</button>
+                    <button class="add-to-cart-btn ${isInCart(product.id) ? 'in-cart' : ''}" ${soldOut ? 'disabled style="opacity:.5;cursor:not-allowed;"' : ''}>${soldOut ? 'غير متوفر' : isInCart(product.id) ? '✓ في السلة' : 'إضافة للسلة'}</button>
                 </div>
             `;
-            card.querySelector('.add-to-cart-btn').addEventListener('click', e => { e.stopPropagation(); addToCart(product); });
+            const img = card.querySelector('img');
+            if (img) {
+                if (img.complete) img.classList.add('img-loaded');
+                else img.addEventListener('load', () => img.classList.add('img-loaded'));
+                img.addEventListener('error', () => {
+                    img.src = 'https://via.placeholder.com/400x260?text=Dar3a';
+                    img.classList.add('img-loaded');
+                });
+            }
+            const addBtn = card.querySelector('.add-to-cart-btn');
+            if (addBtn && !soldOut) addBtn.addEventListener('click', e => { e.stopPropagation(); addToCart(product, e.currentTarget); });
             card.querySelector('.quick-action-btn').addEventListener('click', e => { e.stopPropagation(); toggleWishlist(product, e.currentTarget); });
             card.addEventListener('click', e => { if (!e.target.closest('button')) openModal(product); });
             return card;
@@ -2151,7 +3046,12 @@
             if (!container) return;
             container.innerHTML = '';
             if (!products || products.length === 0) {
-                container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-muted);grid-column:1/-1;">لا توجد منتجات</div>';
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">🛍️</div>
+                        <h4>لا توجد منتجات حالياً</h4>
+                        <p>سيتم إضافة منتجات جديدة قريباً — تابعنا!</p>
+                    </div>`;
                 return;
             }
             products.forEach(p => container.appendChild(createProductCard(p)));
@@ -2511,12 +3411,50 @@
         function bindEvents() {
             $('#modal-close-btn')?.addEventListener('click', closeModal);
             $('#product-modal-overlay')?.addEventListener('click', e => { if (e.target === e.currentTarget) closeModal(); });
-            document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeModal(); closeCart(); closeAdminLogin(); } });
+            document.addEventListener('keydown', e => {
+                if (e.key === 'Escape') { closeModal(); closeCart(); closeAdminLogin(); closeSearch(); closeCheckout(); closePolicy(); }
+                if ((e.ctrlKey || e.metaKey) && (e.key === 'k' || e.key === 'K')) {
+                    e.preventDefault();
+                    openSearch();
+                }
+            });
             $('#cart-nav-btn')?.addEventListener('click', openCart);
             $('#cart-close-btn')?.addEventListener('click', closeCart);
             $('#cart-overlay')?.addEventListener('click', e => { if (e.target === e.currentTarget) closeCart(); });
             $('#cart-checkout-btn')?.addEventListener('click', checkoutCart);
-            $('#wishlist-btn')?.addEventListener('click', () => showToast('❤️ ' + wishlist.length + ' منتجات'));
+            $('#checkout-confirm-btn')?.addEventListener('click', confirmCheckout);
+            $('#checkout-cancel-btn')?.addEventListener('click', closeCheckout);
+            $('#checkout-overlay')?.addEventListener('click', e => { if (e.target === e.currentTarget) closeCheckout(); });
+            $('#wishlist-btn')?.addEventListener('click', () => {
+                if (wishlist.length === 0) { showToast('❤️ المفضلة فارغة — أضف منتجات أعجبتك', 'info'); return; }
+                openSearch();
+                const input = $('#search-input');
+                if (input) input.value = '';
+                const container = $('#search-results');
+                if (container) {
+                    container.innerHTML = wishlist.map((p, idx) => `
+                        <div class="search-result-item" data-idx="${idx}">
+                            <img src="${p.image || 'https://via.placeholder.com/58'}" alt="${escapeHtml(p.name)}" loading="lazy">
+                            <div class="search-result-info">
+                                <h4>${escapeHtml(p.name)}</h4>
+                                <div class="type-tag">❤️ في المفضلة ${p.brand ? '• ' + escapeHtml(p.brand) : ''}</div>
+                            </div>
+                            <div class="search-result-price">${formatPrice(p.price)}</div>
+                        </div>`).join('');
+                    container.querySelectorAll('.search-result-item').forEach(item => {
+                        item.addEventListener('click', () => {
+                            const product = wishlist[Number(item.getAttribute('data-idx'))];
+                            if (product) { closeSearch(); openModal(product); }
+                        });
+                    });
+                    const countEl = $('#search-count');
+                    if (countEl) countEl.textContent = wishlist.length;
+                }
+            });
+            $('#search-btn')?.addEventListener('click', openSearch);
+            $('#search-close-btn')?.addEventListener('click', closeSearch);
+            $('#search-overlay')?.addEventListener('click', e => { if (e.target === e.currentTarget) closeSearch(); });
+            $('#search-input')?.addEventListener('input', e => renderSearchResults(e.target.value));
             $('#theme-toggle')?.addEventListener('click', () => {
                 currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
                 document.documentElement.setAttribute('data-theme', currentTheme);
@@ -2539,11 +3477,40 @@
             });
             $('#reset-builder')?.addEventListener('click', () => { builder = {}; renderBuilder(); });
             document.addEventListener('click', e => { if (!e.target.closest('.pc-select') && !e.target.closest('.pc-options')) $$('.pc-options').forEach(o => o.style.display = 'none'); });
-            window.addEventListener('storage', () => { 
-                if (event.key === 'dar3a_admin_session') {
+            window.addEventListener('storage', (event) => {
+                if (event && event.key === 'dar3a_admin_session') {
                     syncDataFromServer();
                 }
             });
+            // شريط التنقل السفلي (الهاتف)
+            document.querySelectorAll('#bottomNav .bn-item').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('#bottomNav .bn-item').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    const action = btn.getAttribute('data-action');
+                    const target = btn.getAttribute('data-target');
+                    if (target) {
+                        document.querySelector(target)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    } else if (action === 'search') {
+                        openSearch();
+                    } else if (action === 'cart') {
+                        openCart();
+                    } else if (action === 'wishlist') {
+                        $('#wishlist-btn')?.click();
+                    } else if (action === 'chat') {
+                        window.location.href = 'chat-bot.html';
+                    }
+                });
+            });
+            // صفحات السياسات
+            document.querySelectorAll('[data-policy]').forEach(link => {
+                link.addEventListener('click', e => {
+                    e.preventDefault();
+                    openPolicy(link.getAttribute('data-policy'));
+                });
+            });
+            $('#policy-close-btn')?.addEventListener('click', closePolicy);
+            $('#policy-overlay')?.addEventListener('click', e => { if (e.target === e.currentTarget) closePolicy(); });
             $('#admin-login-close')?.addEventListener('click', closeAdminLogin);
             $('#admin-login-overlay')?.addEventListener('click', e => { if (e.target === e.currentTarget) closeAdminLogin(); });
             $('#admin-request-code-btn')?.addEventListener('click', adminRequestOTP);
@@ -2598,13 +3565,78 @@
             });
         }
 
+        // ==================== PREMIUM ENHANCEMENTS ====================
+        function initCountUp() {
+            const counters = document.querySelectorAll('.count-up');
+            const observer = new IntersectionObserver((entries, obs) => {
+                entries.forEach(entry => {
+                    if (!entry.isIntersecting) return;
+                    const el = entry.target;
+                    obs.unobserve(el);
+                    const target = Number(el.getAttribute('data-target')) || 0;
+                    const duration = 1600;
+                    const startTime = performance.now();
+                    const step = (now) => {
+                        const progress = Math.min((now - startTime) / duration, 1);
+                        const eased = 1 - Math.pow(1 - progress, 3);
+                        el.textContent = Math.round(target * eased).toLocaleString('en-US');
+                        if (progress < 1) requestAnimationFrame(step);
+                    };
+                    requestAnimationFrame(step);
+                });
+            }, { threshold: 0.4 });
+            counters.forEach(c => observer.observe(c));
+        }
+
+        function hidePreloader() {
+            const pre = document.getElementById('pagePreloader');
+            if (!pre) return;
+            setTimeout(() => pre.classList.add('hidden'), 350);
+        }
+
+        function initScrollSpy() {
+            const sections = ['home', 'features', 'movies', 'series', 'software', 'games-section', 'builder'];
+            const navLinks = document.querySelectorAll('.navbar .nav-links a');
+            const bnItems = document.querySelectorAll('#bottomNav .bn-item');
+            window.addEventListener('scroll', () => {
+                let current = 'home';
+                sections.forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el && el.getBoundingClientRect().top <= 120) current = id;
+                });
+                navLinks.forEach(a => a.classList.toggle('active', (a.getAttribute('href') || '') === '#' + current));
+                bnItems.forEach(b => {
+                    const t = b.getAttribute('data-target');
+                    if (t) b.classList.toggle('active', t === '#' + current);
+                });
+            }, { passive: true });
+        }
+
+        function initRipple() {
+            document.addEventListener('click', e => {
+                const btn = e.target.closest('.btn, .add-to-cart-btn, .view-all-btn');
+                if (!btn || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+                const rect = btn.getBoundingClientRect();
+                const ink = document.createElement('span');
+                ink.className = 'ripple-ink';
+                const size = Math.max(rect.width, rect.height);
+                ink.style.width = ink.style.height = size + 'px';
+                ink.style.left = (e.clientX - rect.left - size / 2) + 'px';
+                ink.style.top = (e.clientY - rect.top - size / 2) + 'px';
+                btn.appendChild(ink);
+                setTimeout(() => ink.remove(), 650);
+            });
+        }
+
         // ==================== INITIALIZATION ====================
         async function init() {
             document.documentElement.setAttribute('data-theme', currentTheme);
             $('#theme-toggle').textContent = currentTheme === 'dark' ? '☀️' : '🌙';
             loadCart();
             loadWishlist();
+            showSkeletons();
             await loadAllData();
+            lastProductsSignature = JSON.stringify(allProducts.map(p => [p.id, p.price, p.name, p.stock, p.image]));
             bindEvents();
             initSecretAccess();
             initScrollProgress();
@@ -2612,9 +3644,13 @@
             initNavbarScroll();
             initMobileMenu();
             initBackToTop();
+            initCountUp();
+            initScrollSpy();
+            initRipple();
             renderAll();
             updateCartUI();
             updateWishlistBadge();
+            hidePreloader();
             
             // إضافة مزامنة دورية كل 15 ثانية
             setInterval(() => {

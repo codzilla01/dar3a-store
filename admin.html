@@ -4,7 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Dar3a Store | لوحة التحكم</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🛡️</text></svg>">
+    <meta name="description" content="لوحة تحكم متجر درعة ستور — إدارة المنتجات والطلبات والإعدادات.">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="theme-color" content="#0f172a">
+    <link rel="icon" type="image/png" href="images/logo.png">
+    <link rel="apple-touch-icon" href="images/logo.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
     
@@ -13,7 +17,6 @@
             --primary: #e63946; --primary-dark: #c92a37; --primary-light: #ff4757;
             --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); --font: 'Tajawal', sans-serif;
             --success: #22c55e; --warning: #f59e0b; --error: #ef4444;
-            --info: #3b82f6; --purple: #8b5cf6;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -52,7 +55,7 @@
         .error-text.show { display: block; }
         .back-btn { background: none; border: none; color: #94a3b8; cursor: pointer; font-size: 0.8rem; margin-top: 12px; }
 
-        /* Sidebar */
+        /* Sidebar - نفس الأنماط السابقة */
         .sidebar { width: 280px; background: linear-gradient(180deg, rgba(15,23,42,0.98), rgba(30,41,59,0.98)); backdrop-filter: blur(20px); border-left: 1px solid rgba(255,255,255,0.08); position: fixed; top: 0; right: 0; height: 100vh; z-index: 100; display: flex; flex-direction: column; transition: all 0.4s; overflow-y: auto; }
         .sidebar-header { padding: 28px 24px 20px; border-bottom: 1px solid rgba(255,255,255,0.08); text-align: center; }
         .sidebar-logo-icon { width: 56px; height: 56px; background: linear-gradient(135deg, #e63946, #ff6b6b); border-radius: 16px; display: inline-flex; align-items: center; justify-content: center; font-size: 1.6rem; color: #fff; margin-bottom: 12px; overflow: hidden; }
@@ -94,12 +97,7 @@
         .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(230,57,70,0.5); }
         .btn-outline { background: transparent; border: 2px solid rgba(255,255,255,0.2); color: #fff; }
         .btn-outline:hover { border-color: var(--primary); color: var(--primary); }
-        .btn-success { background: linear-gradient(135deg, #22c55e, #16a34a); color: #fff; }
-        .btn-success:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(34,197,94,0.4); }
-        .btn-warning { background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff; }
-        .btn-info { background: linear-gradient(135deg, #3b82f6, #2563eb); color: #fff; }
         .btn-danger { background: rgba(239,68,68,0.2); border: 1px solid rgba(239,68,68,0.3); color: #fca5a5; }
-        .btn-danger:hover { background: rgba(239,68,68,0.4); color: #fff; }
         .btn-edit { background: rgba(59,130,246,0.25); border: 1px solid rgba(59,130,246,0.4); color: #93c5fd; }
         .btn-sm { padding: 6px 14px; font-size: 0.8rem; }
         .btn-xs { padding: 6px 12px; font-size: 0.72rem; border-radius: 6px; }
@@ -112,7 +110,6 @@
         .form-group label { display: block; margin-bottom: 8px; font-weight: 700; font-size: 0.85rem; color: #cbd5e1; }
         .form-control { width: 100%; padding: 10px 14px; border: 1.5px solid rgba(255,255,255,0.1); border-radius: 10px; font-size: 0.9rem; font-family: inherit; transition: all 0.3s; background: rgba(255,255,255,0.05); color: #fff; }
         .form-control:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 3px rgba(230,57,70,0.2); background: rgba(255,255,255,0.08); }
-        select.form-control option { background: #1e293b; color: #fff; }
 
         .product-image-upload { border: 2px dashed rgba(255,255,255,0.2); border-radius: 16px; padding: 20px; text-align: center; cursor: pointer; transition: all 0.3s; background: rgba(255,255,255,0.02); position: relative; margin-bottom: 12px; }
         .product-image-upload:hover { border-color: var(--primary); background: rgba(230,57,70,0.05); }
@@ -147,41 +144,6 @@
         .logo-upload-area input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
         .logo-preview { max-width: 120px; max-height: 120px; border-radius: 12px; margin-top: 8px; }
 
-        .data-management-section {
-            margin: 20px 0 15px 0;
-            padding: 20px;
-            background: rgba(255,255,255,0.03);
-            border-radius: 16px;
-            border: 1px solid rgba(255,255,255,0.08);
-        }
-        .data-management-section h4 {
-            margin-bottom: 15px;
-            color: var(--primary);
-            font-size: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .data-management-section h5 {
-            margin: 12px 0 10px;
-            font-size: 0.85rem;
-            color: #94a3b8;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .btn-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-        .btn-grid-sm {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 8px;
-        }
-
         .developer-footer { background: rgba(0,0,0,0.3); border-top: 1px solid rgba(255,255,255,0.05); padding: 8px 20px; text-align: center; font-size: 0.7rem; color: #64748b; position: fixed; bottom: 0; left: 0; right: 0; z-index: 50; backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; }
         .toast { position: fixed; bottom: 50px; left: 50%; transform: translateX(-50%); background: rgba(30,41,59,0.95); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 14px 28px; border-radius: 30px; z-index: 9999; font-weight: 600; box-shadow: 0 10px 40px rgba(0,0,0,0.5); display: none; white-space: nowrap; }
         .mobile-menu-btn { display: none; position: fixed; top: 16px; right: 16px; z-index: 200; width: 44px; height: 44px; border-radius: 12px; background: linear-gradient(135deg, #e63946, #ff6b6b); color: #fff; border: none; cursor: pointer; font-size: 1.3rem; }
@@ -200,15 +162,13 @@
             .stat-number { font-size: 1.5rem; } 
             .panel { padding: 20px; }
             .otp-input { width: 40px; height: 48px; font-size: 1.2rem; }
-            .btn-grid { grid-template-columns: 1fr; }
-            .btn-grid-sm { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
     <div class="bg-particles" id="bg-particles"></div>
 
-    <!-- LOGIN OVERLAY -->
+    <!-- LOGIN OVERLAY - مدير واحد فقط -->
     <div class="login-overlay" id="login-overlay">
         <div class="login-card">
             <div class="login-logo" id="login-logo-main"><i class="fas fa-shield-halved"></i></div>
@@ -469,7 +429,6 @@
                 <div class="settings-tabs">
                     <button class="settings-tab active" data-stab="general">⚙️ عام</button>
                     <button class="settings-tab" data-stab="appearance">🎨 المظهر</button>
-                    <button class="settings-tab" data-stab="data">📊 إدارة البيانات</button>
                     <button class="settings-tab" data-stab="developer">👨‍💻 المطور</button>
                 </div>
 
@@ -505,80 +464,18 @@
                     </div>
                 </div>
 
-                <!-- قسم إدارة البيانات الجديد -->
-                <div class="settings-section" id="ss-data">
-                    <div class="data-management-section">
-                        <h4><i class="fas fa-database"></i> النسخ الاحتياطي الكامل</h4>
-                        <div class="btn-grid">
-                            <button class="btn btn-success" id="export-full-backup-btn">
-                                <i class="fas fa-download"></i> نسخة احتياطية كاملة
-                            </button>
-                            <button class="btn btn-warning" id="import-full-backup-btn">
-                                <i class="fas fa-upload"></i> استعادة نسخة احتياطية
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="data-management-section">
-                        <h4><i class="fas fa-download"></i> تصدير البيانات</h4>
-                        <h5><i class="fas fa-boxes"></i> تصدير حسب النوع</h5>
-                        <div class="btn-grid-sm">
-                            <button class="btn btn-outline btn-sm" id="export-products-only-btn">
-                                <i class="fas fa-boxes"></i> المنتجات فقط
-                            </button>
-                            <button class="btn btn-outline btn-sm" id="export-settings-only-btn">
-                                <i class="fas fa-cog"></i> الإعدادات فقط
-                            </button>
-                            <button class="btn btn-outline btn-sm" id="export-coupons-only-btn">
-                                <i class="fas fa-tags"></i> الكوبونات فقط
-                            </button>
-                            <button class="btn btn-outline btn-sm" id="export-orders-only-btn">
-                                <i class="fas fa-receipt"></i> الطلبات فقط
-                            </button>
-                            <button class="btn btn-outline btn-sm" id="export-subscribers-only-btn">
-                                <i class="fas fa-envelope"></i> المشتركين فقط
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="data-management-section">
-                        <h4><i class="fas fa-upload"></i> استيراد البيانات</h4>
-                        <h5><i class="fas fa-boxes"></i> استيراد المنتجات</h5>
-                        <div class="btn-grid-sm">
-                            <button class="btn btn-info btn-sm" id="import-products-merge-btn">
-                                <i class="fas fa-plus-circle"></i> دمج منتجات
-                            </button>
-                            <button class="btn btn-warning btn-sm" id="import-products-replace-btn">
-                                <i class="fas fa-exchange-alt"></i> استبدال المنتجات
-                            </button>
-                        </div>
-                        <h5 style="margin-top: 12px;"><i class="fas fa-cog"></i> استيراد إعدادات</h5>
-                        <div class="btn-grid-sm">
-                            <button class="btn btn-info btn-sm" id="import-settings-only-btn">
-                                <i class="fas fa-cog"></i> استيراد إعدادات
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="data-management-section">
-                        <h4><i class="fas fa-tools"></i> أدوات إضافية</h4>
-                        <div class="btn-grid">
-                            <button class="btn btn-danger" id="reset-data-btn">
-                                <i class="fas fa-trash-alt"></i> إعادة تعيين جميع البيانات
-                            </button>
-                            <button class="btn btn-primary" id="save-all-settings-btn">
-                                <i class="fas fa-save"></i> حفظ جميع الإعدادات
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
                 <div class="settings-section" id="ss-developer">
                     <div class="form-grid">
                         <div class="form-group"><label>اسم المطور</label><input type="text" id="dev-name" class="form-control" placeholder="Mohamed Elnil"></div>
                         <div class="form-group"><label>رابط المطور</label><input type="text" id="dev-url" class="form-control" placeholder="https://me-one-blue.vercel.app/about.html"></div>
                         <div class="form-group"><label>حقوق النشر</label><input type="text" id="dev-copyright" class="form-control" placeholder="© 2026 Dar3a Store"></div>
                         <div class="form-group"><label>رابط Chatbot</label><input type="text" id="dev-chatbot" class="form-control" placeholder="chat-bot.html"></div>
+                    </div>
+                    <div style="display:flex;gap:8px;margin-top:20px;flex-wrap:wrap;">
+                        <button class="btn btn-primary" id="save-all-settings-btn"><i class="fas fa-save"></i> حفظ جميع الإعدادات</button>
+                        <button class="btn btn-primary" id="export-data-btn"><i class="fas fa-download"></i> تصدير البيانات</button>
+                        <button class="btn btn-outline" id="import-data-btn"><i class="fas fa-upload"></i> استيراد بيانات</button>
+                        <button class="btn btn-danger" id="reset-data-btn"><i class="fas fa-trash-alt"></i> إعادة تعيين</button>
                     </div>
                 </div>
             </div>
@@ -599,10 +496,8 @@
     <script>
         // ==================== CONFIGURATION ====================
         const CONFIG = {
-            WHATSAPP_NUMBER: '0922265656',
-            ADMIN_SESSION_KEY: 'dar3a_admin_session',
-            TELEGRAM_BOT_TOKEN: '8723447348:AAGtKoujIGCtbLXuPUWAR-B-oweiOdcDCKk',
-            TELEGRAM_CHAT_ID: '6776057443'
+            WHATSAPP_NUMBER: '249922265656',
+            ADMIN_SESSION_KEY: 'dar3a_admin_session'
         };
 
         // ==================== GLOBAL VARIABLES ====================
@@ -645,6 +540,7 @@
             return response.json();
         }
 
+        // Products
         async function loadProductsFromServer() {
             try {
                 const data = await apiFetch('/api/products');
@@ -657,38 +553,12 @@
             }
         }
 
-        // ✅ تنظيف المنتجات: تحويل جميع حقول camelCase إلى snake_case
-        function cleanProductForDB(p) {
-            const cleaned = {};
-            for (const key in p) {
-                if (key === 'createdAt') {
-                    cleaned['created_at'] = p.created_at || p.createdAt || new Date().toISOString();
-                } else if (key === 'updatedAt') {
-                    cleaned['updated_at'] = p.updated_at || p.updatedAt || new Date().toISOString();
-                } else if (key === 'componentType') {
-                    cleaned['component_type'] = p.componentType || p.component_type || null;
-                } else {
-                    cleaned[key] = p[key];
-                }
-            }
-            // ضمان وجود التواريخ
-            if (!cleaned.created_at) cleaned.created_at = new Date().toISOString();
-            if (!cleaned.updated_at) cleaned.updated_at = new Date().toISOString();
-            // حذف أي حقول camelCase متبقية
-            delete cleaned.createdAt;
-            delete cleaned.updatedAt;
-            delete cleaned.componentType;
-            return cleaned;
-        }
-
         async function saveProductsToServer() {
             if (!sessionToken) return false;
             try {
-                const cleanedProducts = products.map(cleanProductForDB);
-                
                 await apiFetch('/api/products', {
                     method: 'POST',
-                    body: JSON.stringify({ products: cleanedProducts })
+                    body: JSON.stringify({ products })
                 });
                 return true;
             } catch (e) {
@@ -698,6 +568,7 @@
             }
         }
 
+        // Settings
         async function loadSettingsFromServer() {
             try {
                 const data = await apiFetch('/api/settings');
@@ -724,6 +595,7 @@
             }
         }
 
+        // Coupons
         async function loadCouponsFromServer() {
             try {
                 coupons = await apiFetch('/api/coupons');
@@ -763,6 +635,7 @@
             }
         }
 
+        // Orders
         async function loadOrdersFromServer() {
             try {
                 ordersLog = await apiFetch('/api/orders');
@@ -774,6 +647,7 @@
             }
         }
 
+        // Subscribers
         async function loadSubscribersFromServer() {
             try {
                 subscribers = await apiFetch('/api/newsletter');
@@ -819,7 +693,7 @@
             t.textContent = msg;
             t.style.display = 'block';
             clearTimeout(t._t);
-            t._t = setTimeout(() => t.style.display = 'none', 3000);
+            t._t = setTimeout(() => t.style.display = 'none', 2500);
         }
 
         function formatPrice(p) { return p.toLocaleString('en-US') + ' ' + siteSettings.currency; }
@@ -848,13 +722,13 @@
             const countEl = document.getElementById('subscribers-count');
             if (countEl) countEl.textContent = subscribers.length;
             if (!tbody) return;
-            if (subscribers.length === 0) { tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:40px;">لا يوجد مشتركين</td></tr>'; return; }
+            if (subscribers.length === 0) { tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:40px;">لا يوجد مشتركين</div></td>'; return; }
             tbody.innerHTML = subscribers.map((sub, index) => `
                 <tr>
-                    <td>${index + 1}</td>
-                    <td>${escapeHtml(sub.email)}</td>
-                    <td>${new Date(sub.created_at || sub.date).toLocaleString('ar-EG')}</td>
-                    <td><button class="btn btn-danger btn-xs delete-subscriber" data-email="${escapeHtml(sub.email)}"><i class="fas fa-trash"></i> حذف</button></td>
+                    <td>${index + 1}</div></td>
+                    <td>${escapeHtml(sub.email)}</div></td>
+                    <td>${new Date(sub.date).toLocaleString('ar-EG')}</div></td>
+                    <td><button class="btn btn-danger btn-xs delete-subscriber" data-email="${escapeHtml(sub.email)}"><i class="fas fa-trash"></i> حذف</button></div></td>
                 </tr>`).join('');
             document.querySelectorAll('.delete-subscriber').forEach(btn => {
                 btn.addEventListener('click', async function() {
@@ -1092,7 +966,7 @@
             const typeLabels = { cpu: '🧠 معالج', motherboard: '📟 لوحة أم', gpu: '🎮 كرت شاشة', ram: '🧮 ذاكرة', storage: '💾 تخزين', psu: '⚡ مزود طاقة', case: '📦 صندوق' };
             tbody.innerHTML = comps.map(p => `
                 <tr>
-                    <td>${typeLabels[p.component_type] || typeLabels[p.componentType] || p.component_type || p.componentType || '-'}</td>
+                    <td>${typeLabels[p.componentType] || p.componentType || '-'}</td>
                     <td>${escapeHtml(p.name)}</td>
                     <td>${formatPrice(p.price)}</td>
                     <td><button class="btn btn-edit btn-xs edit-product" data-id="${p.id}"><i class="fas fa-edit"></i></button></td>
@@ -1139,7 +1013,7 @@
             if (noMsg) noMsg.style.display = 'none';
             tbody.innerHTML = ordersLog.slice().reverse().map(o => `
                 <tr>
-                    <td>${new Date(o.created_at || o.date).toLocaleString('ar-EG')}</td>
+                    <td>${new Date(o.date).toLocaleString('ar-EG')}</td>
                     <td>${o.itemCount || o.items?.length || 0}</td>
                     <td style="color:var(--primary);font-weight:700;">${formatPrice(o.total)}</td>
                     <td>${o.coupon || '-'}</td>
@@ -1151,12 +1025,12 @@
             const list = document.getElementById('coupons-list');
             if (!list) return;
             if (coupons.length === 0) {
-                list.innerHTML = '<div style="text-align:center;padding:30px;color:#94a3b8;">لا توجد كوبونات</div>';
+                list.innerHTML = '<div style="text-align:center;padding:30px;color:var(--text-muted);">لا توجد كوبونات</div>';
                 return;
             }
             list.innerHTML = coupons.map((c, i) => `
                 <div style="display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:16px;margin-bottom:8px;">
-                    <div><strong style="color:#22c55e;">${escapeHtml(c.code)}</strong><br><span style="font-size:0.8rem;color:#94a3b8;">${c.type === 'percent' ? c.discount + '%' : formatPrice(c.discount)} خصم ${c.min_order > 0 ? ' (أدنى طلب: ' + formatPrice(c.min_order) + ')' : ''}</span></div>
+                    <div><strong style="color:#22c55e;">${escapeHtml(c.code)}</strong><br><span style="font-size:0.8rem;color:var(--text-muted);">${c.type === 'percent' ? c.discount + '%' : formatPrice(c.discount)} خصم ${c.minOrder > 0 ? ' (أدنى طلب: ' + formatPrice(c.minOrder) + ')' : ''}</span></div>
                     <button class="btn btn-danger btn-xs delete-coupon" data-code="${escapeHtml(c.code)}"><i class="fas fa-trash"></i></button>
                 </div>
             `).join('');
@@ -1225,8 +1099,7 @@
             }
             
             document.getElementById('comp-type-group').style.display = p.type === 'component' ? 'block' : 'none';
-            // ✅ استخدام component_type (snake_case)
-            if(p.type === 'component') document.getElementById('comp-type').value = p.component_type || p.componentType || 'cpu';
+            if(p.type === 'component') document.getElementById('comp-type').value = p.componentType || 'cpu';
             const sc = document.getElementById('specs-container');
             sc.innerHTML = '';
             if(p.specs && Object.keys(p.specs).length) {
@@ -1266,7 +1139,6 @@
             c.appendChild(r);
         }
         
-        // ✅ استخدام component_type (snake_case) بالكامل
         async function saveProduct(e) {
             e.preventDefault();
             const name = document.getElementById('prod-name').value.trim();
@@ -1282,25 +1154,17 @@
                 }
             });
             const product = {
-                id: editingId || ('prod_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6)),
+                id: editingId || ('prod_' + Date.now()),
                 type, name, price,
                 brand: document.getElementById('prod-brand').value.trim(),
                 image: document.getElementById('prod-image-url').value.trim(),
                 description: document.getElementById('prod-desc').value.trim(),
                 specs,
                 stock: parseInt(document.getElementById('prod-stock').value) || 0,
-                created_at: editingId ? (products.find(p => p.id === editingId)?.created_at || new Date().toISOString()) : new Date().toISOString(),
-                updated_at: new Date().toISOString()
+                createdAt: editingId ? (products.find(p => p.id === editingId)?.createdAt || new Date().toISOString()) : new Date().toISOString(),
+                updatedAt: new Date().toISOString()
             };
-            
-            // ✅ استخدام component_type بدلاً من componentType
-            if(type === 'component') product.component_type = document.getElementById('comp-type').value || 'cpu';
-            
-            // ✅ حذف أي حقول camelCase
-            delete product.createdAt;
-            delete product.updatedAt;
-            delete product.componentType;
-            
+            if(type === 'component') product.componentType = document.getElementById('comp-type').value || 'cpu';
             if(editingId) {
                 const idx = products.findIndex(p => p.id === editingId);
                 if(idx !== -1) { products[idx] = product; showToast('✅ تم تحديث المنتج!'); }
@@ -1363,299 +1227,7 @@
             document.getElementById('products-count').textContent = products.length;
         }
 
-        // ==================== EXPORT/IMPORT FUNCTIONS ====================
-        async function exportFullBackup() {
-            if (!sessionToken) { showToast('❌ يجب تسجيل الدخول أولاً'); return; }
-            try {
-                const backupData = {
-                    exportDate: new Date().toISOString(),
-                    version: '2.0',
-                    type: 'full_backup',
-                    storeInfo: { name: siteSettings.name, version: '1.0' },
-                    data: { products, coupons, orders: ordersLog, settings: siteSettings, subscribers },
-                    stats: {
-                        totalProducts: products.length,
-                        totalCoupons: coupons.length,
-                        totalOrders: ordersLog.length,
-                        totalSubscribers: subscribers.length
-                    }
-                };
-                const blob = new Blob([JSON.stringify(backupData, null, 2)], { type: 'application/json' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `dar3a_full_backup_${new Date().toISOString().slice(0,19)}.json`;
-                a.click();
-                URL.revokeObjectURL(url);
-                showToast('✅ تم إنشاء نسخة احتياطية كاملة');
-            } catch (error) {
-                console.error('Backup error:', error);
-                showToast('❌ فشل إنشاء النسخة الاحتياطية');
-            }
-        }
-
-        async function importFullBackup() {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = '.json';
-            input.onchange = async function(e) {
-                const file = e.target.files[0];
-                if (!file) return;
-                const reader = new FileReader();
-                reader.onload = async function(ev) {
-                    try {
-                        const data = JSON.parse(ev.target.result);
-                        if (data.type === 'full_backup' && data.data) {
-                            if (confirm(`⚠️ استعادة النسخة الاحتياطية من ${new Date(data.exportDate).toLocaleString('ar-EG')}\n\nسيتم استبدال جميع البيانات الحالية. هل أنت متأكد؟`)) {
-                                if (data.data.products) products = data.data.products;
-                                if (data.data.coupons) coupons = data.data.coupons;
-                                if (data.data.orders) ordersLog = data.data.orders;
-                                if (data.data.settings) siteSettings = { ...siteSettings, ...data.data.settings };
-                                if (data.data.subscribers) subscribers = data.data.subscribers;
-                                await saveProductsToServer();
-                                await saveSettingsToServer();
-                                applyAllSettings();
-                                await refreshAll();
-                                showToast('✅ تم استعادة النسخة الاحتياطية بنجاح');
-                            }
-                        } else {
-                            if (confirm('هذا الملف ليس نسخة احتياطية كاملة. هل تريد استيراده كبيانات عادية؟')) {
-                                if (data.products) products = data.products;
-                                if (data.coupons) coupons = data.coupons;
-                                if (data.ordersLog) ordersLog = data.ordersLog;
-                                if (data.siteSettings) siteSettings = { ...siteSettings, ...data.siteSettings };
-                                await saveProductsToServer();
-                                await saveSettingsToServer();
-                                applyAllSettings();
-                                await refreshAll();
-                                showToast('✅ تم استيراد البيانات');
-                            }
-                        }
-                    } catch (error) {
-                        console.error('Import error:', error);
-                        showToast('❌ ملف نسخة احتياطية غير صالح');
-                    }
-                };
-                reader.readAsText(file);
-            };
-            input.click();
-        }
-
-        async function exportProductsOnly() {
-            if (!sessionToken) { showToast('❌ يجب تسجيل الدخول أولاً'); return; }
-            try {
-                const exportData = {
-                    exportDate: new Date().toISOString(),
-                    type: 'products',
-                    version: '1.0',
-                    products: products,
-                    stats: { total: products.length, byType: {
-                        movies: products.filter(p => p.type === 'movies').length,
-                        series: products.filter(p => p.type === 'series').length,
-                        programs: products.filter(p => p.type === 'programs').length,
-                        component: products.filter(p => p.type === 'component').length,
-                        pcgames: products.filter(p => p.type === 'pcgames').length,
-                        playstation: products.filter(p => p.type === 'playstation').length
-                    } }
-                };
-                const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `dar3a_products_${new Date().toISOString().slice(0,19)}.json`;
-                a.click();
-                URL.revokeObjectURL(url);
-                showToast(`✅ تم تصدير ${products.length} منتج بنجاح`);
-            } catch (error) {
-                console.error('Export error:', error);
-                showToast('❌ فشل تصدير المنتجات');
-            }
-        }
-
-        async function exportSettingsOnly() {
-            if (!sessionToken) { showToast('❌ يجب تسجيل الدخول أولاً'); return; }
-            try {
-                const exportData = {
-                    exportDate: new Date().toISOString(),
-                    type: 'settings',
-                    version: '1.0',
-                    settings: siteSettings
-                };
-                const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `dar3a_settings_${new Date().toISOString().slice(0,19)}.json`;
-                a.click();
-                URL.revokeObjectURL(url);
-                showToast('✅ تم تصدير الإعدادات بنجاح');
-            } catch (error) {
-                console.error('Export error:', error);
-                showToast('❌ فشل تصدير الإعدادات');
-            }
-        }
-
-        async function exportCouponsOnly() {
-            if (!sessionToken) { showToast('❌ يجب تسجيل الدخول أولاً'); return; }
-            try {
-                const exportData = {
-                    exportDate: new Date().toISOString(),
-                    type: 'coupons',
-                    version: '1.0',
-                    coupons: coupons
-                };
-                const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `dar3a_coupons_${new Date().toISOString().slice(0,19)}.json`;
-                a.click();
-                URL.revokeObjectURL(url);
-                showToast(`✅ تم تصدير ${coupons.length} كوبون بنجاح`);
-            } catch (error) {
-                console.error('Export error:', error);
-                showToast('❌ فشل تصدير الكوبونات');
-            }
-        }
-
-        async function exportOrdersOnly() {
-            if (!sessionToken) { showToast('❌ يجب تسجيل الدخول أولاً'); return; }
-            try {
-                const exportData = {
-                    exportDate: new Date().toISOString(),
-                    type: 'orders',
-                    version: '1.0',
-                    orders: ordersLog,
-                    stats: { total: ordersLog.length, totalValue: ordersLog.reduce((sum, o) => sum + (o.total || 0), 0) }
-                };
-                const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `dar3a_orders_${new Date().toISOString().slice(0,19)}.json`;
-                a.click();
-                URL.revokeObjectURL(url);
-                showToast(`✅ تم تصدير ${ordersLog.length} طلب بنجاح`);
-            } catch (error) {
-                console.error('Export error:', error);
-                showToast('❌ فشل تصدير الطلبات');
-            }
-        }
-
-        async function exportSubscribersOnly() {
-            if (!sessionToken) { showToast('❌ يجب تسجيل الدخول أولاً'); return; }
-            try {
-                const exportData = {
-                    exportDate: new Date().toISOString(),
-                    type: 'subscribers',
-                    version: '1.0',
-                    subscribers: subscribers
-                };
-                const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `dar3a_subscribers_${new Date().toISOString().slice(0,19)}.json`;
-                a.click();
-                URL.revokeObjectURL(url);
-                showToast(`✅ تم تصدير ${subscribers.length} مشترك بنجاح`);
-            } catch (error) {
-                console.error('Export error:', error);
-                showToast('❌ فشل تصدير المشتركين');
-            }
-        }
-
-        // ✅ تنظيف المنتجات المستوردة
-        async function importProductsOnly(merge = true) {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = '.json';
-            input.onchange = async function(e) {
-                const file = e.target.files[0];
-                if (!file) return;
-                const reader = new FileReader();
-                reader.onload = async function(ev) {
-                    try {
-                        const data = JSON.parse(ev.target.result);
-                        let newProducts = [];
-                        if (data.type === 'products' && data.products) newProducts = data.products;
-                        else if (data.products) newProducts = data.products;
-                        else if (Array.isArray(data)) newProducts = data;
-                        else throw new Error('تنسيق ملف غير صالح');
-                        
-                        // ✅ تنظيف المنتجات المستوردة
-                        newProducts = newProducts.map(cleanProductForDB);
-                        
-                        if (merge) {
-                            const existingIds = new Set(products.map(p => p.id));
-                            const uniqueNew = newProducts.filter(p => !existingIds.has(p.id));
-                            products = [...products, ...uniqueNew];
-                            showToast(`✅ تم دمج ${uniqueNew.length} منتج جديد (إجمالي: ${products.length})`);
-                        } else {
-                            if (confirm(`⚠️ استبدال جميع المنتجات (${products.length} منتج) بـ ${newProducts.length} منتج؟`)) {
-                                products = newProducts;
-                                showToast(`✅ تم استبدال جميع المنتجات بـ ${products.length} منتج`);
-                            } else return;
-                        }
-                        await saveProductsToServer();
-                        await refreshAll();
-                        showToast('✅ تم استيراد المنتجات بنجاح');
-                    } catch (error) {
-                        console.error('Import error:', error);
-                        showToast('❌ ملف غير صالح أو تالف');
-                    }
-                };
-                reader.readAsText(file);
-            };
-            input.click();
-        }
-
-        async function importSettingsOnly() {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = '.json';
-            input.onchange = async function(e) {
-                const file = e.target.files[0];
-                if (!file) return;
-                const reader = new FileReader();
-                reader.onload = async function(ev) {
-                    try {
-                        const data = JSON.parse(ev.target.result);
-                        let newSettings = null;
-                        if (data.type === 'settings' && data.settings) newSettings = data.settings;
-                        else if (data.settings) newSettings = data.settings;
-                        else if (data.name && data.currency) newSettings = data;
-                        else throw new Error('تنسيق ملف غير صالح للإعدادات');
-                        
-                        if (confirm('⚠️ استبدال الإعدادات الحالية؟')) {
-                            siteSettings = { ...siteSettings, ...newSettings };
-                            await saveSettingsToServer();
-                            applyAllSettings();
-                            showToast('✅ تم استيراد الإعدادات بنجاح');
-                        }
-                    } catch (error) {
-                        console.error('Import error:', error);
-                        showToast('❌ ملف إعدادات غير صالح');
-                    }
-                };
-                reader.readAsText(file);
-            };
-            input.click();
-        }
-
-        async function resetAllData() {
-            if (confirm('⚠️ تحذير: سيتم حذف جميع البيانات نهائياً!\n\nالمنتجات، الكوبونات، الطلبات، المشتركين.\n\nهل أنت متأكد؟')) {
-                products = [];
-                coupons = [];
-                ordersLog = [];
-                subscribers = [];
-                await saveProductsToServer();
-                await refreshAll();
-                showToast('✅ تم إعادة تعيين جميع البيانات');
-            }
-        }
-
-        // ==================== ADMIN LOGIN SYSTEM ====================
+        // ==================== SINGLE ADMIN LOGIN SYSTEM ====================
         function checkExistingSession() {
             const session = sessionStorage.getItem(CONFIG.ADMIN_SESSION_KEY);
             if(session) {
@@ -1824,6 +1396,7 @@
 
         // ==================== BIND EVENTS ====================
         function bindEvents() {
+            // Navigation
             document.querySelectorAll('.sidebar-nav a[data-panel]').forEach(l => {
                 l.addEventListener('click', function(e) {
                     e.preventDefault();
@@ -1839,6 +1412,7 @@
                 });
             });
             
+            // Games submenu toggle
             const gamesParent = document.getElementById('games-parent');
             if(gamesParent) {
                 gamesParent.addEventListener('click', function(e) {
@@ -1847,6 +1421,7 @@
                 });
             }
             
+            // Product form buttons
             document.getElementById('add-product-btn')?.addEventListener('click', () => { resetForm(); switchPanel('add-product'); });
             document.getElementById('add-pcgames-btn')?.addEventListener('click', () => { resetForm(); document.getElementById('prod-type').value = 'pcgames'; switchPanel('add-product'); });
             document.getElementById('add-playstation-btn')?.addEventListener('click', () => { resetForm(); document.getElementById('prod-type').value = 'playstation'; switchPanel('add-product'); });
@@ -1857,14 +1432,17 @@
             document.getElementById('prod-type')?.addEventListener('change', function() { document.getElementById('comp-type-group').style.display = this.value === 'component' ? 'block' : 'none'; });
             document.getElementById('filter-type')?.addEventListener('change', function() { renderProductsTable(this.value); });
             
-            document.getElementById('add-coupon-btn')?.addEventListener('click', () => { document.getElementById('coupon-form').style.display = 'block'; });
+            // Coupons
+            document.getElementById('add-coupon-btn')?.addEventListener('click', () => {
+                document.getElementById('coupon-form').style.display = 'block';
+            });
             document.getElementById('save-coupon-btn')?.addEventListener('click', async () => {
                 const code = document.getElementById('coupon-code').value.trim().toUpperCase();
                 const type = document.getElementById('coupon-type').value;
                 const value = parseFloat(document.getElementById('coupon-value').value);
                 const minOrder = parseFloat(document.getElementById('coupon-min').value) || 0;
                 if (!code || !value) { showToast('❌ أكمل البيانات'); return; }
-                const newCoupon = { code, discount: value, type, active: true, min_order: minOrder };
+                const newCoupon = { code, discount: value, type, active: true, minOrder };
                 await addCouponToServer(newCoupon);
                 await loadCouponsFromServer();
                 renderCoupons();
@@ -1873,7 +1451,9 @@
                 document.getElementById('coupon-value').value = '';
                 showToast('✅ تم إضافة الكوبون');
             });
-            document.getElementById('cancel-coupon-btn')?.addEventListener('click', () => { document.getElementById('coupon-form').style.display = 'none'; });
+            document.getElementById('cancel-coupon-btn')?.addEventListener('click', () => {
+                document.getElementById('coupon-form').style.display = 'none';
+            });
             document.getElementById('clear-orders-btn')?.addEventListener('click', async () => {
                 if (confirm('⚠️ مسح جميع الطلبات؟')) {
                     ordersLog = [];
@@ -1882,6 +1462,7 @@
                 }
             });
             
+            // Mobile menu
             document.getElementById('mobile-menu-btn')?.addEventListener('click', () => {
                 document.getElementById('sidebar').classList.add('open');
                 document.getElementById('sidebar-overlay').classList.add('show');
@@ -1891,9 +1472,11 @@
                 this.classList.remove('show');
             });
             
+            // Logout
             document.getElementById('logout-btn')?.addEventListener('click', logout);
             document.getElementById('clear-all-subscribers')?.addEventListener('click', clearAllSubscribers);
             
+            // Settings
             document.getElementById('save-all-settings-btn')?.addEventListener('click', saveAllSettings);
             document.querySelectorAll('.settings-tab').forEach(t => {
                 t.addEventListener('click', function() {
@@ -1907,23 +1490,62 @@
             document.getElementById('primary-color')?.addEventListener('input', function() { document.getElementById('primary-color-text').value = this.value; });
             document.getElementById('secondary-color')?.addEventListener('input', function() { document.getElementById('secondary-color-text').value = this.value; });
             
+            // Logo uploads
             initLogoUpload('main-logo-area', 'main-logo-file', 'main-logo-url', 'main-logo-preview', 'mainLogo');
             initLogoUpload('favicon-area', 'favicon-file', 'favicon-url', 'favicon-preview', 'favicon');
             initProductImageUpload();
             
-            // Export/Import Buttons
-            document.getElementById('export-full-backup-btn')?.addEventListener('click', exportFullBackup);
-            document.getElementById('import-full-backup-btn')?.addEventListener('click', importFullBackup);
-            document.getElementById('export-products-only-btn')?.addEventListener('click', exportProductsOnly);
-            document.getElementById('export-settings-only-btn')?.addEventListener('click', exportSettingsOnly);
-            document.getElementById('export-coupons-only-btn')?.addEventListener('click', exportCouponsOnly);
-            document.getElementById('export-orders-only-btn')?.addEventListener('click', exportOrdersOnly);
-            document.getElementById('export-subscribers-only-btn')?.addEventListener('click', exportSubscribersOnly);
-            document.getElementById('import-products-merge-btn')?.addEventListener('click', () => importProductsOnly(true));
-            document.getElementById('import-products-replace-btn')?.addEventListener('click', () => importProductsOnly(false));
-            document.getElementById('import-settings-only-btn')?.addEventListener('click', importSettingsOnly);
-            document.getElementById('reset-data-btn')?.addEventListener('click', resetAllData);
+            // Export/Import/Reset
+            document.getElementById('export-data-btn')?.addEventListener('click', () => {
+                const d = { products, coupons, ordersLog, siteSettings };
+                const b = new Blob([JSON.stringify(d)], { type: 'application/json' });
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(b);
+                a.download = 'dar3a_backup.json';
+                a.click();
+                URL.revokeObjectURL(a.href);
+                showToast('تم التصدير!');
+            });
             
+            document.getElementById('import-data-btn')?.addEventListener('click', async () => {
+                const inp = document.createElement('input');
+                inp.type = 'file';
+                inp.accept = '.json';
+                inp.onchange = async function(e) {
+                    const f = e.target.files[0];
+                    if(!f) return;
+                    const r = new FileReader();
+                    r.onload = async function(ev) {
+                        try {
+                            const d = JSON.parse(ev.target.result);
+                            if(d.products) products = d.products;
+                            if(d.coupons) coupons = d.coupons;
+                            if(d.ordersLog) ordersLog = d.ordersLog;
+                            if(d.siteSettings) siteSettings = { ...siteSettings, ...d.siteSettings };
+                            await saveProductsToServer();
+                            await saveSettingsToServer();
+                            applyAllSettings();
+                            await refreshAll();
+                            showToast('تم الاستيراد!');
+                        } catch(ex) { showToast('ملف غير صالح'); }
+                    };
+                    r.readAsText(f);
+                };
+                inp.click();
+            });
+            
+            document.getElementById('reset-data-btn')?.addEventListener('click', async () => {
+                if(confirm('حذف جميع البيانات؟')) {
+                    products = [];
+                    coupons = [{ code: 'WELCOME10', discount: 10, type: 'percent', active: true, minOrder: 1000 }];
+                    ordersLog = [];
+                    await saveProductsToServer();
+                    await refreshAll();
+                    showToast('تم إعادة التعيين');
+                }
+            });
+            
+            // Login events
             document.getElementById('request-code-btn')?.addEventListener('click', requestOTP);
             document.getElementById('resend-link')?.addEventListener('click', () => {
                 if(otpTimeLeft > 0) return;
@@ -1943,6 +1565,7 @@
                 showStep('request');
             });
             
+            // OTP inputs
             for(let i = 1; i <= 6; i++) {
                 const inp = document.getElementById('otp-' + i);
                 if(!inp) continue;
@@ -1951,6 +1574,7 @@
                     if(this.value.length === 1 && i < 6) document.getElementById('otp-' + (i + 1))?.focus();
                     if(i === 6 && this.value.length === 1) setTimeout(verifyOTP, 200);
                 });
+                
                 inp.addEventListener('paste', function(e) {
                     e.preventDefault();
                     const pastedText = (e.clipboardData || window.clipboardData).getData('text');
@@ -1959,11 +1583,14 @@
                         const field = document.getElementById('otp-' + (j + 1));
                         if (field) field.value = digits[j];
                     }
-                    if (digits.length === 6) setTimeout(verifyOTP, 100);
+                    if (digits.length === 6) {
+                        setTimeout(verifyOTP, 100);
+                    }
                 });
             }
         }
 
+        // ==================== PARTICLES ====================
         function createParticles() {
             const c = document.getElementById('bg-particles');
             if(!c) return;
@@ -1980,6 +1607,7 @@
             }
         }
 
+        // ==================== INITIALIZATION ====================
         async function init() {
             console.log('🚀 بدء تشغيل لوحة التحكم - مدير واحد');
             createParticles();

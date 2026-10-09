@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 — الصفحة غير موجودة | Dar3a Store</title>
+    <meta name="theme-color" content="#0a0e17">
+    <link rel="icon" type="image/png" href="images/logo.png">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --accent: #e63946;
+            --gradient-accent: linear-gradient(135deg, #e63946 0%, #ff6b6b 100%);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Tajawal', sans-serif;
+            min-height: 100dvh;
+            display: flex; align-items: center; justify-content: center;
+            background: radial-gradient(ellipse at 20% 20%, #1a2332 0%, #0a0e17 60%);
+            color: #f1f5f9; text-align: center; padding: 24px; overflow: hidden;
+        }
+        .orb { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.3; }
+        .orb-1 { width: 380px; height: 380px; background: var(--accent); top: -120px; right: -100px; }
+        .orb-2 { width: 300px; height: 300px; background: #4f7cff; bottom: -110px; left: -80px; }
+        .card { position: relative; z-index: 2; max-width: 520px; }
+        .code {
+            font-size: clamp(6rem, 22vw, 11rem); font-weight: 900; line-height: 1;
+            background: var(--gradient-accent);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            text-shadow: 0 20px 60px rgba(230, 57, 70, 0.35);
+            animation: float 4s ease-in-out infinite;
+        }
+        @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-16px); } }
+        h1 { font-size: clamp(1.3rem, 5vw, 1.9rem); font-weight: 900; margin: 12px 0; }
+        p { color: #94a3b8; font-size: 1rem; line-height: 2; margin-bottom: 28px; }
+        .btn {
+            display: inline-flex; align-items: center; gap: 10px;
+            padding: 14px 34px; border-radius: 999px; font-weight: 800;
+            text-decoration: none; font-family: inherit; font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        .btn-primary {
+            background: var(--gradient-accent); color: #fff;
+            box-shadow: 0 10px 34px rgba(230, 57, 70, 0.4);
+        }
+        .btn-primary:hover { transform: translateY(-4px) scale(1.03); }
+        .btn-ghost {
+            background: rgba(255,255,255,0.06); color: #f1f5f9;
+            border: 1px solid rgba(255,255,255,0.14); margin-right: 10px;
+        }
+        .btn-ghost:hover { background: rgba(255,255,255,0.12); transform: translateY(-4px); }
+        .actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+    </style>
+</head>
+<body>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="card">
+        <div class="code">404</div>
+        <h1>عذراً؟ هذه الصفحة غير موجودة</h1>
+        <p>الرابط الذي تحاول الوصول إليه غير صحيح أو تمت إزالة الصفحة.<br>لا تقلق — يمكنك العودة للمتجر ومواصلة التسوق!</p>
+        <div class="actions">
+            <a href="index.html" class="btn btn-primary"><i class="fas fa-store"></i> العودة للمتجر</a>
+            <a href="chat-bot.html" class="btn btn-ghost"><i class="fas fa-robot"></i> اسأل المساعد</a>
+        </div>
+    </div>
+</body>
+</html>

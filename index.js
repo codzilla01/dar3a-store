@@ -2,7 +2,16 @@
 const express = require('express');
 const cors = require('cors');
 const crypto = require('crypto');
-const db = require('./database');
+
+// قاعدة البيانات: Supabase إن كانت مهيأة، وإلا وضع العرض التجريبي (ذاكرة محلية)
+let db;
+try {
+    db = require('./database');
+    if (db.demoMode) db = require('./fallback-db');
+} catch (e) {
+    console.warn('⚠️ Supabase غير مهيأ — التشغيل في وضع العرض التجريبي (بيانات تجريبية في الذاكرة):', e.message);
+    db = require('./fallback-db');
+}
 
 const app = express();
 
@@ -223,18 +232,27 @@ app.post('/api/auth/request', async (req, res) => {
         const chatId = role === 'assistant'
             ? process.env.TELEGRAM_ASSISTANT_CHAT_ID || process.env.ASSISTANT_CHAT_ID
             : process.env.TELEGRAM_CHAT_ID;
+
+        // في وضع التطوير بدون تيليجرام: اطبع الكود في الكونسول لتجربة الدخول محلياً
+        if (!botToken) {
+            console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+            console.log('🔑 كود دخول الإدارة (وضع التطوير المحلي):', otp);
+            console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+        }
         
         const message = `🔐 *كود التحقق لمتجر ${storeName || 'Dar3a Store'}*\n\n${role === 'admin' ? '👑 مدير' : '👥 مساعد'}\n\n📱 *الكود:* \`${otp}\`\n\n⏰ صالح لمدة 5 دقائق`;
         
-        try {
-            const telegramUrl = `https://api.telegram.org/bot${botToken}/sendMessage`;
-            await fetch(telegramUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ chat_id: chatId, text: message, parse_mode: 'Markdown' })
-            });
-        } catch (telegramError) {
-            console.error('Telegram error:', telegramError);
+        if (botToken) {
+            try {
+                const telegramUrl = `https://api.telegram.org/bot${botToken}/sendMessage`;
+                await fetch(telegramUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ chat_id: chatId, text: message, parse_mode: 'Markdown' })
+                });
+            } catch (telegramError) {
+                console.error('Telegram error:', telegramError.message);
+            }
         }
         
         res.json({ ok: true, challengeToken, expiresIn });
