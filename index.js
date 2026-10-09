@@ -75,7 +75,7 @@ app.get('/api/settings', async (req, res) => {
                 tagline: 'أفلام • مسلسلات • برامج • ألعاب',
                 currency: 'ج.س',
                 phone: '0922265656',
-                whatsapp: '0922265656',
+                whatsapp: '249922265656',
                 address: 'السودان - امدرمان',
                 hours: 'يومياً 10 ص - 10 م',
                 website: 'https://dar3a-store.vercel.app',

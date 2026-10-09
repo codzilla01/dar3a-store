@@ -2035,6 +2035,47 @@
             background: var(--gradient-hero), radial-gradient(ellipse at 30% 20%, rgba(230,57,70,0.35), transparent 55%);
             z-index: 0;
         }
+
+        /* ---------- Staggered card entrance ---------- */
+        .product-card.card-enter {
+            opacity: 0;
+            transform: translateY(26px) scale(0.97);
+            animation: cardEnter 0.55s cubic-bezier(0.2, 0.9, 0.4, 1.1) forwards;
+        }
+        @keyframes cardEnter {
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* ---------- Section count badge ---------- */
+        .section-count {
+            display: inline-flex; align-items: center; justify-content: center;
+            min-width: 30px; height: 26px; padding: 0 10px; margin-right: 8px;
+            border-radius: 13px; background: var(--accent-glow); color: var(--accent);
+            font-size: 0.78rem; font-weight: 800; vertical-align: middle;
+        }
+
+        /* ---------- Order success modal ---------- */
+        .success-check {
+            width: 92px; height: 92px; margin: 6px auto 18px; border-radius: 50%;
+            background: linear-gradient(135deg, #22c55e, #4ade80);
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 16px 50px rgba(34, 197, 94, 0.4);
+            animation: successPop 0.6s cubic-bezier(0.2, 0.9, 0.4, 1.4);
+        }
+        .success-check i { font-size: 2.6rem; color: #fff; }
+        @keyframes successPop {
+            0% { transform: scale(0.2); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .confetti-piece {
+            position: fixed; top: -12px; z-index: 26000; width: 9px; height: 14px;
+            border-radius: 2px; pointer-events: none; opacity: 0.95;
+            animation: confettiFall linear forwards;
+        }
+        @keyframes confettiFall {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(105vh) rotate(720deg); opacity: 0; }
+        }
     </style>
 </head>
 <body>
@@ -2091,7 +2132,7 @@
 
     <section class="hero" id="home">
         <div class="hero-banner-fallback"></div>
-        <img src="images/Banner.png" alt="Dar3a Store Banner" class="hero-banner" onerror="this.style.display='none'">
+        <img src="images/Banner.png" alt="Dar3a Store Banner" class="hero-banner" fetchpriority="high" onerror="this.style.display='none'">
         <div class="hero-orb orb-1"></div>
         <div class="hero-orb orb-2"></div>
         <div class="container">
@@ -2432,6 +2473,20 @@
             <div id="policy-body" style="font-size:0.88rem;line-height:2;color:var(--text-secondary);"></div>
             <div class="checkout-actions">
                 <button class="btn btn-primary" id="policy-close-btn" style="flex:1;justify-content:center;">حسناً، فهمت</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== Order Success Modal ===== -->
+    <div class="checkout-overlay" id="success-overlay" role="dialog" aria-label="تم الطلب بنجاح">
+        <div class="checkout-card" style="text-align:center;">
+            <div class="success-check"><i class="fas fa-check"></i></div>
+            <h3 style="justify-content:center;">تم استلام طلبك!</h3>
+            <p class="sub" style="margin-bottom:18px;">سيتواصل معك فريقنا عبر واتساب خلال دقائق للتأكيد 🎉</p>
+            <div class="checkout-summary" id="success-summary" style="text-align:right;"></div>
+            <div class="checkout-actions">
+                <button class="btn btn-whatsapp" id="success-whatsapp-btn" style="flex:1;justify-content:center;"><i class="fab fa-whatsapp"></i> متابعة على واتساب</button>
+                <button class="btn btn-primary" id="success-close-btn" style="flex:1;justify-content:center;">مواصلة التسوق</button>
             </div>
         </div>
     </div>
@@ -2848,13 +2903,51 @@
             }
 
             window.open(`https://wa.me/${getWhatsAppNumber()}?text=${encodeURIComponent(message)}`, '_blank');
+
+            // حفظ بيانات الطلب لزر "المتابعة على واتساب"
+            window._lastOrder = { name, phone, payment, subtotal, message };
+
             cart = [];
             saveCart();
             renderCartItems();
             renderAll();
             closeCheckout();
             closeCart();
-            showToast('✅ تم إنشاء الطلب! سيتواصل معك فريقنا قريباً', 'success');
+            showOrderSuccess();
+        }
+
+        // شاشة نجاح الطلب + الكونفيتي
+        function showOrderSuccess() {
+            const summary = $('#success-summary');
+            const order = window._lastOrder;
+            if (summary && order) {
+                summary.innerHTML = `
+                    <div class="row"><span>الاسم</span><span>${escapeHtml(order.name)}</span></div>
+                    <div class="row"><span>الهاتف</span><span>${escapeHtml(order.phone)}</span></div>
+                    <div class="row"><span>الدفع</span><span>${escapeHtml(order.payment)}</span></div>
+                    <div class="row total"><span>الإجمالي</span><span>${formatPrice(order.subtotal)}</span></div>`;
+            }
+            $('#success-overlay')?.classList.add('open');
+            launchConfetti();
+            showToast('✅ تم إنشاء الطلب بنجاح!', 'success');
+        }
+
+        function closeSuccess() { $('#success-overlay')?.classList.remove('open'); }
+
+        function launchConfetti() {
+            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+            const colors = ['#e63946', '#ff6b6b', '#22c55e', '#f59e0b', '#3b82f6', '#a78bfa'];
+            for (let i = 0; i < 28; i++) {
+                const piece = document.createElement('div');
+                piece.className = 'confetti-piece';
+                piece.style.left = Math.random() * 100 + 'vw';
+                piece.style.background = colors[i % colors.length];
+                piece.style.animationDuration = (2.2 + Math.random() * 1.8) + 's';
+                piece.style.animationDelay = (Math.random() * 0.6) + 's';
+                piece.style.transform = `rotate(${Math.random() * 360}deg)`;
+                document.body.appendChild(piece);
+                setTimeout(() => piece.remove(), 5000);
+            }
         }
 
         window._q = updateCartQty;
@@ -3054,7 +3147,36 @@
                     </div>`;
                 return;
             }
-            products.forEach(p => container.appendChild(createProductCard(p)));
+            products.forEach((p, i) => {
+                const card = createProductCard(p);
+                // دخول متتالي أنيق للبطاقات
+                card.classList.add('card-enter');
+                card.style.animationDelay = Math.min(i * 70, 420) + 'ms';
+                container.appendChild(card);
+            });
+        }
+
+        // تحديث عدّادات المنتجات في عناوين الأقسام
+        function updateSectionCounts() {
+            const map = {
+                'movies': allProducts.filter(p => p.type === 'movies').length,
+                'series': allProducts.filter(p => p.type === 'series').length,
+                'software': allProducts.filter(p => p.type === 'programs').length,
+                'games-section': allProducts.filter(p => p.type === 'pcgames' || p.type === 'playstation').length
+            };
+            Object.entries(map).forEach(([sectionId, count]) => {
+                const section = document.getElementById(sectionId);
+                if (!section) return;
+                const h2 = section.querySelector('.section-header h2');
+                if (!h2) return;
+                let badge = h2.querySelector('.section-count');
+                if (!badge) {
+                    badge = document.createElement('span');
+                    badge.className = 'section-count';
+                    h2.appendChild(badge);
+                }
+                badge.textContent = count;
+            });
         }
 
         function renderAll() {
@@ -3064,6 +3186,7 @@
             renderGrid('pcgames-grid', allProducts.filter(p => p.type === 'pcgames'));
             renderGrid('psgames-grid', allProducts.filter(p => p.type === 'playstation'));
             renderBuilder();
+            updateSectionCounts();
             updateCartUI();
             updateWishlistBadge();
         }
@@ -3412,7 +3535,7 @@
             $('#modal-close-btn')?.addEventListener('click', closeModal);
             $('#product-modal-overlay')?.addEventListener('click', e => { if (e.target === e.currentTarget) closeModal(); });
             document.addEventListener('keydown', e => {
-                if (e.key === 'Escape') { closeModal(); closeCart(); closeAdminLogin(); closeSearch(); closeCheckout(); closePolicy(); }
+                if (e.key === 'Escape') { closeModal(); closeCart(); closeAdminLogin(); closeSearch(); closeCheckout(); closePolicy(); closeSuccess(); }
                 if ((e.ctrlKey || e.metaKey) && (e.key === 'k' || e.key === 'K')) {
                     e.preventDefault();
                     openSearch();
@@ -3425,6 +3548,12 @@
             $('#checkout-confirm-btn')?.addEventListener('click', confirmCheckout);
             $('#checkout-cancel-btn')?.addEventListener('click', closeCheckout);
             $('#checkout-overlay')?.addEventListener('click', e => { if (e.target === e.currentTarget) closeCheckout(); });
+            $('#success-close-btn')?.addEventListener('click', closeSuccess);
+            $('#success-overlay')?.addEventListener('click', e => { if (e.target === e.currentTarget) closeSuccess(); });
+            $('#success-whatsapp-btn')?.addEventListener('click', () => {
+                const order = window._lastOrder;
+                if (order) window.open(`https://wa.me/${getWhatsAppNumber()}?text=${encodeURIComponent(order.message)}`, '_blank');
+            });
             $('#wishlist-btn')?.addEventListener('click', () => {
                 if (wishlist.length === 0) { showToast('❤️ المفضلة فارغة — أضف منتجات أعجبتك', 'info'); return; }
                 openSearch();
