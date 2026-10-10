@@ -1,0 +1,8 @@
+# robots.txt — Dar3a Store
+User-agent: *
+Allow: /
+Disallow: /admin.html
+Disallow: /chat-bot.html
+
+# Sitemap
+Sitemap: https://dar3a-store.vercel.app/sitemap.xml

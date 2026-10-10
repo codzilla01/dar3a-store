@@ -1,0 +1,60 @@
+name: CI — فحص الجودة
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+jobs:
+  quality:
+    name: Syntax & Security checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: Node syntax check (backend)
+        run: |
+          node --check index.js
+          node --check database.js
+          node --check fallback-db.js
+          node --check server.js
+          node --check api/index.js
+          node --check api/db.js
+          node --check api/admin-auth.js
+          node --check api/middleware/auth.js
+          node --check api/supabase-client.js
+          for f in api/routes/*.js; do node --check "$f"; done
+
+      - name: Inline JS syntax check (frontend)
+        run: |
+          node -e "
+          const fs = require('fs');
+          for (const file of ['public/index.html','public/admin.html','public/chat-bot.html']) {
+            const html = fs.readFileSync(file, 'utf8');
+            const scripts = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(m => m[1]);
+            scripts.forEach((s, i) => fs.writeFileSync('/tmp/qa_' + file.replace(/\W/g,'_') + '_' + i + '.js', s));
+          }
+          "
+          for f in /tmp/qa_*.js; do node --check "$f"; done
+
+      - name: JSON validity (manifest & structured data)
+        run: |
+          node -e "JSON.parse(require('fs').readFileSync('public/manifest.webmanifest','utf8')); console.log('manifest OK')"
+          node -e "
+          const html = require('fs').readFileSync('public/index.html','utf8');
+          const m = html.match(/<script type=\"application\/ld\+json\">([\s\S]*?)<\/script>/);
+          JSON.parse(m[1]); console.log('JSON-LD OK');
+          "
+
+      - name: Secrets scan (no hardcoded tokens allowed)
+        run: |
+          ! grep -rnE "TELEGRAM_BOT_TOKEN: '[0-9]+:" --include='*.html' --include='*.js' --include='*.json' . | grep -v node_modules
+          ! grep -rnE "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9" --include='*.html' --include='*.js' --include='*.json' . | grep -v node_modules
+          echo "Secrets scan clean ✅"

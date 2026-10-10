@@ -1,7 +1,11 @@
 // middleware/auth.js
 const jwt = require('jsonwebtoken');
 
-const ADMIN_JWT_SECRET = process.env.ADMIN_JWT_SECRET || 'dvpHiueQCQAkzFqoNzfQLkGuEXNMJfRh';
+const ADMIN_JWT_SECRET = process.env.ADMIN_JWT_SECRET;
+
+if (!ADMIN_JWT_SECRET) {
+    console.warn('⚠️ ADMIN_JWT_SECRET غير مضبوط في متغيرات البيئة.');
+}
 
 function verifyAdmin(req, res, next) {
     const token = req.headers['authorization']?.split(' ')[1] || req.headers['x-session-token'];

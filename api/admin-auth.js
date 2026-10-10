@@ -2,8 +2,12 @@
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 
-// المفتاح السري الخاص بك
-const ADMIN_JWT_SECRET = 'dvpHiueQCQAkzFqoNzfQLkGuEXNMJfRh';
+// المفتاح السري — يُقرأ من متغيرات البيئة فقط (لا أسرار مضمّنة في الكود)
+const ADMIN_JWT_SECRET = process.env.ADMIN_JWT_SECRET;
+
+if (!ADMIN_JWT_SECRET) {
+    console.warn('⚠️ ADMIN_JWT_SECRET غير مضبوط في متغيرات البيئة — المصادقة لن تعمل حتى تضبطه.');
+}
 
 // ============================================
 // دوال المصادقة الأساسية

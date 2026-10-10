@@ -1,21 +1,24 @@
-# Security Policy
+# Security Policy — سياسة الأمان
 
 ## Supported Versions
 
-Use this section to tell people about which versions of your project are
-currently being supported with security updates.
-
 | Version | Supported          |
 | ------- | ------------------ |
-| 5.1.x   | :white_check_mark: |
-| 5.0.x   | :x:                |
-| 4.0.x   | :white_check_mark: |
-| < 4.0   | :x:                |
+| 1.x     | :white_check_mark: |
 
-## Reporting a Vulnerability
+## Reporting a Vulnerability — الإبلاغ عن ثغرة
 
-Use this section to tell people how to report a vulnerability.
+إذا اكتشفت ثغرة أمنية، يرجى الإبلاغ عنها **بمسؤولية**:
 
-Tell them where to go, how often they can expect to get an update on a
-reported vulnerability, what to expect if the vulnerability is accepted or
-declined, etc.
+1. **لا تنشر الثغرة علناً** قبل إصلاحها.
+2. تواصل مع مالك المتجر عبر القنوات الرسمية المذكورة في `الروابط.txt`
+   أو مع المطور عبر الرابط الموجود في تذييل الموقع.
+3. اشمل في بلاغك: وصف الثغرة، خطوات إعادة الإنتاج، والتأثير المحتمل.
+4. سيتم الرد خلال **72 ساعة** كحد أقصى، مع خطة إصلاح متفق عليها.
+
+## Security Notes — ملاحظات مهمة
+
+- جميع الأسرار (Supabase, Telegram, JWT) تُقرأ من **متغيرات البيئة فقط** ولا تُحفظ في الكود.
+- لا تنسخ ملف `.env` إلى أي مستودع عام — استخدم `.env.example` كنموذج.
+- فعّل **Row Level Security** في Supabase حسب احتياجك.
+- يُنصح بتدوير المفاتيح دورياً وإلغاء أي بوت تيليجرام قديم عبر BotFather.

@@ -15,13 +15,13 @@ app.use('/api/orders', require('./routes/orders'));
 // Support both URL action parameter or body action for admin auth
 app.use('/api/auth', require('./admin-auth'));
 
-// Serve static files when running locally
-app.use(express.static(path.join(__dirname, '..')));
+// Serve static files — الواجهة الأمامية الوحيدة في public/
+app.use(express.static(path.join(__dirname, '..', 'public')));
 
-// Fallback to index.html for SPA routing if needed
+// Fallback to public/index.html for SPA routing if needed
 app.get('*', (req, res, next) => {
     if (req.path.startsWith('/api/')) return next();
-    res.sendFile(path.join(__dirname, '../index.html'));
+    res.sendFile(path.join(__dirname, '../public/index.html'));
 });
 
 // Health check
