@@ -1,269 +1,98 @@
-// fallback-db.js — قاعدة بيانات داخلية للعرض التجريبي (Demo Mode)
-// تُستخدم تلقائياً عندما لا تكون متغيرات Supabase مهيأة،
-// حتى يعمل المتجر فوراً بعد `npm install && npm start` بدون أي إعداد.
-// البيانات تُحفظ في الذاكرة فقط وتُ reset عند إعادة تشغيل الخادم.
+// fallback-db.js
+// وضع عرض محلي فقط. لا يتم اختياره إلا عند ALLOW_DEMO_MODE=true.
+const crypto = require('crypto');
+const bcrypt = require('bcryptjs');
 
 const now = () => new Date().toISOString();
-const uid = (p) => `${p}_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+const uid = () => crypto.randomUUID();
 
-// ==================== بيانات المنتجات التجريبية ====================
-// كتالوج عرض احترافي — يظهر فوراً في وضع Demo بدون Supabase
-const SEED_PRODUCTS = [
-    // 🎬 أفلام
-    {
-        id: 'seed_movie_1', type: 'movies', name: 'Fast & Furious 9', price: 2500,
-        brand: 'Universal', image: 'images/Fast & Furious 9.jpg',
-        description: 'نسخة HD كاملة بجودة ممتازة — فيلم الأكشن والإثارة الشهير مع ترجمة احترافية.',
-        specs: { 'الجودة': '1080p', 'اللغة': 'عربي/إنجليزي', 'الحجم': '2.1 GB' },
-        stock: 99, created_at: now(), updated_at: now()
-    },
-    {
-        id: 'seed_movie_2', type: 'movies', name: 'Oppenheimer', price: 3000,
-        brand: 'Universal', image: 'images/Banner2.png',
-        description: 'الفيلم الحائز على الأوسكار — جودة سينمائية مع ترجمة عربية مراجَعة.',
-        specs: { 'الجودة': '1080p', 'الترجمة': 'عربي', 'المدة': '180 دقيقة' },
-        stock: 99, created_at: now(), updated_at: now()
-    },
-    {
-        id: 'seed_movie_3', type: 'movies', name: 'باقة أفلام الأكشن (5 أفلام)', price: 9000,
-        brand: 'Dar3a Films', image: 'images/مثال.jpeg',
-        description: 'وفّر أكثر مع باقة 5 أفلام أكشن مختارة بعناية بجودة عالية.',
-        specs: { 'العدد': '5 أفلام', 'الجودة': '1080p', 'التوفير': '25%' },
-        stock: 40, created_at: now(), updated_at: now()
-    },
-    // 📺 مسلسلات
-    {
-        id: 'seed_series_1', type: 'series', name: 'مسلسل الموسم الكامل', price: 4500,
-        brand: 'Dar3a Series', image: 'images/games.png',
-        description: 'الموسم الكامل بجودة ممتازة وترجمة احترافية — حلقات مدمجة.',
-        specs: { 'الحلقات': '12', 'الجودة': '1080p', 'الصيغة': 'MP4' },
-        stock: 99, created_at: now(), updated_at: now()
-    },
-    {
-        id: 'seed_series_2', type: 'series', name: 'باقة مسلسلات رمضان', price: 12000,
-        brand: 'Dar3a Series', image: 'images/Banner.png',
-        description: 'أشهر مسلسلات الموسم في باقة واحدة — متابعة ممتعة طوال الشهر.',
-        specs: { 'المسلسلات': '3', 'الجودة': 'HD', 'التوفير': '30%' },
-        stock: 25, created_at: now(), updated_at: now()
-    },
-    // 💻 برامج هندسية
-    {
-        id: 'seed_soft_1', type: 'programs', name: 'AutoCAD 2026', price: 15000,
-        brand: 'Autodesk', image: 'images/color.png',
-        description: 'برنامج التصميم الهندسي الأشهر في العالم — تفعيل كامل مع دعم فني.',
-        specs: { 'النسخة': '2026', 'النظام': 'Windows 10/11', 'المدة': 'دائم' },
-        stock: 50, created_at: now(), updated_at: now()
-    },
-    {
-        id: 'seed_soft_2', type: 'programs', name: 'Adobe Photoshop 2026', price: 12000,
-        brand: 'Adobe', image: 'images/image-removebg-preview.png',
-        description: 'برنامج تعديل الصور الاحترافي — أحدث إصدار بأدوات الذكاء الاصطناعي.',
-        specs: { 'النسخة': '2026', 'النظام': 'Windows', 'الدعم': 'سنة' },
-        stock: 50, created_at: now(), updated_at: now()
-    },
-    {
-        id: 'seed_soft_3', type: 'programs', name: 'SolidWorks 2026', price: 18000,
-        brand: 'Dassault', image: 'images/color.png',
-        description: 'برنامج التصميم الميكانيكي ثلاثي الأبعاد الأول للمهندسين.',
-        specs: { 'النسخة': '2026', 'النظام': 'Windows', 'المدة': 'دائم' },
-        stock: 30, created_at: now(), updated_at: now()
-    },
-    // 🎮 ألعاب PC
-    {
-        id: 'seed_pcgame_1', type: 'pcgames', name: 'Elden Ring', price: 18000,
-        brand: 'FromSoftware', image: 'images/Banner.png',
-        description: 'لعبة RPG ملحمية حائزة على جوائز — نسخة كاملة مع جميع الإضافات.',
-        specs: { 'المنصة': 'PC', 'النوع': 'RPG', 'التفعيل': 'Steam' },
-        stock: 30, created_at: now(), updated_at: now()
-    },
-    {
-        id: 'seed_pcgame_2', type: 'pcgames', name: 'EA SPORTS FC 26', price: 14000,
-        brand: 'EA Sports', image: 'images/games.png',
-        description: 'أحدث إصدار من لعبة كرة القدم الأشهر في العالم — عربي كامل.',
-        specs: { 'المنصة': 'PC', 'النوع': 'رياضة', 'اللغة': 'عربي' },
-        stock: 45, created_at: now(), updated_at: now()
-    },
-    // 🕹️ PlayStation
-    {
-        id: 'seed_ps_1', type: 'playstation', name: 'Sony PlayStation 3', price: 45000,
-        brand: 'Sony', image: 'images/Sony PlayStation 3.jpg',
-        description: 'جهاز PlayStation 3 مع ملحقاته وألعاب مختارة — حالة ممتازة.',
-        specs: { 'المنصة': 'PS3', 'الحالة': 'ممتازة', 'الملحقات': 'يد + كيبل' },
-        stock: 5, created_at: now(), updated_at: now()
-    },
-    {
-        id: 'seed_ps_2', type: 'playstation', name: 'God of War Ragnarök', price: 16000,
-        brand: 'Sony', image: 'images/Banner2.png',
-        description: 'ملحمة كريتوس وأتريوس — واحدة من أفضل ألعاب PlayStation.',
-        specs: { 'المنصة': 'PS4/PS5', 'النوع': 'أكشن مغامرة', 'الترجمة': 'عربي' },
-        stock: 12, created_at: now(), updated_at: now()
-    },
-    // 🔧 قطع PC (تظهر في منشئ التجميعات)
-    {
-        id: 'seed_comp_1', type: 'component', componentType: 'gpu', name: 'Beast RTX 4070', price: 95000,
-        brand: 'NVIDIA', image: 'images/Beast RTX 4070.png',
-        description: 'كرت شاشة RTX 4070 بأداء استثنائي للألعاب والتصميم ثلاثي الأبعاد.',
-        specs: { 'الذاكرة': '12GB', 'الجيل': 'Ada Lovelace' },
-        stock: 10, created_at: now(), updated_at: now()
-    },
-    {
-        id: 'seed_comp_2', type: 'component', componentType: 'cpu', name: 'Intel Core i7-14700K', price: 72000,
-        brand: 'Intel', image: '',
-        description: 'معالج Intel من الجيل الرابع عشر — أداء ممتاز للألعاب والعمل.',
-        specs: { 'الأنوية': '20', 'التردد': '5.6GHz' },
-        stock: 12, created_at: now(), updated_at: now()
-    },
-    {
-        id: 'seed_comp_3', type: 'component', componentType: 'motherboard', name: 'ASUS ROG STRIX Z790', price: 58000,
-        brand: 'ASUS', image: '',
-        description: 'لوحة أم احترافية للمعالجات الحديثة مع تبريد ممتاز.',
-        specs: { 'الشريحة': 'Z790', 'المنفذ': 'LGA1700' },
-        stock: 8, created_at: now(), updated_at: now()
-    },
-    {
-        id: 'seed_comp_4', type: 'component', componentType: 'ram', name: 'Corsair Vengeance 32GB', price: 28000,
-        brand: 'Corsair', image: '',
-        description: 'ذاكرة RAM بسعة 32 جيجابايت وسرعة عالية للألعاب والتصميم.',
-        specs: { 'السعة': '32GB', 'السرعة': '6000MHz' },
-        stock: 20, created_at: now(), updated_at: now()
-    },
-    {
-        id: 'seed_comp_5', type: 'component', componentType: 'storage', name: 'Samsung 980 PRO 1TB NVMe', price: 32000,
-        brand: 'Samsung', image: '',
-        description: 'قرص SSD فائق السرعة — تحميل أسرع للنظام والألعاب.',
-        specs: { 'السعة': '1TB', 'النوع': 'NVMe Gen4' },
-        stock: 15, created_at: now(), updated_at: now()
-    },
-    {
-        id: 'seed_comp_6', type: 'component', componentType: 'psu', name: 'Corsair RM850e', price: 27000,
-        brand: 'Corsair', image: '',
-        description: 'مزود طاقة 850 واط معتمد 80+ Gold — تشغيل هادئ وآمن.',
-        specs: { 'القدرة': '850W', 'الكفاءة': '80+ Gold' },
-        stock: 10, created_at: now(), updated_at: now()
-    },
-    {
-        id: 'seed_comp_7', type: 'component', componentType: 'case', name: 'NZXT H5 Flow', price: 22000,
-        brand: 'NZXT', image: '',
-        description: 'صندوق كمبيوتر بتصميم أنيق وتهوية ممتازة مع إضاءة RGB.',
-        specs: { 'النوع': 'Mid Tower', 'التهوية': 'ممتازة' },
-        stock: 9, created_at: now(), updated_at: now()
-    }
-];
+const demoUsername = String(process.env.DEMO_SUPER_ADMIN_USERNAME || 'demo-admin').trim().toLowerCase();
+const demoPassword = process.env.DEMO_SUPER_ADMIN_PASSWORD || 'ChangeThisDemoPassword123!';
 
-// ==================== حالة الذاكرة ====================
 const store = {
-    products: SEED_PRODUCTS.map(p => ({ ...p })),
-    settings: null,
-    coupons: [
-        { code: 'DAR3A10', type: 'percent', discount: 10, active: true, min_order: 0, created_at: now() }
+    products: [
+        { id: 'demo_movie_1', type: 'movies', name: 'فيلم تجريبي مرخّص', price: 5000, brand: 'Demo', image: 'images/Fast & Furious 9.jpg', description: 'بيانات عرض محلية فقط.', specs: {}, stock: 25, created_at: now(), updated_at: now() },
+        { id: 'demo_game_1', type: 'pcgames', name: 'لعبة تجريبية مرخّصة', price: 12000, brand: 'Demo', image: 'images/games.png', description: 'بيانات عرض محلية فقط.', specs: {}, stock: 20, created_at: now(), updated_at: now() },
+        { id: 'demo_cpu_1', type: 'component', component_type: 'cpu', name: 'Demo CPU', price: 25000, brand: 'Demo', image: '', description: 'قطعة تجميع تجريبية.', specs: {}, stock: 10, created_at: now(), updated_at: now() }
     ],
+    settings: {
+        name: 'Dar3a Store', tagline: 'أفلام • مسلسلات • برامج • ألعاب', currency: 'ج.س',
+        phone: '0922265656', whatsapp: '249922265656', address: 'السودان - أمدرمان',
+        hours: 'يومياً 10 ص - 10 م', website: '', primaryColor: '#e63946', secondaryColor: '#ff6b6b',
+        logoIcon: 'fa-shield-halved', mainLogo: '', favicon: '', bgAnimation: 'particles',
+        developerName: 'Dar3a Developer', developerUrl: 'developer.html', copyright: '© 2026 Dar3a Store', chatbotUrl: 'chat-bot.html'
+    },
+    coupons: [{ code: 'DAR3A10', type: 'percent', discount: 10, min_order: 0, active: true, created_at: now() }],
     orders: [],
     subscribers: [],
-    adminSessions: []
+    users: [{ id: uid(), username: demoUsername, display_name: 'مدير العرض', role: 'super_admin', password_hash: bcrypt.hashSync(demoPassword, 12), is_active: true, created_at: now(), updated_at: now(), last_login_at: null }],
+    subscriptions: [],
+    events: []
 };
 
-// ==================== الواجهة (نفس واجهة database.js) ====================
+const copy = (value) => JSON.parse(JSON.stringify(value));
+const safeUser = (user) => { const { password_hash, ...safe } = user; return copy(safe); };
+
+function getProduct(id) { return store.products.find((product) => product.id === id); }
+
 module.exports = {
+    configured: false,
     demoMode: true,
-
-    async getProducts() { return store.products.map(p => ({ ...p })); },
-
-    async getProductById(id) { return store.products.find(p => p.id === id) || null; },
-
-    async addProduct(product) {
-        const p = { ...product, id: product.id || uid('prod'), created_at: now(), updated_at: now() };
-        store.products.push(p);
-        return { ...p };
-    },
-
-    async updateProduct(id, product) {
-        const idx = store.products.findIndex(p => p.id === id);
-        if (idx === -1) return null;
-        store.products[idx] = { ...store.products[idx], ...product, id, updated_at: now() };
-        return { ...store.products[idx] };
-    },
-
-    async deleteProduct(id) {
-        store.products = store.products.filter(p => p.id !== id);
-        return true;
-    },
-
+    async getProducts() { return copy(store.products); },
     async replaceAllProducts(products) {
-        store.products = (products || []).map(p => ({ ...p, created_at: p.created_at || now(), updated_at: now() }));
+        store.products = products.map((product) => ({ ...copy(product), updated_at: now(), created_at: product.created_at || now() }));
         return true;
     },
-
-    async getSettings() { return store.settings ? JSON.parse(JSON.stringify(store.settings)) : null; },
-
-    async saveSettings(settings) { store.settings = JSON.parse(JSON.stringify(settings)); return true; },
-
-    async getCoupons() { return store.coupons.map(c => ({ ...c })); },
-
-    async getCouponByCode(code) {
-        return store.coupons.find(c => c.code === String(code).toUpperCase()) || null;
-    },
-
+    async getSettings() { return copy(store.settings); },
+    async saveSettings(settings) { store.settings = { ...store.settings, ...copy(settings) }; return true; },
+    async getCoupons() { return copy(store.coupons); },
     async addCoupon(coupon) {
-        const c = { ...coupon, code: String(coupon.code).toUpperCase(), created_at: now() };
-        store.coupons.push(c);
-        return { ...c };
+        const code = String(coupon.code).trim().toUpperCase();
+        if (store.coupons.some((item) => item.code === code)) throw new Error('الكوبون موجود بالفعل');
+        const item = { code, type: coupon.type, discount: coupon.discount, min_order: coupon.min_order ?? coupon.minOrder ?? 0, active: coupon.active !== false, expires_at: coupon.expires_at || null, created_at: now() };
+        store.coupons.push(item); return copy(item);
     },
-
-    async deleteCoupon(code) {
-        store.coupons = store.coupons.filter(c => c.code !== String(code).toUpperCase());
-        return true;
-    },
-
-    async getSubscribers() { return store.subscribers.map(s => ({ ...s })); },
-
-    async addSubscriber(email) {
-        if (store.subscribers.some(s => s.email === email)) {
-            return { success: true, message: 'البريد موجود بالفعل', alreadyExists: true };
+    async deleteCoupon(code) { store.coupons = store.coupons.filter((item) => item.code !== String(code).toUpperCase()); return true; },
+    async createOrder(order) {
+        let subtotal = 0;
+        const items = [];
+        for (const requested of order.items) {
+            const product = getProduct(requested.id);
+            const quantity = Number(requested.quantity);
+            if (!product || !Number.isInteger(quantity) || quantity < 1 || product.stock < quantity) throw new Error('يوجد منتج غير متاح أو كمية غير صحيحة');
+            subtotal += Number(product.price) * quantity;
+            product.stock -= quantity;
+            product.updated_at = now();
+            items.push({ id: product.id, name: product.name, price: Number(product.price), quantity });
         }
-        const s = { email, created_at: now(), date: now() };
-        store.subscribers.push(s);
-        return { success: true, data: { ...s } };
+        let discount = 0;
+        let coupon = null;
+        if (order.coupon) {
+            coupon = store.coupons.find((item) => item.code === String(order.coupon).toUpperCase() && item.active);
+            if (!coupon || (coupon.expires_at && new Date(coupon.expires_at) < new Date()) || subtotal < Number(coupon.min_order || 0)) throw new Error('الكوبون غير صالح');
+            discount = coupon.type === 'percent' ? subtotal * Number(coupon.discount) / 100 : Number(coupon.discount);
+            discount = Math.min(discount, subtotal);
+        }
+        const record = { id: uid(), customer_name: order.customer_name, customer_phone: order.customer_phone, customer_address: order.customer_address || null, notes: order.notes || null, payment_method: order.payment_method, items, subtotal, discount, total: subtotal - discount, coupon: coupon?.code || null, status: 'new', date: now(), created_at: now(), updated_at: now() };
+        store.orders.push(record);
+        return copy(record);
     },
-
-    async deleteSubscriber(email) {
-        store.subscribers = store.subscribers.filter(s => s.email !== email);
-        return true;
-    },
-
-    async clearAllSubscribers() { store.subscribers = []; return true; },
-
-    async getOrders() { return store.orders.map(o => ({ ...o })); },
-
-    async addOrder(order) {
-        const o = { ...order, id: order.id || uid('order'), created_at: now(), date: now() };
-        store.orders.push(o);
-        return { ...o };
-    },
-
-    async deleteOrder(id) {
-        store.orders = store.orders.filter(o => o.id !== id);
-        return true;
-    },
-
-    async clearAllOrders() { store.orders = []; return true; },
-
-    async saveAdminSession(sessionToken, expiresAt) {
-        store.adminSessions.push({ token: sessionToken, expires_at: new Date(expiresAt).toISOString() });
-        return true;
-    },
-
-    async verifyAdminSession(sessionToken) {
-        const s = store.adminSessions.find(x => x.token === sessionToken);
-        return !!(s && new Date(s.expires_at) >= new Date());
-    },
-
-    async deleteAdminSession(sessionToken) {
-        store.adminSessions = store.adminSessions.filter(x => x.token !== sessionToken);
-        return true;
-    },
-
-    async cleanExpiredSessions() {
-        store.adminSessions = store.adminSessions.filter(x => new Date(x.expires_at) >= new Date());
-        return true;
-    }
+    async getOrders() { return copy(store.orders).sort((a, b) => b.created_at.localeCompare(a.created_at)); },
+    async updateOrderStatus(id, status) { const item = store.orders.find((order) => order.id === id); if (!item) throw new Error('الطلب غير موجود'); item.status = status; item.updated_at = now(); return copy(item); },
+    async getSubscribers() { return copy(store.subscribers); },
+    async addSubscriber(email) { if (!store.subscribers.some((item) => item.email === email)) store.subscribers.push({ email, created_at: now() }); return { success: true }; },
+    async deleteSubscriber(email) { store.subscribers = email === 'all' ? [] : store.subscribers.filter((item) => item.email !== email); return true; },
+    async getUserByUsername(username) { const item = store.users.find((user) => user.username === username); return item ? copy(item) : null; },
+    async getUserById(id) { const item = store.users.find((user) => user.id === id); return item ? copy(item) : null; },
+    async updateUserLogin(id) { const item = store.users.find((user) => user.id === id); if (item) item.last_login_at = now(); },
+    async listUsers() { return store.users.map(safeUser); },
+    async createUser(user) { const item = { id: uid(), ...copy(user), is_active: true, created_at: now(), updated_at: now(), last_login_at: null }; store.users.push(item); return safeUser(item); },
+    async updateUser(id, changes) { const item = store.users.find((user) => user.id === id); if (!item) throw new Error('المستخدم غير موجود'); Object.assign(item, copy(changes), { updated_at: now() }); return safeUser(item); },
+    async getDashboardStats() { return { products: store.products.length, orders: store.orders.length, subscribers: store.subscribers.length, subscriptions: store.subscriptions.length, recentOrders: copy(store.orders.slice(-5).reverse()) }; },
+    async listSubscriptions() { return copy(store.subscriptions).sort((a, b) => b.created_at.localeCompare(a.created_at)); },
+    async createSubscription(subscription) { const item = { id: uid(), activation_count: 0, last_activated_at: null, created_at: now(), updated_at: now(), ...copy(subscription) }; store.subscriptions.push(item); return copy(item); },
+    async getSubscription(id) { const item = store.subscriptions.find((subscription) => subscription.id === id); return item ? copy(item) : null; },
+    async updateSubscription(id, changes) { const item = store.subscriptions.find((subscription) => subscription.id === id); if (!item) throw new Error('الاشتراك غير موجود'); Object.assign(item, copy(changes), { updated_at: now() }); return copy(item); },
+    async verifyActivation(activationKey, domain) { const hash = crypto.createHash('sha256').update(activationKey).digest('hex'); const item = store.subscriptions.find((subscription) => subscription.activation_key_hash === hash && subscription.domain === domain); if (!item) return { valid: false, status: 'not_found' }; const expired = item.expires_at && new Date(item.expires_at) < new Date(); const valid = item.status === 'active' && !expired; if (valid) { item.last_activated_at = now(); item.activation_count += 1; } return { valid, status: expired ? 'expired' : item.status, expires_at: item.expires_at, client_name: item.client_name }; },
+    async addSubscriptionEvent(subscriptionId, action, actorId, metadata = {}) { store.events.push({ id: uid(), subscription_id: subscriptionId, action, actor_id: actorId, metadata: copy(metadata), created_at: now() }); }
 };

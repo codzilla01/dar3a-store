@@ -2864,28 +2864,20 @@
                 showToast('⚠️ الرجاء إكمال البيانات المطلوبة', 'error');
                 return;
             }
+            const confirmButton = $('#checkout-confirm-btn');
             const name = $('#co-name').value.trim();
             const phone = $('#co-phone').value.trim();
             const address = $('#co-address') ? $('#co-address').value.trim() : '';
             const notes = $('#co-notes') ? $('#co-notes').value.trim() : '';
-            const payment = document.querySelector('input[name="payment"]:checked')?.value || 'كاش';
-            const subtotal = cart.reduce((s, i) => s + (i.price * (i.quantity || 1)), 0);
-
-            let message = `🛒 *طلب جديد من ${siteSettings.name || 'Dar3a Store'}*\n\n`;
-            message += `👤 *الاسم:* ${name}\n📱 *الهاتف:* ${phone}\n`;
-            if (address) message += `📍 *العنوان:* ${address}\n`;
-            message += `💳 *الدفع:* ${payment}\n\n`;
-            message += `━━━━━━━━━━━━━━\n`;
-            cart.forEach(i => {
-                message += `📦 ${i.name} (×${i.quantity || 1}) — ${formatPrice(i.price * (i.quantity || 1))}\n`;
-            });
-            message += `━━━━━━━━━━━━━━\n`;
-            message += `💰 *الإجمالي: ${formatPrice(subtotal)}*`;
-            if (notes) message += `\n\n📝 *ملاحظات:* ${notes}`;
-
-            // حفظ الطلب في قاعدة البيانات (لا يمنع الطلب لو فشل)
+            const paymentLabel = document.querySelector('input[name="payment"]:checked')?.value || 'كاش';
+            const paymentMethod = { 'كاش': 'cash', 'بنكك': 'bankak', 'فوري': 'fawry' }[paymentLabel] || 'cash';
+            // Open synchronously to avoid popup blockers; it is only navigated after the server accepts the order.
+            const whatsappWindow = window.open('about:blank', '_blank');
+            if (whatsappWindow) whatsappWindow.opener = null;
+            confirmButton.disabled = true;
+            confirmButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جارٍ تسجيل الطلب...';
             try {
-                await apiFetch('/api/orders', {
+                const result = await apiFetch('/api/orders', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -2893,27 +2885,44 @@
                         customer_phone: phone,
                         customer_address: address,
                         notes,
-                        payment_method: payment,
-                        items: cart.map(i => ({ id: i.id, name: i.name, price: i.price, quantity: i.quantity || 1 })),
-                        total: subtotal
+                        payment_method: paymentMethod,
+                        items: cart.map(item => ({
+                            id: item.id,
+                            quantity: item.quantity || 1,
+                            type: item.type,
+                            components: item.components || undefined
+                        }))
                     })
                 });
-            } catch (e) {
-                console.warn('Order save skipped:', e);
+                const order = result.order;
+                let message = `🛒 *طلب جديد من ${siteSettings.name || 'Dar3a Store'}*\n`;
+                message += `🔖 *رقم الطلب:* ${order.id}\n\n`;
+                message += `👤 *الاسم:* ${name}\n📱 *الهاتف:* ${phone}\n`;
+                if (address) message += `📍 *العنوان:* ${address}\n`;
+                message += `💳 *الدفع:* ${paymentLabel}\n\n━━━━━━━━━━━━━━\n`;
+                (order.items || []).forEach(item => {
+                    message += `📦 ${item.name} (×${item.quantity}) — ${formatPrice(item.price * item.quantity)}\n`;
+                });
+                message += `━━━━━━━━━━━━━━\n💰 *الإجمالي المعتمد: ${formatPrice(order.total)}*`;
+                if (notes) message += `\n\n📝 *ملاحظات:* ${notes}`;
+                const whatsappUrl = `https://wa.me/${getWhatsAppNumber()}?text=${encodeURIComponent(message)}`;
+                if (whatsappWindow) whatsappWindow.location.replace(whatsappUrl);
+                else window.location.assign(whatsappUrl);
+                window._lastOrder = { name, phone, payment: paymentLabel, subtotal: order.total, message, id: order.id };
+                cart = [];
+                saveCart();
+                renderCartItems();
+                renderAll();
+                closeCheckout();
+                closeCart();
+                showOrderSuccess();
+            } catch (error) {
+                if (whatsappWindow) whatsappWindow.close();
+                showToast(`❌ ${error.message || 'تعذر تسجيل الطلب. حاول لاحقاً.'}`, 'error');
+            } finally {
+                confirmButton.disabled = false;
+                confirmButton.innerHTML = '<i class="fab fa-whatsapp"></i> تأكيد عبر واتساب';
             }
-
-            window.open(`https://wa.me/${getWhatsAppNumber()}?text=${encodeURIComponent(message)}`, '_blank');
-
-            // حفظ بيانات الطلب لزر "المتابعة على واتساب"
-            window._lastOrder = { name, phone, payment, subtotal, message };
-
-            cart = [];
-            saveCart();
-            renderCartItems();
-            renderAll();
-            closeCheckout();
-            closeCart();
-            showOrderSuccess();
         }
 
         // شاشة نجاح الطلب + الكونفيتي
@@ -3296,30 +3305,10 @@
             }
         }
 
-        function openAdminLogin(role = 'admin') {
-            currentLoginRole = role;
-            const overlay = $('#admin-login-overlay');
-            const icon = $('#admin-login-icon');
-            const title = $('#admin-login-title');
-            const subtitle = $('#admin-login-subtitle');
-            const roleSelector = $('#role-selector');
-            if (role === 'assistant') {
-                icon.innerHTML = '<i class="fas fa-user-friends"></i>';
-                title.textContent = '🔐 دخول المساعد';
-                subtitle.textContent = 'إدارة المتجر كمساعد';
-                roleSelector.style.display = 'none';
-            } else {
-                icon.innerHTML = '<i class="fas fa-shield-halved"></i>';
-                title.textContent = '🔐 دخول المسؤول';
-                subtitle.textContent = 'اختر نوع الدخول';
-                roleSelector.style.display = 'flex';
-            }
-            overlay.classList.add('open');
-            showAdminStep('request');
-            for (let i = 1; i <= 6; i++) {
-                const inp = $('#admin-otp-' + i);
-                if (inp) inp.value = '';
-            }
+        function openAdminLogin() {
+            // الإدارة لم تعد تعتمد على OTP داخل الواجهة العامة.
+            // ننقل المستخدم إلى صفحة الدخول المنفصلة ذات username/password.
+            window.location.assign('admin.html');
         }
 
         function closeAdminLogin() {
@@ -3600,7 +3589,7 @@
                     const label = { cpu: 'المعالج', motherboard: 'اللوحة الأم', gpu: 'كرت الشاشة', ram: 'الذاكرة', storage: 'التخزين', psu: 'مزود الطاقة', case: 'الصندوق' }[k] || k;
                     specs[label] = o.name;
                 });
-                addToCart({ id: 'build_' + Date.now(), name: '🖥️ تجميعة PC', brand: 'Dar3a Custom', price: total, image: 'https://picsum.photos/seed/pcbuild/400/260', specs });
+                addToCart({ id: 'build_' + Date.now(), type: 'custom_build', components: selected.map(([, item]) => ({ id: item.id })), name: '🖥️ تجميعة PC', brand: 'Dar3a Custom', price: total, image: 'images/Banner2.png', specs });
                 builder = {};
                 renderBuilder();
             });

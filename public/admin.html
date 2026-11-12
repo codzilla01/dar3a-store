@@ -168,32 +168,19 @@
 <body>
     <div class="bg-particles" id="bg-particles"></div>
 
-    <!-- LOGIN OVERLAY - مدير واحد فقط -->
+    <!-- Secure username/password login. Session is an HttpOnly cookie. -->
     <div class="login-overlay" id="login-overlay">
         <div class="login-card">
-            <div class="login-logo" id="login-logo-main"><i class="fas fa-shield-halved"></i></div>
+            <div class="login-logo" id="login-logo-main"><i class="fas fa-user-shield"></i></div>
             <h2 id="login-store-name">Dar3a Store</h2>
-            <p id="login-subtitle">لوحة التحكم - دخول المدير</p>
-            
-            <div class="auth-step active" id="step-request">
-                <button class="telegram-btn" id="request-code-btn"><i class="fab fa-telegram-plane"></i> طلب كود التحقق</button>
-                <div id="step1-error" class="error-text"></div>
-                <div id="step1-success" class="success-text" style="color:#4ade80;"></div>
-            </div>
-            <div class="auth-step" id="step-verify">
-                <div class="otp-input-group">
-                    <input type="text" class="otp-input" maxlength="1" id="otp-1" inputmode="numeric">
-                    <input type="text" class="otp-input" maxlength="1" id="otp-2" inputmode="numeric">
-                    <input type="text" class="otp-input" maxlength="1" id="otp-3" inputmode="numeric">
-                    <input type="text" class="otp-input" maxlength="1" id="otp-4" inputmode="numeric">
-                    <input type="text" class="otp-input" maxlength="1" id="otp-5" inputmode="numeric">
-                    <input type="text" class="otp-input" maxlength="1" id="otp-6" inputmode="numeric">
-                </div>
-                <div id="timer-display" class="timer-text"></div>
-                <span id="resend-link" class="resend-link disabled">إعادة الإرسال</span>
-                <div id="step2-error" class="error-text"></div>
-                <button class="back-btn" id="back-btn">العودة</button>
-            </div>
+            <p id="login-subtitle">لوحة تحكم Super Admin الآمنة</p>
+            <form id="login-form" autocomplete="on" style="text-align:right;margin-top:24px;">
+                <div class="form-group"><label for="login-username">اسم المستخدم</label><input class="form-control" id="login-username" name="username" autocomplete="username" required minlength="3" maxlength="64"></div>
+                <div class="form-group"><label for="login-password">كلمة المرور</label><input class="form-control" id="login-password" name="password" type="password" autocomplete="current-password" required minlength="12" maxlength="128"></div>
+                <button class="telegram-btn" id="login-submit" type="submit"><i class="fas fa-right-to-bracket"></i> دخول آمن</button>
+                <div id="login-error" class="error-text" role="alert"></div>
+            </form>
+            <p style="font-size:.72rem;color:#94a3b8;margin-top:16px;">تُحفظ الجلسة في Cookie آمن ولا تُخزّن كلمة المرور في المتصفح.</p>
         </div>
     </div>
 
@@ -240,6 +227,8 @@
                 <a data-panel="orders"><i class="fas fa-receipt"></i> الطلبات</a>
                 <a data-panel="settings"><i class="fas fa-cog"></i> الإعدادات</a>
                 <a data-panel="newsletter"><i class="fas fa-envelope"></i> المشتركين</a>
+                <a data-panel="users"><i class="fas fa-users-gear"></i> مستخدمو النظام</a>
+                <a href="developer.html"><i class="fas fa-code"></i> بوابة المطور</a>
             </nav>
         </aside>
 
@@ -248,6 +237,19 @@
             <div class="panel active" id="panel-dashboard">
                 <div class="panel-header"><h2><i class="fas fa-th-large"></i> لوحة المعلومات</h2></div>
                 <div class="stats-grid" id="dashboard-stats"></div>
+            </div>
+
+            <!-- Super Admin user management -->
+            <div class="panel" id="panel-users">
+                <div class="panel-header"><div><h2><i class="fas fa-users-gear"></i> إدارة مستخدمي النظام</h2><p style="color:#94a3b8;font-size:.8rem;margin-top:4px;">أنشئ حسابات Super Admin أو Admin أو Developer. كلمات المرور تُحفظ مشفّرة فقط.</p></div></div>
+                <form id="user-form" class="form-grid" style="margin-bottom:24px;align-items:end;">
+                    <div class="form-group"><label>اسم المستخدم *</label><input class="form-control" id="new-user-username" required minlength="3" maxlength="64" pattern="[A-Za-z0-9._-]+" autocomplete="off"></div>
+                    <div class="form-group"><label>الاسم الظاهر *</label><input class="form-control" id="new-user-name" required maxlength="100"></div>
+                    <div class="form-group"><label>الدور *</label><select class="form-control" id="new-user-role"><option value="admin">Admin</option><option value="developer">Developer</option><option value="super_admin">Super Admin</option></select></div>
+                    <div class="form-group"><label>كلمة المرور *</label><input class="form-control" id="new-user-password" type="password" required minlength="12" maxlength="128" autocomplete="new-password"></div>
+                    <div class="form-group"><button class="btn btn-primary" type="submit"><i class="fas fa-user-plus"></i> إنشاء حساب</button></div>
+                </form>
+                <div class="table-container"><table id="users-table"><thead><tr><th>المستخدم</th><th>الدور</th><th>الحالة</th><th>آخر دخول</th><th>إجراء</th></tr></thead><tbody></tbody></table></div>
             </div>
 
             <!-- Products Panel -->
@@ -505,6 +507,7 @@
         let coupons = [];
         let ordersLog = [];
         let subscribers = [];
+        let users = [];
         let editingId = null;
         let otpTimer = null;
         let otpTimeLeft = 0;
@@ -529,10 +532,7 @@
                 'Content-Type': 'application/json',
                 ...options.headers
             };
-            if (sessionToken) {
-                headers['X-Session-Token'] = sessionToken;
-            }
-            const response = await fetch(endpoint, { ...options, headers });
+            const response = await fetch(endpoint, { ...options, headers, credentials: 'same-origin' });
             if (!response.ok) {
                 const error = await response.json().catch(() => ({}));
                 throw new Error(error.error || 'Request failed');
@@ -685,6 +685,23 @@
                 console.error('Failed to clear subscribers:', e);
                 return false;
             }
+        }
+
+        // Super-admin users
+        async function loadUsersFromServer() {
+            try { users = await apiFetch('/api/users'); return true; }
+            catch (error) { console.error('Failed to load users:', error); users = []; return false; }
+        }
+        function renderUsersTable() {
+            const tbody = document.querySelector('#users-table tbody');
+            if (!tbody) return;
+            if (!users.length) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:30px;">لا توجد حسابات</td></tr>'; return; }
+            tbody.innerHTML = users.map(user => `<tr><td><strong>${escapeHtml(user.display_name)}</strong><br><small style="color:#94a3b8">${escapeHtml(user.username)}</small></td><td>${escapeHtml(user.role)}</td><td>${user.is_active ? '<span style="color:#4ade80">نشط</span>' : '<span style="color:#fca5a5">موقوف</span>'}</td><td>${user.last_login_at ? new Date(user.last_login_at).toLocaleString('ar-EG') : '—'}</td><td><button class="btn btn-xs ${user.is_active ? 'btn-danger' : 'btn-outline'} toggle-user" data-id="${user.id}" data-active="${user.is_active}">${user.is_active ? 'إيقاف' : 'تفعيل'}</button></td></tr>`).join('');
+            tbody.querySelectorAll('.toggle-user').forEach(button => button.addEventListener('click', async () => {
+                if (!confirm(button.dataset.active === 'true' ? 'إيقاف هذا الحساب؟' : 'تفعيل هذا الحساب؟')) return;
+                try { await apiFetch(`/api/users/${encodeURIComponent(button.dataset.id)}`, { method: 'PATCH', body: JSON.stringify({ is_active: button.dataset.active !== 'true' }) }); await loadUsersFromServer(); renderUsersTable(); showToast('تم تحديث الحساب.'); }
+                catch (error) { showToast(`❌ ${error.message}`); }
+            }));
         }
 
         // ==================== LOCAL HELPER FUNCTIONS ====================
@@ -1207,6 +1224,7 @@
             if(name === 'orders') renderOrdersTable();
             if(name === 'coupons') renderCoupons();
             if(name === 'newsletter') renderSubscribersTable();
+            if(name === 'users') renderUsersTable();
             if(window.innerWidth < 992) {
                 document.getElementById('sidebar').classList.remove('open');
                 document.getElementById('sidebar-overlay').classList.remove('show');
@@ -1218,6 +1236,7 @@
             await loadCouponsFromServer();
             await loadOrdersFromServer();
             await loadAndRenderSubscribers();
+            await loadUsersFromServer();
             refreshDashboard();
             renderProductsTable(document.getElementById('filter-type').value);
             renderComponentsTable();
@@ -1227,171 +1246,66 @@
             document.getElementById('products-count').textContent = products.length;
         }
 
-        // ==================== SINGLE ADMIN LOGIN SYSTEM ====================
-        function checkExistingSession() {
-            const session = sessionStorage.getItem(CONFIG.ADMIN_SESSION_KEY);
-            if(session) {
-                try {
-                    const data = JSON.parse(session);
-                    if(data.expires > Date.now()) {
-                        sessionToken = data.sessionToken;
-                        document.getElementById('login-overlay').classList.add('hidden');
-                        document.getElementById('user-info-sidebar').style.display = 'flex';
-                        return true;
-                    }
-                } catch(e) {}
+        // ==================== SECURE USERNAME/PASSWORD LOGIN ====================
+        let currentUser = null;
+
+        async function checkExistingSession() {
+            try {
+                const data = await apiFetch('/api/auth/me');
+                currentUser = data.user;
+                if (currentUser.role === 'developer') { window.location.replace('developer.html'); return false; }
+                if (currentUser.role !== 'super_admin') { throw new Error('هذه الصفحة مخصصة لحساب Super Admin.'); }
+                sessionToken = 'cookie-session';
+                document.getElementById('login-overlay').classList.add('hidden');
+                document.getElementById('user-info-sidebar').style.display = 'flex';
+                const info = document.querySelector('#user-info-sidebar div[style*="flex:1"]');
+                if (info) info.innerHTML = `<div style="font-weight:700;">${escapeHtml(currentUser.display_name || currentUser.username)}</div><small style="color:#94a3b8;">Super Admin</small>`;
+                return true;
+            } catch (error) {
+                return false;
             }
-            return false;
         }
 
-        function showStep(step) {
-            document.querySelectorAll('.auth-step').forEach(s => s.classList.remove('active'));
-            const el = document.getElementById('step-' + step);
-            if(el) el.classList.add('active');
-        }
-        
-        async function requestOTP() {
-            const btn = document.getElementById('request-code-btn');
-            const errorDiv = document.getElementById('step1-error');
-            const successDiv = document.getElementById('step1-success');
-            
-            if(btn) {
-                btn.disabled = true;
-                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الإرسال...';
-            }
-            
-            errorDiv.classList.remove('show');
-            successDiv.classList.remove('show');
-            
+        async function login(event) {
+            event.preventDefault();
+            const button = document.getElementById('login-submit');
+            const error = document.getElementById('login-error');
+            error.classList.remove('show');
+            button.disabled = true;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جارٍ التحقق...';
             try {
-                const response = await fetch('/api/auth/request', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        role: 'admin',
-                        storeName: siteSettings.name
-                    })
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: document.getElementById('login-username').value, password: document.getElementById('login-password').value })
                 });
-                
-                const data = await response.json();
-                
-                if (data.ok) {
-                    currentChallengeToken = data.challengeToken;
-                    successDiv.textContent = '✅ تم إرسال الكود بنجاح!';
-                    successDiv.classList.add('show');
-                    setTimeout(() => {
-                        showStep('verify');
-                        startTimer(data.expiresIn);
-                        const firstOtp = document.getElementById('otp-1');
-                        if(firstOtp) firstOtp.focus();
-                    }, 600);
-                } else {
-                    errorDiv.textContent = data.error || '❌ فشل الإرسال';
-                    errorDiv.classList.add('show');
-                }
-            } catch(e) {
-                console.error(e);
-                errorDiv.textContent = '❌ خطأ في الاتصال بالخادم';
-                errorDiv.classList.add('show');
+                const data = await response.json().catch(() => ({}));
+                if (!response.ok) throw new Error(data.error || 'فشل تسجيل الدخول.');
+                if (data.user.role === 'developer') { window.location.replace('developer.html'); return; }
+                if (data.user.role !== 'super_admin') { await fetch('/api/auth/logout', { method: 'POST', credentials: 'same-origin' }); throw new Error('هذه الصفحة مخصصة لحساب Super Admin.'); }
+                currentUser = data.user;
+                sessionToken = 'cookie-session';
+                document.getElementById('login-password').value = '';
+                document.getElementById('login-overlay').classList.add('hidden');
+                document.getElementById('user-info-sidebar').style.display = 'flex';
+                await loadSettingsFromServer();
+                await refreshAll();
+                applyAllSettings();
+                showToast('تم تسجيل الدخول بأمان.');
+            } catch (exception) {
+                error.textContent = exception.message;
+                error.classList.add('show');
             } finally {
-                if(btn) {
-                    btn.disabled = false;
-                    btn.innerHTML = '<i class="fab fa-telegram-plane"></i> طلب كود التحقق';
-                }
+                button.disabled = false;
+                button.innerHTML = '<i class="fas fa-right-to-bracket"></i> دخول آمن';
             }
         }
-        
-        async function verifyOTP() {
-            const digits = [];
-            for(let i = 1; i <= 6; i++) digits.push(document.getElementById('otp-' + i)?.value || '');
-            const entered = digits.join('');
-            if(entered.length !== 6) return;
-            
-            try {
-                const response = await fetch('/api/auth/verify', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        otp: entered,
-                        challengeToken: currentChallengeToken,
-                        role: 'admin'
-                    })
-                });
-                
-                const data = await response.json();
-                
-                if (data.ok) {
-                    sessionToken = data.sessionToken;
-                    currentChallengeToken = null;
-                    clearInterval(otpTimer);
-                    
-                    sessionStorage.setItem(CONFIG.ADMIN_SESSION_KEY, JSON.stringify({
-                        sessionToken: data.sessionToken,
-                        expires: data.expiresAt
-                    }));
-                    
-                    showToast('✅ تم التحقق بنجاح!');
-                    document.getElementById('login-overlay').classList.add('hidden');
-                    document.getElementById('user-info-sidebar').style.display = 'flex';
-                    
-                    await loadSettingsFromServer();
-                    await refreshAll();
-                    applyAllSettings();
-                } else {
-                    const errorDiv = document.getElementById('step2-error');
-                    if (data.challengeToken) currentChallengeToken = data.challengeToken;
-                    errorDiv.textContent = data.error || '❌ كود غير صحيح';
-                    errorDiv.classList.add('show');
-                    if (data.attemptsLeft) {
-                        setTimeout(() => errorDiv.classList.remove('show'), 2000);
-                    }
-                }
-            } catch(e) {
-                console.error(e);
-                const errorDiv = document.getElementById('step2-error');
-                errorDiv.textContent = '❌ خطأ في التحقق';
-                errorDiv.classList.add('show');
-                setTimeout(() => errorDiv.classList.remove('show'), 2000);
-            }
-        }
-        
-        function startTimer(seconds) {
-            otpTimeLeft = seconds;
-            updateTimerDisplay();
-            clearInterval(otpTimer);
-            const rl = document.getElementById('resend-link');
-            if(rl) rl.classList.add('disabled');
-            otpTimer = setInterval(() => {
-                otpTimeLeft--;
-                updateTimerDisplay();
-                if(otpTimeLeft <= 0) {
-                    clearInterval(otpTimer);
-                    if(document.getElementById('resend-link')) document.getElementById('resend-link').classList.remove('disabled');
-                }
-            }, 1000);
-        }
-        
-        function updateTimerDisplay() {
-            const m = Math.floor(otpTimeLeft / 60);
-            const s = otpTimeLeft % 60;
-            const d = document.getElementById('timer-display');
-            if(d) d.textContent = `⏰ ${m}:${s.toString().padStart(2, '0')}`;
-        }
-        
-        function logout() {
-            if(confirm('هل تريد تسجيل الخروج؟')) {
-                sessionStorage.removeItem(CONFIG.ADMIN_SESSION_KEY);
-                sessionToken = null;
-                currentChallengeToken = null;
-                document.getElementById('login-overlay').classList.remove('hidden');
-                document.getElementById('user-info-sidebar').style.display = 'none';
-                showStep('request');
-                for(let i = 1; i <= 6; i++) {
-                    const inp = document.getElementById('otp-' + i);
-                    if(inp) inp.value = '';
-                }
-                showToast('👋 تم تسجيل الخروج');
-            }
+
+        async function logout() {
+            if (!confirm('هل تريد تسجيل الخروج؟')) return;
+            await fetch('/api/auth/logout', { method: 'POST', credentials: 'same-origin' });
+            sessionToken = null;
+            currentUser = null;
+            window.location.reload();
         }
 
         // ==================== BIND EVENTS ====================
@@ -1432,6 +1346,15 @@
             document.getElementById('prod-type')?.addEventListener('change', function() { document.getElementById('comp-type-group').style.display = this.value === 'component' ? 'block' : 'none'; });
             document.getElementById('filter-type')?.addEventListener('change', function() { renderProductsTable(this.value); });
             
+            // Super-admin user creation
+            document.getElementById('user-form')?.addEventListener('submit', async event => {
+                event.preventDefault();
+                try {
+                    await apiFetch('/api/users', { method: 'POST', body: JSON.stringify({ username: document.getElementById('new-user-username').value, display_name: document.getElementById('new-user-name').value, role: document.getElementById('new-user-role').value, password: document.getElementById('new-user-password').value }) });
+                    event.target.reset(); await loadUsersFromServer(); renderUsersTable(); showToast('تم إنشاء الحساب بنجاح.');
+                } catch (error) { showToast(`❌ ${error.message}`); }
+            });
+
             // Coupons
             document.getElementById('add-coupon-btn')?.addEventListener('click', () => {
                 document.getElementById('coupon-form').style.display = 'block';
@@ -1545,8 +1468,8 @@
                 }
             });
             
-            // Login events
-            document.getElementById('request-code-btn')?.addEventListener('click', requestOTP);
+            // Secure login
+            document.getElementById('login-form')?.addEventListener('submit', login);
             document.getElementById('resend-link')?.addEventListener('click', () => {
                 if(otpTimeLeft > 0) return;
                 clearInterval(otpTimer);
@@ -1614,7 +1537,7 @@
             bindEvents();
             addSpecRow();
             
-            if(!checkExistingSession()) {
+            if(!(await checkExistingSession())) {
                 document.getElementById('login-overlay').classList.remove('hidden');
                 document.getElementById('user-info-sidebar').style.display = 'none';
             } else {

@@ -1,7 +1,7 @@
 {
   "name": "dar3a-store",
-  "version": "1.0.0",
-  "description": "Dar3a Store — متجر إلكتروني متكامل (أفلام • مسلسلات • برامج هندسية • ألعاب • تجميعات PC) مع لوحة تحكم ومساعد ذكي",
+  "version": "1.1.0",
+  "description": "Dar3a Store — متجر إلكتروني عربي آمن مع Super Admin واشتراك سنوي وتفعيل",
   "main": "server.js",
   "license": "SEE LICENSE IN LICENSE",
   "author": "Dar3a Store",
@@ -13,8 +13,9 @@
     "supabase",
     "vercel",
     "pc-builder",
-    "admin-dashboard",
-    "telegram-otp"
+    "super-admin",
+    "annual-subscription",
+    "license-activation"
   ],
   "repository": {
     "type": "git",
@@ -28,17 +29,18 @@
     "start": "node server.js",
     "dev": "nodemon server.js",
     "build": "echo 'No build step needed'",
-    "check": "node --check index.js && node --check database.js && node --check fallback-db.js && node --check server.js"
+    "check": "node --check index.js && node --check database.js && node --check fallback-db.js && node --check server.js && node --check scripts/bootstrap-admin.js",
+    "test": "node --test",
+    "bootstrap-admin": "node scripts/bootstrap-admin.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.108.1",
     "bcryptjs": "^2.4.3",
-    "cors": "^2.8.5",
     "dotenv": "^16.3.1",
-    "express": "^4.18.2",
-    "jsonwebtoken": "^9.0.2",
-    "multer": "^1.4.5-lts.1",
-    "nodemailer": "^6.9.7"
+    "express": "^5.3.0",
+    "express-rate-limit": "^8.7.4",
+    "helmet": "^8.3.0",
+    "jsonwebtoken": "^9.0.2"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"

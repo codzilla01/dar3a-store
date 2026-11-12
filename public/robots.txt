@@ -2,6 +2,7 @@
 User-agent: *
 Allow: /
 Disallow: /admin.html
+Disallow: /developer.html
 Disallow: /chat-bot.html
 
 # Sitemap

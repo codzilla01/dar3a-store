@@ -1,27 +1,23 @@
-// server.js
-const express = require('express');
-const cors = require('cors');
+// server.js — local production-like server
+require('dotenv').config();
+
 const path = require('path');
-const dotenv = require('dotenv');
 const app = require('./index');
 
-dotenv.config();
+const PORT = Number(process.env.PORT) || 3000;
+const publicDir = path.join(__dirname, 'public');
 
-const PORT = process.env.PORT || 3000;
-
-// إعداد CORS
-app.use(cors({
-    origin: '*',
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Session-Token']
+app.use(require('express').static(publicDir, {
+    etag: true,
+    maxAge: process.env.NODE_ENV === 'production' ? '1h' : 0,
+    index: 'index.html'
 }));
 
-// خدمة الملفات الثابتة
-app.use(express.static(path.join(__dirname, 'public')));
+app.use((req, res) => {
+    if (req.path.startsWith('/api/')) return res.status(404).json({ error: 'المسار غير موجود.' });
+    res.status(404).sendFile(path.join(publicDir, '404.html'));
+});
 
-// تشغيل الخادم
-app.listen(PORT, () => {
-    console.log('🚀 متجر Dar3a Store يعمل على المنفذ ' + PORT);
-    console.log('🌐 http://localhost:' + PORT);
-    console.log('✅ المفتاح السري موجود وطوله:', process.env.ADMIN_JWT_SECRET ? process.env.ADMIN_JWT_SECRET.length : 'غير موجود');
+app.listen(PORT, '0.0.0.0', () => {
+    console.log(`Dar3a Store is listening on port ${PORT}`);
 });

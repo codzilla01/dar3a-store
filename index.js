@@ -1,328 +1,456 @@
-// index.js
+// index.js — Dar3a Store production API
+require('dotenv').config();
+
 const express = require('express');
-const cors = require('cors');
+const helmet = require('helmet');
+const { rateLimit } = require('express-rate-limit');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
 
-// قاعدة البيانات: Supabase إن كانت مهيأة، وإلا وضع العرض التجريبي (ذاكرة محلية)
-let db;
-try {
-    db = require('./database');
-    if (db.demoMode) db = require('./fallback-db');
-} catch (e) {
-    console.warn('⚠️ Supabase غير مهيأ — التشغيل في وضع العرض التجريبي (بيانات تجريبية في الذاكرة):', e.message);
-    db = require('./fallback-db');
+const production = process.env.NODE_ENV === 'production';
+const allowDemoMode = !production && process.env.ALLOW_DEMO_MODE === 'true';
+let db = require('./database');
+if (!db.configured && allowDemoMode) db = require('./fallback-db');
+
+const JWT_SECRET = process.env.ADMIN_JWT_SECRET;
+// Customer deployments can require an active annual license before the storefront API serves data.
+// Keep this true in a customer production deployment; developer/admin routes remain available to renew it.
+const licenseRequired = production ? process.env.REQUIRE_STORE_LICENSE !== 'false' : process.env.REQUIRE_STORE_LICENSE === 'true';
+const storeActivationKey = process.env.STORE_ACTIVATION_KEY?.trim();
+const storeLicenseDomain = process.env.STORE_LICENSE_DOMAIN?.trim();
+const licenseCache = { checkedAt: 0, valid: false, status: 'not_checked' };
+const app = express();
+app.disable('x-powered-by');
+app.set('trust proxy', 1);
+
+const csp = {
+    defaultSrc: ["'self'"],
+    baseUri: ["'self'"],
+    frameAncestors: ["'none'"],
+    objectSrc: ["'none'"],
+    scriptSrc: ["'self'", "'unsafe-inline'", 'https://cdnjs.cloudflare.com'],
+    styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com', 'https://cdnjs.cloudflare.com'],
+    fontSrc: ["'self'", 'https://fonts.gstatic.com', 'https://cdnjs.cloudflare.com', 'data:'],
+    imgSrc: ["'self'", 'data:', 'https:'],
+    connectSrc: ["'self'"],
+    formAction: ["'self'"],
+    upgradeInsecureRequests: production ? [] : null
+};
+// Helmet treats a null directive as an explicit opt-out from its default value.
+app.use(helmet({ contentSecurityPolicy: { directives: csp }, crossOriginEmbedderPolicy: false, frameguard: { action: 'deny' }, referrerPolicy: { policy: 'strict-origin-when-cross-origin' } }));
+app.use(express.json({ limit: '100kb', strict: true }));
+app.use(express.urlencoded({ extended: false, limit: '20kb' }));
+
+const apiLimiter = rateLimit({ windowMs: 15 * 60 * 1000, limit: 300, standardHeaders: 'draft-8', legacyHeaders: false, message: { error: 'تم تجاوز الحد المسموح من الطلبات، حاول لاحقاً.' } });
+const authLimiter = rateLimit({ windowMs: 15 * 60 * 1000, limit: 10, standardHeaders: 'draft-8', legacyHeaders: false, skipSuccessfulRequests: true, message: { error: 'محاولات دخول كثيرة. حاول بعد 15 دقيقة.' } });
+const publicWriteLimiter = rateLimit({ windowMs: 10 * 60 * 1000, limit: 20, standardHeaders: 'draft-8', legacyHeaders: false, message: { error: 'طلبات كثيرة. حاول لاحقاً.' } });
+app.use('/api', apiLimiter);
+
+function publicError(message, status = 400) {
+    const error = new Error(message);
+    error.status = status;
+    error.public = true;
+    return error;
 }
 
-const app = express();
+function ensureConfigured(req, res, next) {
+    if (!db.configured && !allowDemoMode) return next(publicError('الخدمة غير مهيأة بعد.', 503));
+    if (!JWT_SECRET || JWT_SECRET.length < 32) return next(publicError('إعدادات الحماية غير مكتملة.', 503));
+    next();
+}
 
-// Middleware
-app.use(cors());
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true, limit: '10mb' }));
-
-// تخزين مؤقت لأكواد التحقق (في production استخدم Redis)
-const otpStore = new Map();
-const sessionStore = new Map();
-
-// تنظيف الجلسات المنتهية كل ساعة
-setInterval(async () => {
-    await db.cleanExpiredSessions();
-    for (const [token, data] of sessionStore.entries()) {
-        if (data.expires < Date.now()) sessionStore.delete(token);
-    }
-}, 60 * 60 * 1000);
-
-// ==================== API Routes ====================
-
-// -------------------- Health Check --------------------
-app.get('/api/health', (req, res) => {
-    res.json({ status: 'ok', timestamp: new Date().toISOString() });
-});
-
-// -------------------- Products API --------------------
-app.get('/api/products', async (req, res) => {
+async function requireStoreLicense(req, res, next) {
+    if (!licenseRequired) return next();
+    if (!storeActivationKey || !storeLicenseDomain) return next(publicError('هذا المتجر يحتاج إلى مفتاح تفعيل صالح.', 402));
     try {
-        const products = await db.getProducts();
-        res.json(products);
-    } catch (error) {
-        console.error('Error getting products:', error);
-        res.status(500).json({ error: error.message });
-    }
-});
-
-app.post('/api/products', async (req, res) => {
-    try {
-        const { products } = req.body;
-        if (!Array.isArray(products)) {
-            return res.status(400).json({ error: 'products must be an array' });
+        const cacheIsFresh = Date.now() - licenseCache.checkedAt < 12 * 60 * 60 * 1000;
+        if (!cacheIsFresh) {
+            const result = await db.verifyActivation(storeActivationKey, cleanDomain(storeLicenseDomain));
+            licenseCache.checkedAt = Date.now();
+            licenseCache.valid = result.valid;
+            licenseCache.status = result.status;
         }
+        if (!licenseCache.valid) return next(publicError('اشتراك المتجر غير نشط. يرجى التواصل مع الدعم.', 402));
+        next();
+    } catch (error) {
+        next(error);
+    }
+}
+
+function parseCookies(header = '') {
+    return header.split(';').reduce((cookies, piece) => {
+        const index = piece.indexOf('=');
+        if (index > -1) cookies[piece.slice(0, index).trim()] = decodeURIComponent(piece.slice(index + 1).trim());
+        return cookies;
+    }, {});
+}
+
+function sessionCookieOptions() {
+    return {
+        httpOnly: true,
+        secure: production,
+        sameSite: 'strict',
+        path: '/',
+        maxAge: 8 * 60 * 60 * 1000
+    };
+}
+
+function canonicalUsername(value) {
+    const username = String(value || '').trim().toLowerCase();
+    if (!/^[a-z0-9._-]{3,64}$/.test(username)) throw publicError('اسم المستخدم يجب أن يتكون من 3 إلى 64 حرفاً أو رقماً إنجليزياً.');
+    return username;
+}
+
+function validPassword(value) {
+    const password = String(value || '');
+    if (password.length < 12 || password.length > 128 || !/[A-Za-z]/.test(password) || !/[0-9]/.test(password)) {
+        throw publicError('كلمة المرور يجب أن تكون 12 حرفاً على الأقل وتحتوي حروفاً وأرقاماً.');
+    }
+    return password;
+}
+
+function cleanText(value, field, { required = false, max = 500 } = {}) {
+    const text = typeof value === 'string' ? value.trim() : '';
+    if (required && !text) throw publicError(`${field} مطلوب.`);
+    if (text.length > max) throw publicError(`${field} أطول من الحد المسموح.`);
+    return text;
+}
+
+function cleanEmail(value) {
+    const email = String(value || '').trim().toLowerCase();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/u.test(email) || email.length > 254) throw publicError('البريد الإلكتروني غير صحيح.');
+    return email;
+}
+
+function cleanPhone(value) {
+    const phone = String(value || '').trim();
+    if (!/^[+0-9][0-9\s-]{6,24}$/u.test(phone)) throw publicError('رقم الهاتف غير صحيح.');
+    return phone;
+}
+
+function cleanDomain(value) {
+    let domain = String(value || '').trim().toLowerCase();
+    domain = domain.replace(/^https?:\/\//, '').replace(/\/.*$/, '').replace(/\.$/, '');
+    if (!/^(localhost|[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)+)$/u.test(domain) || domain.length > 253) {
+        throw publicError('النطاق غير صحيح. أدخل النطاق فقط مثل store.example.com.');
+    }
+    return domain;
+}
+
+function positiveNumber(value, field, { min = 0, max = 1000000000 } = {}) {
+    const number = Number(value);
+    if (!Number.isFinite(number) || number < min || number > max) throw publicError(`${field} غير صحيح.`);
+    return number;
+}
+
+function cleanProduct(product) {
+    if (!product || typeof product !== 'object' || Array.isArray(product)) throw publicError('بيانات المنتج غير صحيحة.');
+    const id = cleanText(product.id, 'معرف المنتج', { required: true, max: 100 });
+    if (!/^[a-zA-Z0-9_-]+$/.test(id)) throw publicError('معرف المنتج غير صحيح.');
+    const type = cleanText(product.type || 'movies', 'نوع المنتج', { required: true, max: 40 });
+    const allowedTypes = ['movies', 'series', 'programs', 'pcgames', 'playstation', 'component'];
+    if (!allowedTypes.includes(type)) throw publicError('نوع المنتج غير مدعوم.');
+    const stock = positiveNumber(product.stock ?? 0, 'المخزون', { min: 0, max: 1000000 });
+    if (!Number.isInteger(stock)) throw publicError('المخزون يجب أن يكون رقماً صحيحاً.');
+    const componentType = product.component_type || product.componentType || null;
+    if (componentType && !['cpu', 'motherboard', 'gpu', 'ram', 'storage', 'psu', 'case'].includes(componentType)) throw publicError('نوع قطعة الكمبيوتر غير صحيح.');
+    let specs = product.specs || {};
+    if (typeof specs !== 'object' || Array.isArray(specs) || JSON.stringify(specs).length > 10000) throw publicError('مواصفات المنتج غير صحيحة.');
+    return {
+        id,
+        type,
+        name: cleanText(product.name, 'اسم المنتج', { required: true, max: 160 }),
+        price: positiveNumber(product.price, 'السعر'),
+        brand: cleanText(product.brand, 'العلامة التجارية', { max: 100 }) || null,
+        image: cleanText(product.image, 'رابط الصورة', { max: 2000 }) || null,
+        description: cleanText(product.description, 'الوصف', { max: 3000 }) || null,
+        specs,
+        stock,
+        component_type: componentType
+    };
+}
+
+function publicSettings(settings) {
+    const fields = ['name', 'tagline', 'currency', 'phone', 'whatsapp', 'address', 'hours', 'website', 'primaryColor', 'secondaryColor', 'logoIcon', 'mainLogo', 'favicon', 'bgAnimation', 'developerName', 'developerUrl', 'copyright', 'chatbotUrl'];
+    return Object.fromEntries(fields.filter((field) => settings?.[field] !== undefined).map((field) => [field, settings[field]]));
+}
+
+function cleanSettings(settings) {
+    const clean = publicSettings(settings || {});
+    for (const field of ['name', 'tagline', 'currency', 'phone', 'whatsapp', 'address', 'hours', 'website', 'logoIcon', 'mainLogo', 'favicon', 'bgAnimation', 'developerName', 'developerUrl', 'copyright', 'chatbotUrl']) {
+        if (clean[field] !== undefined) clean[field] = cleanText(clean[field], field, { max: field === 'mainLogo' || field === 'favicon' || field === 'website' || field === 'developerUrl' ? 2000 : 180 });
+    }
+    for (const field of ['primaryColor', 'secondaryColor']) {
+        if (clean[field] !== undefined && clean[field] && !/^#[0-9a-fA-F]{6}$/.test(clean[field])) throw publicError('صيغة اللون غير صحيحة.');
+    }
+    if (clean.whatsapp) clean.whatsapp = clean.whatsapp.replace(/\D/g, '');
+    for (const field of ['website', 'developerUrl', 'mainLogo', 'favicon', 'chatbotUrl']) {
+        if (!clean[field]) continue;
+        const value = clean[field];
+        const isSafeRelativePath = /^(?:\.?\/)?[a-zA-Z0-9_./-]+(?:\?[a-zA-Z0-9_=&.-]+)?$/.test(value);
+        const isSafeHttpsUrl = /^https:\/\/[a-zA-Z0-9.-]+(?:\/[^\s]*)?$/i.test(value);
+        if (!isSafeRelativePath && !isSafeHttpsUrl) throw publicError('رابط الإعدادات يجب أن يكون HTTPS أو مساراً داخلياً آمناً.');
+    }
+    return clean;
+}
+
+function cleanItems(items) {
+    if (!Array.isArray(items) || items.length < 1 || items.length > 30) throw publicError('السلة فارغة أو تحتوي عناصر كثيرة.');
+    const merged = new Map();
+    for (const item of items) {
+        if (!item || typeof item !== 'object') throw publicError('عنصر السلة غير صحيح.');
+        const quantity = Number(item.quantity);
+        if (!Number.isInteger(quantity) || quantity < 1 || quantity > 20) throw publicError('كمية المنتج غير صحيحة.');
+        if (item.type === 'custom_build' && Array.isArray(item.components)) {
+            for (const component of item.components) {
+                const id = cleanText(component.id, 'معرف القطعة', { required: true, max: 100 });
+                merged.set(id, (merged.get(id) || 0) + quantity);
+            }
+        } else {
+            const id = cleanText(item.id, 'معرف المنتج', { required: true, max: 100 });
+            merged.set(id, (merged.get(id) || 0) + quantity);
+        }
+    }
+    if (merged.size > 30 || [...merged.values()].some((quantity) => quantity > 20)) throw publicError('كمية المنتجات غير صحيحة.');
+    return [...merged].map(([id, quantity]) => ({ id, quantity }));
+}
+
+function signSession(user) {
+    return jwt.sign({ sub: user.id, role: user.role, username: user.username }, JWT_SECRET, {
+        algorithm: 'HS256', issuer: 'dar3a-store', audience: 'dar3a-admin', expiresIn: '8h'
+    });
+}
+
+async function requireAuth(req, res, next) {
+    try {
+        const token = parseCookies(req.headers.cookie).dar3a_session;
+        if (!token) throw publicError('تسجيل الدخول مطلوب.', 401);
+        const payload = jwt.verify(token, JWT_SECRET, { algorithms: ['HS256'], issuer: 'dar3a-store', audience: 'dar3a-admin' });
+        const user = await db.getUserById(payload.sub);
+        if (!user || !user.is_active || user.role !== payload.role) throw publicError('الجلسة غير صالحة.', 401);
+        req.user = db.withoutSecrets ? db.withoutSecrets(user) : (() => { const { password_hash, ...safe } = user; return safe; })();
+        next();
+    } catch (error) {
+        if (error.public) return next(error);
+        return next(publicError('الجلسة غير صالحة.', 401));
+    }
+}
+
+function requireRole(...roles) {
+    return (req, res, next) => {
+        if (!req.user || !roles.includes(req.user.role)) return next(publicError('ليس لديك الصلاحية المطلوبة.', 403));
+        next();
+    };
+}
+
+function activationKey() {
+    return `DAR3A-${crypto.randomBytes(18).toString('hex').toUpperCase()}`;
+}
+function hashActivationKey(key) { return crypto.createHash('sha256').update(key).digest('hex'); }
+function oneYearFrom(date = new Date()) {
+    const result = new Date(date);
+    result.setUTCFullYear(result.getUTCFullYear() + 1);
+    return result.toISOString();
+}
+
+app.get('/api/health', (req, res) => {
+    res.status((db.configured || allowDemoMode) && JWT_SECRET?.length >= 32 ? 200 : 503).json({
+        status: (db.configured || allowDemoMode) && JWT_SECRET?.length >= 32 ? 'ok' : 'configuration_required',
+        database: db.configured ? 'supabase' : allowDemoMode ? 'demo' : 'not_configured',
+        license: licenseRequired ? licenseCache.status : 'not_required',
+        timestamp: new Date().toISOString()
+    });
+});
+
+app.use('/api', ensureConfigured);
+
+// Public storefront endpoints
+app.get('/api/products', requireStoreLicense, async (req, res, next) => {
+    try { res.json(await db.getProducts()); } catch (error) { next(error); }
+});
+app.get('/api/settings', requireStoreLicense, async (req, res, next) => {
+    try { res.json(publicSettings(await db.getSettings() || {})); } catch (error) { next(error); }
+});
+app.post('/api/newsletter', requireStoreLicense, publicWriteLimiter, async (req, res, next) => {
+    try { await db.addSubscriber(cleanEmail(req.body.email)); res.status(201).json({ success: true, message: 'تم الاشتراك بنجاح.' }); } catch (error) { next(error); }
+});
+app.post('/api/orders', requireStoreLicense, publicWriteLimiter, async (req, res, next) => {
+    try {
+        const order = await db.createOrder({
+            customer_name: cleanText(req.body.customer_name, 'الاسم', { required: true, max: 120 }),
+            customer_phone: cleanPhone(req.body.customer_phone),
+            customer_address: cleanText(req.body.customer_address, 'العنوان', { max: 300 }) || null,
+            notes: cleanText(req.body.notes, 'الملاحظات', { max: 1000 }) || null,
+            payment_method: ['cash', 'bankak', 'fawry'].includes(req.body.payment_method) ? req.body.payment_method : 'cash',
+            coupon: req.body.coupon ? cleanText(req.body.coupon, 'الكوبون', { max: 40 }).toUpperCase() : null,
+            items: cleanItems(req.body.items)
+        });
+        res.status(201).json({ success: true, order });
+    } catch (error) { next(error); }
+});
+app.post('/api/license/verify', publicWriteLimiter, async (req, res, next) => {
+    try {
+        const key = cleanText(req.body.activationKey, 'مفتاح التفعيل', { required: true, max: 100 });
+        const result = await db.verifyActivation(key, cleanDomain(req.body.domain));
+        res.status(result.valid ? 200 : 403).json(result);
+    } catch (error) { next(error); }
+});
+
+// Authentication: username/password only. The resulting token remains in an HttpOnly cookie.
+app.post('/api/auth/login', authLimiter, async (req, res, next) => {
+    try {
+        const username = canonicalUsername(req.body.username);
+        const password = String(req.body.password || '');
+        const user = await db.getUserByUsername(username);
+        const valid = user?.is_active && password && await bcrypt.compare(password, user.password_hash);
+        if (!valid) throw publicError('اسم المستخدم أو كلمة المرور غير صحيحين.', 401);
+        await db.updateUserLogin(user.id);
+        res.cookie('dar3a_session', signSession(user), sessionCookieOptions());
+        res.json({ success: true, user: db.withoutSecrets ? db.withoutSecrets(user) : { id: user.id, username: user.username, role: user.role, display_name: user.display_name } });
+    } catch (error) { next(error); }
+});
+app.post('/api/auth/logout', (req, res) => {
+    res.clearCookie('dar3a_session', { httpOnly: true, secure: production, sameSite: 'strict', path: '/' });
+    res.json({ success: true });
+});
+app.get('/api/auth/me', requireAuth, (req, res) => res.json({ user: req.user }));
+
+// Super admin dashboard and store administration
+app.get('/api/dashboard', requireAuth, requireRole('super_admin'), async (req, res, next) => {
+    try { res.json(await db.getDashboardStats()); } catch (error) { next(error); }
+});
+app.post('/api/products', requireAuth, requireRole('super_admin'), async (req, res, next) => {
+    try {
+        if (!Array.isArray(req.body.products) || req.body.products.length > 1000) throw publicError('قائمة المنتجات غير صحيحة.');
+        const products = req.body.products.map(cleanProduct);
+        if (new Set(products.map((product) => product.id)).size !== products.length) throw publicError('معرفات المنتجات يجب أن تكون فريدة.');
         await db.replaceAllProducts(products);
         res.json({ success: true });
-    } catch (error) {
-        console.error('Error saving products:', error);
-        res.status(500).json({ error: error.message });
-    }
+    } catch (error) { next(error); }
 });
-
-// -------------------- Settings API --------------------
-app.get('/api/settings', async (req, res) => {
+app.post('/api/settings', requireAuth, requireRole('super_admin'), async (req, res, next) => {
     try {
-        let settings = await db.getSettings();
-        if (!settings) {
-            // إعدادات افتراضية
-            settings = {
-                name: 'Dar3a Store',
-                tagline: 'أفلام • مسلسلات • برامج • ألعاب',
-                currency: 'ج.س',
-                phone: '0922265656',
-                whatsapp: '249922265656',
-                address: 'السودان - امدرمان',
-                hours: 'يومياً 10 ص - 10 م',
-                website: 'https://dar3a-store.vercel.app',
-                primaryColor: '#e63946',
-                secondaryColor: '#ff6b6b',
-                logoIcon: 'fa-shield-halved',
-                mainLogo: '',
-                favicon: '',
-                bgAnimation: 'particles',
-                developerName: 'Mohamed Elnil',
-                developerUrl: 'https://me-one-blue.vercel.app/about.html',
-                copyright: '© 2026 Dar3a Store',
-                chatbotUrl: 'chat-bot.html'
-            };
+        const current = await db.getSettings() || {};
+        await db.saveSettings({ ...current, ...cleanSettings(req.body) });
+        res.json({ success: true });
+    } catch (error) { next(error); }
+});
+app.get('/api/coupons', requireAuth, requireRole('super_admin'), async (req, res, next) => {
+    try { res.json(await db.getCoupons()); } catch (error) { next(error); }
+});
+app.post('/api/coupons', requireAuth, requireRole('super_admin'), async (req, res, next) => {
+    try {
+        const coupon = {
+            code: cleanText(req.body.coupon?.code ?? req.body.code, 'الكود', { required: true, max: 40 }).toUpperCase(),
+            type: ['percent', 'fixed'].includes(req.body.coupon?.type ?? req.body.type) ? (req.body.coupon?.type ?? req.body.type) : 'percent',
+            discount: positiveNumber(req.body.coupon?.discount ?? req.body.discount, 'قيمة الخصم', { min: 0.01 }),
+            min_order: positiveNumber(req.body.coupon?.min_order ?? req.body.coupon?.minOrder ?? req.body.min_order ?? 0, 'الحد الأدنى'),
+            active: (req.body.coupon?.active ?? req.body.active) !== false,
+            expires_at: req.body.coupon?.expires_at ?? req.body.expires_at ?? null
+        };
+        if (coupon.type === 'percent' && coupon.discount > 100) throw publicError('نسبة الخصم لا يمكن أن تتجاوز 100%.');
+        res.status(201).json({ success: true, coupon: await db.addCoupon(coupon) });
+    } catch (error) { next(error); }
+});
+app.delete('/api/coupons', requireAuth, requireRole('super_admin'), async (req, res, next) => {
+    try { await db.deleteCoupon(cleanText(req.body.couponCode, 'كود الكوبون', { required: true, max: 40 })); res.json({ success: true }); } catch (error) { next(error); }
+});
+app.get('/api/orders', requireAuth, requireRole('super_admin', 'admin'), async (req, res, next) => {
+    try { res.json(await db.getOrders()); } catch (error) { next(error); }
+});
+app.patch('/api/orders/:id/status', requireAuth, requireRole('super_admin', 'admin'), async (req, res, next) => {
+    try {
+        const status = cleanText(req.body.status, 'حالة الطلب', { required: true, max: 20 });
+        if (!['new', 'confirmed', 'delivered', 'cancelled'].includes(status)) throw publicError('حالة الطلب غير صحيحة.');
+        res.json({ success: true, order: await db.updateOrderStatus(req.params.id, status) });
+    } catch (error) { next(error); }
+});
+app.get('/api/newsletter', requireAuth, requireRole('super_admin'), async (req, res, next) => {
+    try { res.json(await db.getSubscribers()); } catch (error) { next(error); }
+});
+app.delete('/api/newsletter', requireAuth, requireRole('super_admin'), async (req, res, next) => {
+    try { await db.deleteSubscriber(req.body.email === 'all' ? 'all' : cleanEmail(req.body.email)); res.json({ success: true }); } catch (error) { next(error); }
+});
+app.get('/api/users', requireAuth, requireRole('super_admin'), async (req, res, next) => {
+    try { res.json(await db.listUsers()); } catch (error) { next(error); }
+});
+app.post('/api/users', requireAuth, requireRole('super_admin'), async (req, res, next) => {
+    try {
+        const role = cleanText(req.body.role, 'الدور', { required: true, max: 20 });
+        if (!['super_admin', 'admin', 'developer'].includes(role)) throw publicError('الدور غير صحيح.');
+        const password = validPassword(req.body.password);
+        const user = await db.createUser({ username: canonicalUsername(req.body.username), display_name: cleanText(req.body.display_name, 'الاسم الظاهر', { required: true, max: 100 }), role, password_hash: await bcrypt.hash(password, 12) });
+        res.status(201).json({ success: true, user });
+    } catch (error) { next(error); }
+});
+app.patch('/api/users/:id', requireAuth, requireRole('super_admin'), async (req, res, next) => {
+    try {
+        if (req.params.id === req.user.id && (req.body.is_active === false || (req.body.role && req.body.role !== 'super_admin'))) throw publicError('لا يمكنك تعطيل أو خفض صلاحيات حسابك الحالي.');
+        const changes = {};
+        if (req.body.display_name !== undefined) changes.display_name = cleanText(req.body.display_name, 'الاسم الظاهر', { required: true, max: 100 });
+        if (req.body.is_active !== undefined) changes.is_active = Boolean(req.body.is_active);
+        if (req.body.role !== undefined) {
+            if (!['super_admin', 'admin', 'developer'].includes(req.body.role)) throw publicError('الدور غير صحيح.');
+            changes.role = req.body.role;
         }
-        res.json(settings);
-    } catch (error) {
-        console.error('Error getting settings:', error);
-        res.status(500).json({ error: error.message });
-    }
+        if (req.body.password !== undefined) changes.password_hash = await bcrypt.hash(validPassword(req.body.password), 12);
+        if (!Object.keys(changes).length) throw publicError('لا توجد تعديلات للحفظ.');
+        res.json({ success: true, user: await db.updateUser(req.params.id, changes) });
+    } catch (error) { next(error); }
 });
 
-app.post('/api/settings', async (req, res) => {
-    try {
-        await db.saveSettings(req.body);
-        res.json({ success: true });
-    } catch (error) {
-        console.error('Error saving settings:', error);
-        res.status(500).json({ error: error.message });
-    }
+// Developer portal: annual subscriptions, activation and renewal tracking.
+app.get('/api/developer/subscriptions', requireAuth, requireRole('developer', 'super_admin'), async (req, res, next) => {
+    try { res.json(await db.listSubscriptions()); } catch (error) { next(error); }
 });
-
-// -------------------- Coupons API --------------------
-app.get('/api/coupons', async (req, res) => {
+app.post('/api/developer/subscriptions', requireAuth, requireRole('developer', 'super_admin'), async (req, res, next) => {
     try {
-        const coupons = await db.getCoupons();
-        res.json(coupons);
-    } catch (error) {
-        console.error('Error getting coupons:', error);
-        res.status(500).json({ error: error.message });
-    }
-});
-
-app.post('/api/coupons', async (req, res) => {
-    try {
-        const { coupon } = req.body;
-        await db.addCoupon(coupon);
-        res.json({ success: true });
-    } catch (error) {
-        console.error('Error adding coupon:', error);
-        res.status(500).json({ error: error.message });
-    }
-});
-
-app.delete('/api/coupons', async (req, res) => {
-    try {
-        const { couponCode } = req.body;
-        await db.deleteCoupon(couponCode);
-        res.json({ success: true });
-    } catch (error) {
-        console.error('Error deleting coupon:', error);
-        res.status(500).json({ error: error.message });
-    }
-});
-
-// -------------------- Orders API --------------------
-app.get('/api/orders', async (req, res) => {
-    try {
-        const orders = await db.getOrders();
-        res.json(orders);
-    } catch (error) {
-        console.error('Error getting orders:', error);
-        res.status(500).json({ error: error.message });
-    }
-});
-
-app.post('/api/orders', async (req, res) => {
-    try {
-        const order = req.body;
-        await db.addOrder(order);
-        res.json({ success: true });
-    } catch (error) {
-        console.error('Error adding order:', error);
-        res.status(500).json({ error: error.message });
-    }
-});
-
-// -------------------- Newsletter API --------------------
-app.get('/api/newsletter', async (req, res) => {
-    try {
-        const subscribers = await db.getSubscribers();
-        res.json(subscribers);
-    } catch (error) {
-        console.error('Error getting subscribers:', error);
-        res.status(500).json({ error: error.message });
-    }
-});
-
-app.post('/api/newsletter', async (req, res) => {
-    try {
-        const { email } = req.body;
-        if (!email || !email.includes('@')) {
-            return res.status(400).json({ error: 'بريد إلكتروني غير صحيح' });
-        }
-        const result = await db.addSubscriber(email);
-        res.json({ success: true, message: result.message });
-    } catch (error) {
-        console.error('Error adding subscriber:', error);
-        res.status(500).json({ error: error.message });
-    }
-});
-
-app.delete('/api/newsletter', async (req, res) => {
-    try {
-        const { email } = req.body;
-        if (email === 'all') {
-            await db.clearAllSubscribers();
-        } else {
-            await db.deleteSubscriber(email);
-        }
-        res.json({ success: true });
-    } catch (error) {
-        console.error('Error deleting subscriber:', error);
-        res.status(500).json({ error: error.message });
-    }
-});
-
-// -------------------- Admin Auth API --------------------
-function generateOTP() {
-    return Math.floor(100000 + Math.random() * 900000).toString();
-}
-
-function generateSessionToken() {
-    return crypto.randomBytes(32).toString('hex');
-}
-
-app.post('/api/auth/request', async (req, res) => {
-    try {
-        const { role, storeName } = req.body;
-        const otp = generateOTP();
-        const expiresIn = 300; // 5 دقائق
-        const challengeToken = crypto.randomBytes(16).toString('hex');
-        
-        otpStore.set(challengeToken, {
-            otp,
-            expires: Date.now() + expiresIn * 1000,
-            role: role || 'admin'
+        const subscription = await db.createSubscription({
+            client_name: cleanText(req.body.client_name, 'اسم العميل', { required: true, max: 160 }),
+            contact_name: cleanText(req.body.contact_name, 'اسم جهة الاتصال', { max: 160 }) || null,
+            contact_email: req.body.contact_email ? cleanEmail(req.body.contact_email) : null,
+            contact_phone: req.body.contact_phone ? cleanPhone(req.body.contact_phone) : null,
+            domain: cleanDomain(req.body.domain),
+            plan: 'annual', status: 'pending', notes: cleanText(req.body.notes, 'الملاحظات', { max: 2000 }) || null,
+            starts_at: null, expires_at: null, activation_key_hash: null
         });
-        
-        // إرسال OTP عبر تيليجرام
-        const botToken = role === 'assistant' 
-            ? process.env.TELEGRAM_ASSISTANT_TOKEN || process.env.ASSISTANT_BOT_TOKEN
-            : process.env.TELEGRAM_BOT_TOKEN;
-        const chatId = role === 'assistant'
-            ? process.env.TELEGRAM_ASSISTANT_CHAT_ID || process.env.ASSISTANT_CHAT_ID
-            : process.env.TELEGRAM_CHAT_ID;
-
-        // في وضع التطوير بدون تيليجرام: اطبع الكود في الكونسول لتجربة الدخول محلياً
-        if (!botToken) {
-            console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-            console.log('🔑 كود دخول الإدارة (وضع التطوير المحلي):', otp);
-            console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-        }
-        
-        const message = `🔐 *كود التحقق لمتجر ${storeName || 'Dar3a Store'}*\n\n${role === 'admin' ? '👑 مدير' : '👥 مساعد'}\n\n📱 *الكود:* \`${otp}\`\n\n⏰ صالح لمدة 5 دقائق`;
-        
-        if (botToken) {
-            try {
-                const telegramUrl = `https://api.telegram.org/bot${botToken}/sendMessage`;
-                await fetch(telegramUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ chat_id: chatId, text: message, parse_mode: 'Markdown' })
-                });
-            } catch (telegramError) {
-                console.error('Telegram error:', telegramError.message);
-            }
-        }
-        
-        res.json({ ok: true, challengeToken, expiresIn });
-    } catch (error) {
-        console.error('Error requesting OTP:', error);
-        res.status(500).json({ error: error.message });
-    }
+        await db.addSubscriptionEvent(subscription.id, 'created', req.user.id, { domain: subscription.domain });
+        res.status(201).json({ success: true, subscription });
+    } catch (error) { next(error); }
 });
-
-app.post('/api/auth/verify', async (req, res) => {
+app.post('/api/developer/subscriptions/:id/action', requireAuth, requireRole('developer', 'super_admin'), async (req, res, next) => {
     try {
-        const { otp, challengeToken, role } = req.body;
-        const stored = otpStore.get(challengeToken);
-        
-        if (!stored) {
-            return res.status(401).json({ error: 'انتهت صلاحية الكود، اطلب كود جديد' });
+        const action = cleanText(req.body.action, 'الإجراء', { required: true, max: 20 });
+        const subscription = await db.getSubscription(req.params.id);
+        if (!subscription) throw publicError('الاشتراك غير موجود.', 404);
+        let changes;
+        let key;
+        if (action === 'activate') {
+            key = activationKey();
+            changes = { status: 'active', starts_at: new Date().toISOString(), expires_at: oneYearFrom(), activation_key_hash: hashActivationKey(key), activation_count: 0, last_activated_at: null };
+        } else if (action === 'renew') {
+            const base = subscription.expires_at && new Date(subscription.expires_at) > new Date() ? new Date(subscription.expires_at) : new Date();
+            changes = { status: 'active', starts_at: subscription.starts_at || new Date().toISOString(), expires_at: oneYearFrom(base) };
+            if (!subscription.activation_key_hash) { key = activationKey(); changes.activation_key_hash = hashActivationKey(key); }
+        } else if (action === 'suspend') {
+            changes = { status: 'suspended' };
+        } else if (action === 'revoke') {
+            changes = { status: 'revoked', activation_key_hash: null };
+        } else {
+            throw publicError('الإجراء غير مدعوم.');
         }
-        
-        if (stored.expires < Date.now()) {
-            otpStore.delete(challengeToken);
-            return res.status(401).json({ error: 'انتهت صلاحية الكود، اطلب كود جديد' });
-        }
-        
-        if (stored.otp !== otp) {
-            return res.status(401).json({ error: 'الكود غير صحيح' });
-        }
-        
-        otpStore.delete(challengeToken);
-        
-        const sessionToken = generateSessionToken();
-        const expiresAt = Date.now() + 24 * 60 * 60 * 1000; // 24 ساعة
-        
-        await db.saveAdminSession(sessionToken, expiresAt);
-        sessionStore.set(sessionToken, { expires: expiresAt, role: stored.role });
-        
-        res.json({ ok: true, sessionToken, expiresAt });
-    } catch (error) {
-        console.error('Error verifying OTP:', error);
-        res.status(500).json({ error: error.message });
-    }
+        const updated = await db.updateSubscription(subscription.id, changes);
+        await db.addSubscriptionEvent(subscription.id, action, req.user.id, { status: updated.status });
+        res.json({ success: true, subscription: updated, activationKey: key || undefined, message: key ? 'احفظ مفتاح التفعيل الآن؛ لن يظهر مرة أخرى.' : undefined });
+    } catch (error) { next(error); }
 });
 
-app.post('/api/auth/logout', async (req, res) => {
-    try {
-        const { sessionToken } = req.body;
-        if (sessionToken) {
-            await db.deleteAdminSession(sessionToken);
-            sessionStore.delete(sessionToken);
-        }
-        res.json({ ok: true });
-    } catch (error) {
-        console.error('Error logging out:', error);
-        res.status(500).json({ error: error.message });
-    }
+app.use('/api', (req, res, next) => next(publicError('المسار غير موجود.', 404)));
+app.use((error, req, res, next) => {
+    const status = Number(error.status) || 500;
+    if (status >= 500) console.error('API error:', error.message);
+    res.status(status).json({ error: error.public ? error.message : 'حدث خطأ داخلي. حاول لاحقاً.' });
 });
 
-app.get('/api/auth/verify-session', async (req, res) => {
-    try {
-        const sessionToken = req.headers['x-session-token'];
-        if (!sessionToken) {
-            return res.json({ valid: false });
-        }
-        
-        const isValid = await db.verifyAdminSession(sessionToken);
-        res.json({ valid: isValid });
-    } catch (error) {
-        console.error('Error verifying session:', error);
-        res.json({ valid: false });
-    }
-});
-
-// ==================== Export ====================
 module.exports = app;

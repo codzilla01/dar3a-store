@@ -1,434 +1,298 @@
-// database.js - النسخة المصححة والموافقة لبيئة Vercel السحابية
+// database.js
+// طبقة البيانات الإنتاجية. لا تستخدم إلا بمفتاح Supabase service_role داخل الخادم.
 const { createClient } = require('@supabase/supabase-js');
 
-// تنظيف المتغيرات البيئية تلقائياً من أي مسافات زائدة قد تسبب فشل الاتصال
-// يقبل إما SERVICE_KEY (يُفضَّل للخادم) أو ANON_KEY
-const supabaseUrl = process.env.SUPABASE_URL ? process.env.SUPABASE_URL.trim() : null;
-const supabaseKey = (process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_ANON_KEY || '').trim() || null;
+const supabaseUrl = process.env.SUPABASE_URL?.trim();
+const serviceKey = process.env.SUPABASE_SERVICE_KEY?.trim();
+const configured = Boolean(supabaseUrl && serviceKey);
 
-if (!supabaseUrl || !supabaseKey) {
-    throw new Error('❌ SUPABASE_URL و SUPABASE_ANON_KEY مطلوبان في متغيرات البيئة بـ Vercel');
+const supabase = configured
+    ? createClient(supabaseUrl, serviceKey, {
+        auth: { persistSession: false, autoRefreshToken: false },
+        global: { fetch: (...args) => globalThis.fetch(...args) }
+    })
+    : null;
+
+function configurationError() {
+    const error = new Error('قاعدة البيانات غير مهيأة. أضف SUPABASE_URL و SUPABASE_SERVICE_KEY.');
+    error.code = 'DATABASE_NOT_CONFIGURED';
+    return error;
 }
 
-// إنشاء الاتصال وحقن الـ Fetch الصريح لحل مشكلة TypeError: fetch failed في Vercel
-const supabase = createClient(supabaseUrl, supabaseKey, {
-    auth: {
-        persistSession: false,
-        autoRefreshToken: false
-    },
-    global: {
-        fetch: (...args) => globalThis.fetch(...args) // إجبار Supabase على استخدام الـ fetch الأصلي للسيرفر
-    }
-});
-
-console.log('✅ Supabase initialized successfully with explicit fetch');
-
-// ============================================
-// دالة تنظيف المنتج - تحويل camelCase إلى snake_case
-// ============================================
-function cleanProduct(p) {
-    const cleaned = {};
-    // قائمة الحقول المسموحة فقط
-    const allowedFields = ['id', 'type', 'name', 'price', 'brand', 'image', 'description', 'specs', 'stock', 'created_at', 'updated_at', 'component_type'];
-    
-    for (const key of allowedFields) {
-        if (p[key] !== undefined) {
-            cleaned[key] = p[key];
-        }
-    }
-    
-    // التعامل مع componentType إذا كان موجوداً
-    if (p.componentType !== undefined && cleaned.component_type === undefined) {
-        cleaned.component_type = p.componentType;
-    }
-    
-    // ضمان وجود التواريخ
-    if (!cleaned.created_at) cleaned.created_at = new Date().toISOString();
-    if (!cleaned.updated_at) cleaned.updated_at = new Date().toISOString();
-    
-    return cleaned;
+function client() {
+    if (!supabase) throw configurationError();
+    return supabase;
 }
 
-// ============================================
-// دوال المنتجات
-// ============================================
+function throwIfError(error, context) {
+    if (error) {
+        const wrapped = new Error(`${context}: ${error.message}`);
+        wrapped.code = error.code;
+        throw wrapped;
+    }
+}
+
+function withoutSecrets(user) {
+    if (!user) return null;
+    const { password_hash, ...safeUser } = user;
+    return safeUser;
+}
+
+const productFields = ['id', 'type', 'name', 'price', 'brand', 'image', 'description', 'specs', 'stock', 'component_type'];
+function cleanProduct(product) {
+    const clean = {};
+    for (const field of productFields) {
+        if (product[field] !== undefined) clean[field] = product[field];
+    }
+    if (product.componentType !== undefined && clean.component_type === undefined) {
+        clean.component_type = product.componentType;
+    }
+    clean.updated_at = new Date().toISOString();
+    return clean;
+}
 
 async function getProducts() {
-    try {
-        const { data, error } = await supabase
-            .from('products')
-            .select('*')
-            .order('created_at', { ascending: false });
-        
-        if (error) throw error;
-        return data || [];
-    } catch (err) {
-        console.error('🔴 Error inside getProducts:', err);
-        throw new Error(`خطأ في جلب المنتجات: ${err.message || err}`);
-    }
-}
-
-async function getProductById(id) {
-    const { data, error } = await supabase
-        .from('products')
-        .select('*')
-        .eq('id', id)
-        .single();
-    
-    if (error && error.code !== 'PGRST116') {
-        throw new Error(`خطأ في جلب المنتج: ${error.message}`);
-    }
-    return data || null;
-}
-
-async function addProduct(product) {
-    if (!product.id) {
-        product.id = 'prod_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
-    }
-    product.created_at = new Date().toISOString();
-    product.updated_at = new Date().toISOString();
-    
-    const cleaned = cleanProduct(product);
-    
-    const { data, error } = await supabase
-        .from('products')
-        .insert([cleaned])
-        .select();
-    
-    if (error) {
-        console.error('Insert error details:', error);
-        throw new Error(`خطأ في إضافة المنتج: ${error.message}`);
-    }
-    return data && data[0] ? data[0] : null;
-}
-
-async function updateProduct(id, product) {
-    product.updated_at = new Date().toISOString();
-    
-    const cleaned = cleanProduct(product);
-    
-    const { data, error } = await supabase
-        .from('products')
-        .update(cleaned)
-        .eq('id', id)
-        .select();
-    
-    if (error) throw new Error(`خطأ في تحديث المنتج: ${error.message}`);
-    return data && data[0] ? data[0] : null;
-}
-
-async function deleteProduct(id) {
-    const { error } = await supabase
-        .from('products')
-        .delete()
-        .eq('id', id);
-    
-    if (error) throw new Error(`خطأ في حذف المنتج: ${error.message}`);
-    return true;
+    const { data, error } = await client().from('products').select('*').order('created_at', { ascending: false });
+    throwIfError(error, 'تعذر جلب المنتجات');
+    return data || [];
 }
 
 async function replaceAllProducts(products) {
-    const cleanedProducts = products.map(cleanProduct);
-    
-    const { error: deleteError } = await supabase
-        .from('products')
-        .delete()
-        .neq('id', '');
-    
-    if (deleteError) throw new Error(`خطأ في حذف المنتجات: ${deleteError.message}`);
-    
-    if (cleanedProducts && cleanedProducts.length > 0) {
-        const { error: insertError } = await supabase
-            .from('products')
-            .insert(cleanedProducts);
-        
-        if (insertError) {
-            console.error('ReplaceAll insert error:', insertError);
-            throw new Error(`خطأ في إدراج المنتجات: ${insertError.message}`);
-        }
+    const db = client();
+    const cleaned = products.map(cleanProduct);
+    const { error: deleteError } = await db.from('products').delete().not('id', 'is', null);
+    throwIfError(deleteError, 'تعذر حفظ المنتجات');
+    if (cleaned.length) {
+        const { error: insertError } = await db.from('products').insert(cleaned);
+        throwIfError(insertError, 'تعذر حفظ المنتجات');
     }
-    
     return true;
 }
 
-// ============================================
-// دوال الإعدادات
-// ============================================
-
 async function getSettings() {
-    const { data, error } = await supabase
-        .from('settings')
-        .select('value')
-        .eq('key', 'site_settings')
-        .single();
-    
-    if (error && error.code !== 'PGRST116') {
-        throw new Error(`خطأ في جلب الإعدادات: ${error.message}`);
-    }
+    const { data, error } = await client().from('settings').select('value').eq('key', 'site_settings').maybeSingle();
+    throwIfError(error, 'تعذر جلب الإعدادات');
     return data?.value || null;
 }
 
 async function saveSettings(settings) {
-    const { error } = await supabase
-        .from('settings')
-        .upsert({
-            key: 'site_settings',
-            value: settings,
-            updated_at: new Date().toISOString()
-        }, { onConflict: 'key' });
-    
-    if (error) throw new Error(`خطأ في حفظ الإعدادات: ${error.message}`);
+    const { error } = await client().from('settings').upsert({
+        key: 'site_settings', value: settings, updated_at: new Date().toISOString()
+    }, { onConflict: 'key' });
+    throwIfError(error, 'تعذر حفظ الإعدادات');
     return true;
 }
 
-// ============================================
-// دوال الكوبونات
-// ============================================
-
 async function getCoupons() {
-    const { data, error } = await supabase
-        .from('coupons')
-        .select('*')
-        .order('created_at', { ascending: false });
-    
-    if (error) throw new Error(`خطأ في جلب الكوبونات: ${error.message}`);
+    const { data, error } = await client().from('coupons').select('*').order('created_at', { ascending: false });
+    throwIfError(error, 'تعذر جلب الكوبونات');
     return data || [];
 }
 
-async function getCouponByCode(code) {
-    const { data, error } = await supabase
-        .from('coupons')
-        .select('*')
-        .eq('code', code.toUpperCase())
-        .single();
-    
-    if (error && error.code !== 'PGRST116') {
-        throw new Error(`خطأ في جلب الكوبون: ${error.message}`);
-    }
-    return data || null;
-}
-
 async function addCoupon(coupon) {
-    coupon.code = coupon.code.toUpperCase();
-    coupon.created_at = new Date().toISOString();
-    
-    const { data, error } = await supabase
-        .from('coupons')
-        .insert([{
-            code: coupon.code,
-            type: coupon.type,
-            discount: coupon.discount,
-            active: coupon.active,
-            min_order: coupon.min_order || 0,
-            created_at: coupon.created_at
-        }])
-        .select();
-    
-    if (error) throw new Error(`خطأ في إضافة الكوبون: ${error.message}`);
-    return data && data[0] ? data[0] : null;
+    const record = {
+        code: String(coupon.code).trim().toUpperCase(),
+        type: coupon.type,
+        discount: coupon.discount,
+        min_order: coupon.min_order ?? coupon.minOrder ?? 0,
+        expires_at: coupon.expires_at || null,
+        active: coupon.active !== false
+    };
+    const { data, error } = await client().from('coupons').insert(record).select().single();
+    throwIfError(error, 'تعذر إضافة الكوبون');
+    return data;
 }
 
 async function deleteCoupon(code) {
-    const { error } = await supabase
-        .from('coupons')
-        .delete()
-        .eq('code', code.toUpperCase());
-    
-    if (error) throw new Error(`خطأ في حذف الكوبون: ${error.message}`);
+    const { error } = await client().from('coupons').delete().eq('code', String(code).toUpperCase());
+    throwIfError(error, 'تعذر حذف الكوبون');
     return true;
 }
 
-// ============================================
-// دوال المشتركين
-// ============================================
+async function createOrder(order) {
+    const { data, error } = await client().rpc('create_store_order', {
+        p_customer_name: order.customer_name,
+        p_customer_phone: order.customer_phone,
+        p_customer_address: order.customer_address || null,
+        p_notes: order.notes || null,
+        p_payment_method: order.payment_method,
+        p_items: order.items,
+        p_coupon: order.coupon || null
+    });
+    throwIfError(error, 'تعذر إنشاء الطلب');
+    return data;
+}
+
+async function getOrders() {
+    const { data, error } = await client().from('orders').select('*').order('created_at', { ascending: false });
+    throwIfError(error, 'تعذر جلب الطلبات');
+    return data || [];
+}
+
+async function updateOrderStatus(id, status) {
+    const { data, error } = await client().from('orders').update({ status, updated_at: new Date().toISOString() }).eq('id', id).select().single();
+    throwIfError(error, 'تعذر تحديث حالة الطلب');
+    return data;
+}
 
 async function getSubscribers() {
-    const { data, error } = await supabase
-        .from('subscribers')
-        .select('*')
-        .order('created_at', { ascending: false });
-    
-    if (error) throw new Error(`خطأ في جلب المشتركين: ${error.message}`);
+    const { data, error } = await client().from('subscribers').select('*').order('created_at', { ascending: false });
+    throwIfError(error, 'تعذر جلب المشتركين');
     return data || [];
 }
 
 async function addSubscriber(email) {
-    const { data: existing, error: checkError } = await supabase
-        .from('subscribers')
-        .select('email')
-        .eq('email', email)
-        .single();
-    
-    if (checkError && checkError.code !== 'PGRST116') {
-        throw new Error(`خطأ في التحقق من المشترك: ${checkError.message}`);
-    }
-    
-    if (existing) {
-        return { success: true, message: 'البريد موجود بالفعل', alreadyExists: true };
-    }
-    
-    const { data, error } = await supabase
-        .from('subscribers')
-        .insert([{ email, created_at: new Date().toISOString() }])
-        .select();
-    
-    if (error) throw new Error(`خطأ في إضافة المشترك: ${error.message}`);
-    return { success: true, data: data && data[0] ? data[0] : null };
+    const { error } = await client().from('subscribers').upsert({ email, created_at: new Date().toISOString() }, { onConflict: 'email', ignoreDuplicates: true });
+    throwIfError(error, 'تعذر حفظ الاشتراك');
+    return { success: true };
 }
 
 async function deleteSubscriber(email) {
-    const { error } = await supabase
-        .from('subscribers')
-        .delete()
-        .eq('email', email);
-    
-    if (error) throw new Error(`خطأ في حذف المشترك: ${error.message}`);
+    const query = client().from('subscribers').delete();
+    const { error } = email === 'all' ? await query.not('email', 'is', null) : await query.eq('email', email);
+    throwIfError(error, 'تعذر حذف المشترك');
     return true;
 }
 
-async function clearAllSubscribers() {
-    const { error } = await supabase
-        .from('subscribers')
-        .delete()
-        .neq('email', '');
-    
-    if (error) throw new Error(`خطأ في حذف جميع المشتركين: ${error.message}`);
-    return true;
+async function getUserByUsername(username) {
+    const { data, error } = await client().from('admin_users').select('*').eq('username', username).maybeSingle();
+    throwIfError(error, 'تعذر التحقق من الحساب');
+    return data || null;
 }
 
-// ============================================
-// دوال الطلبات
-// ============================================
+async function getUserById(id) {
+    const { data, error } = await client().from('admin_users').select('*').eq('id', id).maybeSingle();
+    throwIfError(error, 'تعذر التحقق من الحساب');
+    return data || null;
+}
 
-async function getOrders() {
-    const { data, error } = await supabase
-        .from('orders')
-        .select('*')
+async function updateUserLogin(id) {
+    const { error } = await client().from('admin_users').update({ last_login_at: new Date().toISOString() }).eq('id', id);
+    throwIfError(error, 'تعذر تحديث جلسة الحساب');
+}
+
+async function listUsers() {
+    const { data, error } = await client().from('admin_users')
+        .select('id, username, display_name, role, is_active, created_at, updated_at, last_login_at')
         .order('created_at', { ascending: false });
-    
-    if (error) throw new Error(`خطأ في جلب الطلبات: ${error.message}`);
+    throwIfError(error, 'تعذر جلب المستخدمين');
     return data || [];
 }
 
-async function addOrder(order) {
-    order.created_at = new Date().toISOString();
-    
-    const { data, error } = await supabase
-        .from('orders')
-        .insert([{
-            id: order.id,
-            items: order.items,
-            total: order.total,
-            coupon: order.coupon,
-            created_at: order.created_at
-        }])
-        .select();
-    
-    if (error) throw new Error(`خطأ في إضافة الطلب: ${error.message}`);
-    return data && data[0] ? data[0] : null;
+async function createUser(user) {
+    const { data, error } = await client().from('admin_users').insert({
+        username: user.username,
+        display_name: user.display_name,
+        role: user.role,
+        password_hash: user.password_hash,
+        is_active: true
+    }).select('id, username, display_name, role, is_active, created_at, updated_at, last_login_at').single();
+    throwIfError(error, 'تعذر إنشاء المستخدم');
+    return data;
 }
 
-async function deleteOrder(id) {
-    const { error } = await supabase
-        .from('orders')
-        .delete()
-        .eq('id', id);
-    
-    if (error) throw new Error(`خطأ في حذف الطلب: ${error.message}`);
-    return true;
+async function updateUser(id, changes) {
+    const { data, error } = await client().from('admin_users').update({ ...changes, updated_at: new Date().toISOString() })
+        .eq('id', id).select('id, username, display_name, role, is_active, created_at, updated_at, last_login_at').single();
+    throwIfError(error, 'تعذر تحديث المستخدم');
+    return data;
 }
 
-async function clearAllOrders() {
-    const { error } = await supabase
-        .from('orders')
-        .delete()
-        .neq('id', '');
-    
-    if (error) throw new Error(`خطأ في مسح الطلبات: ${error.message}`);
-    return true;
+async function getDashboardStats() {
+    const db = client();
+    const [products, orders, subscribers, subscriptions, recentOrders] = await Promise.all([
+        db.from('products').select('*', { count: 'exact', head: true }),
+        db.from('orders').select('*', { count: 'exact', head: true }),
+        db.from('subscribers').select('*', { count: 'exact', head: true }),
+        db.from('subscriptions').select('*', { count: 'exact', head: true }),
+        db.from('orders').select('id, customer_name, total, status, created_at').order('created_at', { ascending: false }).limit(5)
+    ]);
+    for (const result of [products, orders, subscribers, subscriptions, recentOrders]) throwIfError(result.error, 'تعذر جلب إحصاءات لوحة التحكم');
+    return {
+        products: products.count || 0,
+        orders: orders.count || 0,
+        subscribers: subscribers.count || 0,
+        subscriptions: subscriptions.count || 0,
+        recentOrders: recentOrders.data || []
+    };
 }
 
-// ============================================
-// دوال جلسات المدير
-// ============================================
-
-async function saveAdminSession(sessionToken, expiresAt) {
-    const { error } = await supabase
-        .from('admin_sessions')
-        .upsert({
-            token: sessionToken,
-            expires_at: new Date(expiresAt).toISOString(),
-            created_at: new Date().toISOString()
-        }, { onConflict: 'token' });
-    
-    if (error) throw new Error(`خطأ في حفظ جلسة المدير: ${error.message}`);
-    return true;
+async function listSubscriptions() {
+    const { data, error } = await client().from('subscriptions').select('*').order('created_at', { ascending: false });
+    throwIfError(error, 'تعذر جلب الاشتراكات');
+    return data || [];
 }
 
-async function verifyAdminSession(sessionToken) {
-    const { data, error } = await supabase
-        .from('admin_sessions')
-        .select('*')
-        .eq('token', sessionToken)
-        .single();
-    
-    if (error && error.code !== 'PGRST116') {
-        throw new Error(`خطأ في التحقق من جلسة المدير: ${error.message}`);
+async function createSubscription(subscription) {
+    const { data, error } = await client().from('subscriptions').insert(subscription).select().single();
+    throwIfError(error, 'تعذر إنشاء الاشتراك');
+    return data;
+}
+
+async function getSubscription(id) {
+    const { data, error } = await client().from('subscriptions').select('*').eq('id', id).maybeSingle();
+    throwIfError(error, 'تعذر جلب الاشتراك');
+    return data || null;
+}
+
+async function updateSubscription(id, changes) {
+    const { data, error } = await client().from('subscriptions').update({ ...changes, updated_at: new Date().toISOString() }).eq('id', id).select().single();
+    throwIfError(error, 'تعذر تحديث الاشتراك');
+    return data;
+}
+
+async function verifyActivation(activationKey, domain) {
+    const keyHash = require('crypto').createHash('sha256').update(activationKey).digest('hex');
+    const { data, error } = await client().from('subscriptions')
+        .select('*').eq('activation_key_hash', keyHash).eq('domain', domain).maybeSingle();
+    throwIfError(error, 'تعذر التحقق من التفعيل');
+    if (!data) return { valid: false, status: 'not_found' };
+    const expired = data.expires_at && new Date(data.expires_at) < new Date();
+    const valid = data.status === 'active' && !expired;
+    if (valid) {
+        await updateSubscription(data.id, {
+            last_activated_at: new Date().toISOString(),
+            activation_count: Number(data.activation_count || 0) + 1
+        });
     }
-    
-    if (!data) return false;
-    if (new Date(data.expires_at) < new Date()) return false;
-    return true;
+    return { valid, status: expired ? 'expired' : data.status, expires_at: data.expires_at, client_name: data.client_name };
 }
 
-async function deleteAdminSession(sessionToken) {
-    const { error } = await supabase
-        .from('admin_sessions')
-        .delete()
-        .eq('token', sessionToken);
-    
-    if (error) throw new Error(`خطأ في حذف جلسة المدير: ${error.message}`);
-    return true;
+async function addSubscriptionEvent(subscriptionId, action, actorId, metadata = {}) {
+    const { error } = await client().from('subscription_events').insert({
+        subscription_id: subscriptionId, action, actor_id: actorId || null, metadata
+    });
+    throwIfError(error, 'تعذر حفظ سجل الاشتراك');
 }
-
-async function cleanExpiredSessions() {
-    const { error } = await supabase
-        .from('admin_sessions')
-        .delete()
-        .lt('expires_at', new Date().toISOString());
-    
-    if (error) throw new Error(`خطأ في تنظيف الجلسات: ${error.message}`);
-    return true;
-}
-
-// ============================================
-// تصدير الدوال
-// ============================================
 
 module.exports = {
+    configured,
+    supabase,
+    withoutSecrets,
     getProducts,
-    getProductById,
-    addProduct,
-    updateProduct,
-    deleteProduct,
     replaceAllProducts,
     getSettings,
     saveSettings,
     getCoupons,
-    getCouponByCode,
     addCoupon,
     deleteCoupon,
+    createOrder,
+    getOrders,
+    updateOrderStatus,
     getSubscribers,
     addSubscriber,
     deleteSubscriber,
-    clearAllSubscribers,
-    getOrders,
-    addOrder,
-    deleteOrder,
-    clearAllOrders,
-    saveAdminSession,
-    verifyAdminSession,
-    deleteAdminSession,
-    cleanExpiredSessions,
-    supabase
+    getUserByUsername,
+    getUserById,
+    updateUserLogin,
+    listUsers,
+    createUser,
+    updateUser,
+    getDashboardStats,
+    listSubscriptions,
+    createSubscription,
+    getSubscription,
+    updateSubscription,
+    verifyActivation,
+    addSubscriptionEvent
 };
