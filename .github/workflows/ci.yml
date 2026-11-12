@@ -23,5 +23,6 @@ jobs:
         run: npm audit --omit=dev --audit-level=high
       - name: Secrets scan
         run: |
-          ! grep -rnE "[0-9]{8,12}:[A-Za-z0-9_-]{25,}|eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9|service_role[[:space:]]*[:=][[:space:]]*['\"]" \
-            --exclude-dir=node_modules --exclude-dir=.git --exclude='.env.example' .
+          matches="$(grep -rnE "[0-9]{8,12}:[A-Za-z0-9_-]{25,}|eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9|service_role[[:space:]]*[:=][[:space:]]*['\"]" \
+            --exclude-dir=node_modules --exclude-dir=.git --exclude='.env.example' . | grep -v '^./.github/workflows/ci.yml:' || true)"
+          test -z "$matches" || { echo "$matches"; exit 1; }
