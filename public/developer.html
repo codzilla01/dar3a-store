@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="theme-color" content="#0d1321">
+  <title>Dar3a Store | بوابة المطور</title>
+  <link rel="icon" href="images/logo.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    :root{--bg:#0d1321;--panel:#161f31;--panel2:#1c2940;--line:#2c3b56;--ink:#edf4ff;--muted:#9aaac2;--accent:#e63946;--green:#2dd4a7;--yellow:#fbbf24;--blue:#60a5fa;--danger:#fb7185}*{box-sizing:border-box}body{margin:0;font-family:Tajawal,Arial,sans-serif;background:radial-gradient(circle at 80% 0,#24385c 0,var(--bg) 43%);color:var(--ink);min-height:100vh}.shell{max-width:1360px;margin:auto;padding:28px}.top{display:flex;justify-content:space-between;align-items:center;gap:18px;margin-bottom:28px}.brand{display:flex;gap:12px;align-items:center}.brand-icon{width:48px;height:48px;border-radius:15px;background:linear-gradient(135deg,var(--accent),#fb7185);display:grid;place-items:center;font-size:22px}.brand h1{font-size:1.35rem;margin:0}.brand p{margin:3px 0 0;color:var(--muted);font-size:.82rem}.chip{border:1px solid var(--line);padding:7px 12px;border-radius:999px;font-size:.78rem;color:var(--muted)}.grid{display:grid;grid-template-columns:360px 1fr;gap:22px}.panel{background:rgba(22,31,49,.93);border:1px solid var(--line);border-radius:20px;padding:22px;box-shadow:0 20px 50px rgba(0,0,0,.2)}h2{margin:0 0 6px;font-size:1.15rem}p.lead{margin:0 0 20px;color:var(--muted);font-size:.84rem}.field{display:grid;gap:7px;margin:0 0 14px}.field label{font-size:.8rem;color:#c7d5ea}.field input,.field textarea{font:inherit;color:var(--ink);background:#111a2a;border:1px solid var(--line);border-radius:10px;padding:11px 12px;outline:none;width:100%}.field input:focus,.field textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(96,165,250,.13)}.btn{border:0;border-radius:10px;padding:11px 15px;font:700 .82rem Tajawal;cursor:pointer;color:#fff;background:linear-gradient(135deg,var(--accent),#fb7185)}.btn:disabled{opacity:.6;cursor:not-allowed}.btn.outline{border:1px solid var(--line);background:transparent;color:var(--ink)}.btn.green{background:linear-gradient(135deg,#059669,var(--green));color:#052e26}.btn.warn{background:linear-gradient(135deg,#b45309,var(--yellow));color:#291300}.actions{display:flex;gap:7px;flex-wrap:wrap}.summary{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:0 0 18px}.metric{border:1px solid var(--line);background:rgba(10,16,29,.4);border-radius:13px;padding:13px}.metric strong{font-size:1.35rem;display:block}.metric span{font-size:.72rem;color:var(--muted)}.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:14px}table{width:100%;border-collapse:collapse;min-width:850px}th,td{padding:13px;text-align:right;border-bottom:1px solid var(--line);font-size:.82rem}th{background:#101929;color:#b8c7dd;font-weight:700}tr:last-child td{border:0}.domain{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;direction:ltr;text-align:left}.status{font-size:.72rem;border-radius:999px;padding:4px 8px;display:inline-block}.active{background:rgba(45,212,167,.15);color:var(--green)}.pending{background:rgba(251,191,36,.15);color:var(--yellow)}.suspended,.revoked{background:rgba(251,113,133,.15);color:var(--danger)}.empty{padding:42px;text-align:center;color:var(--muted)}.notice{display:none;margin:0 0 16px;padding:12px;border-radius:10px;font-size:.84rem}.notice.show{display:block}.notice.error{display:block;background:rgba(251,113,133,.13);border:1px solid rgba(251,113,133,.3);color:#fecdd3}.notice.success{display:block;background:rgba(45,212,167,.11);border:1px solid rgba(45,212,167,.28);color:#bbf7e8}.login{position:fixed;inset:0;z-index:10;background:rgba(6,10,18,.95);display:grid;place-items:center;padding:20px}.login.hidden{display:none}.login .panel{max-width:410px;width:100%;text-align:center}.login .field{text-align:right}.activation-key{direction:ltr;font-family:ui-monospace,monospace;font-weight:800;letter-spacing:.03em;word-break:break-all;background:#101929;border:1px dashed var(--green);padding:12px;border-radius:10px;margin-top:10px}.footer{color:var(--muted);font-size:.76rem;margin-top:18px;text-align:center}@media(max-width:900px){.grid{grid-template-columns:1fr}.summary{grid-template-columns:repeat(2,1fr)}.shell{padding:16px}.top{align-items:flex-start;flex-direction:column}}
+  </style>
+</head>
+<body>
+  <div class="login" id="login-layer">
+    <form class="panel" id="login-form">
+      <div class="brand" style="justify-content:center;margin-bottom:16px"><div class="brand-icon"><i class="fa-solid fa-code"></i></div></div>
+      <h2>بوابة المطور</h2><p class="lead">إدارة التفعيلات والاشتراكات السنوية</p>
+      <div class="notice" id="login-notice" role="alert"></div>
+      <div class="field"><label for="username">اسم المستخدم</label><input id="username" autocomplete="username" required minlength="3" maxlength="64"></div>
+      <div class="field"><label for="password">كلمة المرور</label><input id="password" type="password" autocomplete="current-password" required minlength="12" maxlength="128"></div>
+      <button class="btn" type="submit" style="width:100%"><i class="fa-solid fa-right-to-bracket"></i> دخول آمن</button>
+    </form>
+  </div>
+  <main class="shell">
+    <header class="top">
+      <div class="brand"><div class="brand-icon"><i class="fa-solid fa-code"></i></div><div><h1>بوابة المطور</h1><p>متابعة تراخيص Dar3a Store السنوية والتفعيل</p></div></div>
+      <div class="actions"><span class="chip" id="user-chip">—</span><a class="btn outline" href="admin.html" id="admin-link" hidden><i class="fa-solid fa-shield-halved"></i> Super Admin</a><button class="btn outline" id="logout"><i class="fa-solid fa-arrow-right-from-bracket"></i> خروج</button></div>
+    </header>
+    <div class="notice" id="notice" role="status"></div>
+    <section class="grid">
+      <aside class="panel">
+        <h2><i class="fa-solid fa-plus-circle"></i> اشتراك سنوي جديد</h2>
+        <p class="lead">يُنشأ السجل بحالة معلّق. فعّله بعد استلام الدفعة ثم احفظ المفتاح مرة واحدة.</p>
+        <form id="subscription-form">
+          <div class="field"><label for="client-name">اسم العميل / الشركة *</label><input id="client-name" required maxlength="160"></div>
+          <div class="field"><label for="domain">النطاق *</label><input id="domain" placeholder="store.example.com" required maxlength="253" dir="ltr"></div>
+          <div class="field"><label for="contact-name">جهة الاتصال</label><input id="contact-name" maxlength="160"></div>
+          <div class="field"><label for="contact-email">البريد الإلكتروني</label><input id="contact-email" type="email" maxlength="254"></div>
+          <div class="field"><label for="contact-phone">الهاتف / واتساب</label><input id="contact-phone" maxlength="25" inputmode="tel"></div>
+          <div class="field"><label for="notes">ملاحظات</label><textarea id="notes" rows="3" maxlength="2000"></textarea></div>
+          <button class="btn" type="submit" style="width:100%"><i class="fa-solid fa-file-circle-plus"></i> حفظ اشتراك معلّق</button>
+        </form>
+      </aside>
+      <section class="panel">
+        <div class="top" style="margin-bottom:18px"><div><h2>سجل التفعيلات والاشتراكات</h2><p class="lead" style="margin:5px 0 0">التفعيل يمنح العميل سنة واحدة ويعرض المفتاح مرة واحدة فقط.</p></div><button class="btn outline" id="refresh"><i class="fa-solid fa-rotate"></i> تحديث</button></div>
+        <div class="summary"><div class="metric"><strong id="total-count">0</strong><span>كل الاشتراكات</span></div><div class="metric"><strong id="active-count">0</strong><span>نشطة</span></div><div class="metric"><strong id="pending-count">0</strong><span>معلّقة</span></div><div class="metric"><strong id="expiring-count">0</strong><span>تنتهي خلال 30 يوم</span></div></div>
+        <div class="table-wrap"><table><thead><tr><th>العميل / النطاق</th><th>الحالة</th><th>انتهاء الاشتراك</th><th>آخر تفعيل</th><th>عدد التحقق</th><th>إجراءات</th></tr></thead><tbody id="subscriptions"><tr><td colspan="6" class="empty">جارٍ تحميل السجل...</td></tr></tbody></table></div>
+        <div id="key-result"></div>
+      </section>
+    </section>
+    <p class="footer">المفاتيح تحفظ في قاعدة البيانات بصيغة hash فقط. لا تشارك مفتاح التفعيل عبر قناة غير موثوقة.</p>
+  </main>
+  <script>
+    let currentUser=null, subscriptions=[];
+    const $=id=>document.getElementById(id);
+    const escapeHtml=value=>String(value??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');
+    async function api(url, options={}){const response=await fetch(url,{...options,credentials:'same-origin',headers:{'Content-Type':'application/json',...(options.headers||{})}});const data=await response.json().catch(()=>({}));if(!response.ok)throw new Error(data.error||'فشل الاتصال بالخادم.');return data}
+    function notice(message,type='success',target='notice'){const el=$(target);el.textContent=message;el.className='notice '+type;setTimeout(()=>{if(el.textContent===message)el.className='notice'},6500)}
+    function date(value){return value?new Date(value).toLocaleString('ar-EG',{dateStyle:'medium',timeStyle:'short'}):'—'}
+    function statusLabel(status){return {active:'نشط',pending:'معلّق',suspended:'موقوف',revoked:'ملغى'}[status]||status}
+    function render(){const now=Date.now(),in30=now+30*864e5;$('total-count').textContent=subscriptions.length;$('active-count').textContent=subscriptions.filter(s=>s.status==='active'&&(!s.expires_at||new Date(s.expires_at)>new Date())).length;$('pending-count').textContent=subscriptions.filter(s=>s.status==='pending').length;$('expiring-count').textContent=subscriptions.filter(s=>s.expires_at&&new Date(s.expires_at).getTime()>now&&new Date(s.expires_at).getTime()<in30).length;const tbody=$('subscriptions');if(!subscriptions.length){tbody.innerHTML='<tr><td colspan="6" class="empty">لا توجد اشتراكات حتى الآن.</td></tr>';return}tbody.innerHTML=subscriptions.map(s=>`<tr><td><strong>${escapeHtml(s.client_name)}</strong><div class="domain">${escapeHtml(s.domain)}</div></td><td><span class="status ${escapeHtml(s.status)}">${escapeHtml(statusLabel(s.status))}</span></td><td>${date(s.expires_at)}</td><td>${date(s.last_activated_at)}</td><td>${Number(s.activation_count||0)}</td><td><div class="actions">${s.status==='pending'?`<button class="btn green" data-action="activate" data-id="${s.id}">تفعيل</button>`:''}${s.status==='active'?`<button class="btn warn" data-action="renew" data-id="${s.id}">تجديد سنة</button><button class="btn outline" data-action="suspend" data-id="${s.id}">إيقاف</button>`:''}${s.status==='suspended'?`<button class="btn green" data-action="renew" data-id="${s.id}">إعادة وتنشيط</button>`:''}${s.status!=='revoked'?`<button class="btn outline" data-action="revoke" data-id="${s.id}">إلغاء</button>`:''}</div></td></tr>`).join('');tbody.querySelectorAll('button[data-action]').forEach(button=>button.addEventListener('click',()=>action(button.dataset.id,button.dataset.action)))}
+    async function load(){try{subscriptions=await api('/api/developer/subscriptions');render()}catch(error){notice(error.message,'error')}}
+    async function action(id,actionName){if(!confirm(`هل تريد تنفيذ إجراء: ${actionName}؟`))return;try{const result=await api(`/api/developer/subscriptions/${encodeURIComponent(id)}/action`,{method:'POST',body:JSON.stringify({action:actionName})});if(result.activationKey){$('key-result').innerHTML=`<div class="notice success show">⚠️ احفظ مفتاح التفعيل الآن؛ لن يظهر مرة أخرى:<div class="activation-key">${escapeHtml(result.activationKey)}</div></div>`;navigator.clipboard?.writeText(result.activationKey)}notice('تم حفظ التحديث.');await load()}catch(error){notice(error.message,'error')}}
+    async function login(event){event.preventDefault();try{const result=await api('/api/auth/login',{method:'POST',body:JSON.stringify({username:$('username').value,password:$('password').value})});if(!['developer','super_admin'].includes(result.user.role)){await api('/api/auth/logout',{method:'POST'});throw new Error('هذا الحساب لا يملك صلاحية بوابة المطور.')}currentUser=result.user;$('login-layer').classList.add('hidden');setup();await load()}catch(error){notice(error.message,'error','login-notice')}}
+    async function restore(){try{const result=await api('/api/auth/me');if(!['developer','super_admin'].includes(result.user.role))return;currentUser=result.user;$('login-layer').classList.add('hidden');setup();await load()}catch(error){/* The login layer stays visible. */}}
+    function setup(){$('user-chip').textContent=`${currentUser.display_name||currentUser.username} • ${currentUser.role==='super_admin'?'Super Admin':'Developer'}`;$('admin-link').hidden=currentUser.role!=='super_admin'}
+    $('login-form').addEventListener('submit',login);$('refresh').addEventListener('click',load);$('logout').addEventListener('click',async()=>{await api('/api/auth/logout',{method:'POST'});location.reload()});$('subscription-form').addEventListener('submit',async event=>{event.preventDefault();try{await api('/api/developer/subscriptions',{method:'POST',body:JSON.stringify({client_name:$('client-name').value,domain:$('domain').value,contact_name:$('contact-name').value,contact_email:$('contact-email').value,contact_phone:$('contact-phone').value,notes:$('notes').value})});event.target.reset();notice('تم إنشاء الاشتراك بحالة معلّق.');await load()}catch(error){notice(error.message,'error')}});restore();
+  </script>
+</body>
+</html>
