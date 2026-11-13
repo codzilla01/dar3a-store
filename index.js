@@ -7,6 +7,12 @@ const { rateLimit } = require('express-rate-limit');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
+const {
+    generateRegistrationOptions,
+    verifyRegistrationResponse,
+    generateAuthenticationOptions,
+    verifyAuthenticationResponse
+} = require('@simplewebauthn/server');
 
 const production = process.env.NODE_ENV === 'production';
 const allowDemoMode = !production && process.env.ALLOW_DEMO_MODE === 'true';
@@ -94,6 +100,60 @@ function sessionCookieOptions() {
         path: '/',
         maxAge: 8 * 60 * 60 * 1000
     };
+}
+
+function webAuthnCookieOptions() {
+    return {
+        httpOnly: true,
+        secure: production,
+        sameSite: 'strict',
+        path: '/api/auth/webauthn',
+        maxAge: 5 * 60 * 1000
+    };
+}
+
+function getWebAuthnConfig(req) {
+    const rpID = (process.env.WEBAUTHN_RP_ID?.trim() || req.hostname).toLowerCase();
+    const expectedOrigin = process.env.WEBAUTHN_ORIGIN?.trim() || `${req.protocol}://${req.get('host')}`;
+    if (production && (!process.env.WEBAUTHN_RP_ID || !process.env.WEBAUTHN_ORIGIN)) {
+        throw publicError('إعداد البصمة غير مكتمل في بيئة الإنتاج.', 503);
+    }
+    try {
+        const origin = new URL(expectedOrigin);
+        const originHost = origin.hostname.toLowerCase();
+        const originIsExact = origin.origin === expectedOrigin;
+        const rpMatchesOrigin = originHost === rpID || originHost.endsWith(`.${rpID}`);
+        if (!rpID || !originIsExact || !rpMatchesOrigin || !['http:', 'https:'].includes(origin.protocol) || (production && origin.protocol !== 'https:')) {
+            throw new Error('invalid WebAuthn configuration');
+        }
+    } catch (error) {
+        throw publicError('إعداد البصمة غير صحيح. راجع نطاق RP والأصل HTTPS.', 503);
+    }
+    return { rpID, expectedOrigin, rpName: process.env.WEBAUTHN_RP_NAME?.trim() || 'Dar3a Store' };
+}
+
+function createWebAuthnChallenge(res, action, userId, challenge) {
+    const token = jwt.sign({ action, userId, challenge }, JWT_SECRET, {
+        algorithm: 'HS256', issuer: 'dar3a-store', audience: 'dar3a-webauthn', expiresIn: '5m'
+    });
+    res.cookie('dar3a_webauthn', token, webAuthnCookieOptions());
+}
+
+function readWebAuthnChallenge(req, action) {
+    try {
+        const token = parseCookies(req.headers.cookie).dar3a_webauthn;
+        if (!token) throw publicError('انتهت جلسة البصمة. حاول مرة أخرى.', 401);
+        const payload = jwt.verify(token, JWT_SECRET, { algorithms: ['HS256'], issuer: 'dar3a-store', audience: 'dar3a-webauthn' });
+        if (payload.action !== action || !payload.userId || !payload.challenge) throw publicError('جلسة البصمة غير صالحة.', 401);
+        return payload;
+    } catch (error) {
+        if (error.public) throw error;
+        throw publicError('جلسة البصمة غير صالحة.', 401);
+    }
+}
+
+function clearWebAuthnChallenge(res) {
+    res.clearCookie('dar3a_webauthn', { httpOnly: true, secure: production, sameSite: 'strict', path: '/api/auth/webauthn' });
 }
 
 function canonicalUsername(value) {
@@ -310,6 +370,126 @@ app.post('/api/auth/login', authLimiter, async (req, res, next) => {
         res.json({ success: true, user: db.withoutSecrets ? db.withoutSecrets(user) : { id: user.id, username: user.username, role: user.role, display_name: user.display_name } });
     } catch (error) { next(error); }
 });
+// WebAuthn platform authenticators use the device's biometric/PIN system. Only
+// Developer accounts can register and use a biometric credential.
+app.post('/api/auth/webauthn/register/options', requireAuth, requireRole('developer'), async (req, res, next) => {
+    try {
+        const config = getWebAuthnConfig(req);
+        const credentials = await db.listWebAuthnCredentials(req.user.id);
+        const options = await generateRegistrationOptions({
+            rpName: config.rpName,
+            rpID: config.rpID,
+            userName: req.user.username,
+            userID: new TextEncoder().encode(req.user.id),
+            userDisplayName: req.user.display_name || req.user.username,
+            attestationType: 'none',
+            timeout: 60000,
+            excludeCredentials: credentials.map((credential) => ({ id: credential.credential_id, transports: credential.transports || [] })),
+            authenticatorSelection: {
+                authenticatorAttachment: 'platform',
+                residentKey: 'required',
+                userVerification: 'required'
+            }
+        });
+        createWebAuthnChallenge(res, 'register', req.user.id, options.challenge);
+        res.json(options);
+    } catch (error) { next(error); }
+});
+app.post('/api/auth/webauthn/register/verify', requireAuth, requireRole('developer'), async (req, res, next) => {
+    try {
+        const ceremony = readWebAuthnChallenge(req, 'register');
+        clearWebAuthnChallenge(res);
+        if (ceremony.userId !== req.user.id) throw publicError('جلسة البصمة لا تخص هذا الحساب.', 403);
+        const config = getWebAuthnConfig(req);
+        let verification;
+        try {
+            verification = await verifyRegistrationResponse({
+                response: req.body.response,
+                expectedChallenge: ceremony.challenge,
+                expectedOrigin: config.expectedOrigin,
+                expectedRPID: config.rpID,
+                requireUserVerification: true
+            });
+        } catch (error) {
+            throw publicError('تعذر التحقق من بصمة الجهاز.', 400);
+        }
+        if (!verification.verified || !verification.registrationInfo) throw publicError('تعذر التحقق من بصمة الجهاز.', 400);
+        const { credential, credentialDeviceType, credentialBackedUp } = verification.registrationInfo;
+        const saved = await db.saveWebAuthnCredential({
+            user_id: req.user.id,
+            credential_id: credential.id,
+            public_key: Buffer.from(credential.publicKey).toString('base64url'),
+            counter: credential.counter,
+            transports: Array.isArray(req.body.response?.response?.transports) ? req.body.response.response.transports : [],
+            device_type: credentialDeviceType,
+            backed_up: credentialBackedUp,
+            name: cleanText(req.body.name || 'بصمة هذا الجهاز', 'اسم الجهاز', { max: 80 }) || 'بصمة هذا الجهاز'
+        });
+        res.status(201).json({ success: true, credential: saved });
+    } catch (error) { next(error); }
+});
+app.post('/api/auth/webauthn/authenticate/options', authLimiter, async (req, res, next) => {
+    try {
+        const username = canonicalUsername(req.body.username);
+        const user = await db.getUserByUsername(username);
+        if (!user || !user.is_active || user.role !== 'developer') throw publicError('بيانات دخول البصمة غير متاحة لهذا الحساب.', 401);
+        const config = getWebAuthnConfig(req);
+        const credentials = await db.listWebAuthnCredentials(user.id);
+        if (!credentials.length) throw publicError('لا توجد بصمة مسجلة لهذا الحساب. سجلها أولاً من لوحة المطور.', 401);
+        const options = await generateAuthenticationOptions({
+            rpID: config.rpID,
+            timeout: 60000,
+            userVerification: 'required',
+            allowCredentials: credentials.map((credential) => ({ id: credential.credential_id, transports: credential.transports || [] }))
+        });
+        createWebAuthnChallenge(res, 'authenticate', user.id, options.challenge);
+        res.json(options);
+    } catch (error) { next(error); }
+});
+app.post('/api/auth/webauthn/authenticate/verify', authLimiter, async (req, res, next) => {
+    try {
+        const ceremony = readWebAuthnChallenge(req, 'authenticate');
+        clearWebAuthnChallenge(res);
+        const credentialId = cleanText(req.body.response?.id, 'معرف البصمة', { required: true, max: 2048 });
+        const credential = await db.getWebAuthnCredential(credentialId);
+        if (!credential || credential.user_id !== ceremony.userId) throw publicError('بصمة الجهاز غير معروفة.', 401);
+        const user = await db.getUserById(ceremony.userId);
+        if (!user || !user.is_active || user.role !== 'developer') throw publicError('الحساب غير متاح لدخول البصمة.', 401);
+        const config = getWebAuthnConfig(req);
+        let verification;
+        try {
+            verification = await verifyAuthenticationResponse({
+                response: req.body.response,
+                expectedChallenge: ceremony.challenge,
+                expectedOrigin: config.expectedOrigin,
+                expectedRPID: config.rpID,
+                credential: {
+                    id: credential.credential_id,
+                    publicKey: new Uint8Array(Buffer.from(credential.public_key, 'base64url')),
+                    counter: Number(credential.counter),
+                    transports: credential.transports || []
+                },
+                requireUserVerification: true
+            });
+        } catch (error) {
+            throw publicError('تعذر التحقق من بصمة الجهاز.', 401);
+        }
+        if (!verification.verified) throw publicError('تعذر التحقق من بصمة الجهاز.', 401);
+        await db.updateWebAuthnCredential(credential.credential_id, verification.authenticationInfo.newCounter);
+        res.cookie('dar3a_session', signSession(user), sessionCookieOptions());
+        res.json({ success: true, user: db.withoutSecrets ? db.withoutSecrets(user) : { id: user.id, username: user.username, role: user.role, display_name: user.display_name } });
+    } catch (error) { next(error); }
+});
+app.get('/api/auth/webauthn/credentials', requireAuth, requireRole('developer'), async (req, res, next) => {
+    try { res.json(await db.listWebAuthnCredentials(req.user.id)); } catch (error) { next(error); }
+});
+app.delete('/api/auth/webauthn/credentials/:credentialId', requireAuth, requireRole('developer'), async (req, res, next) => {
+    try {
+        await db.deleteWebAuthnCredential(req.user.id, cleanText(req.params.credentialId, 'معرف البصمة', { required: true, max: 2048 }));
+        res.json({ success: true });
+    } catch (error) { next(error); }
+});
+
 app.post('/api/auth/change-password', requireAuth, async (req, res, next) => {
     try {
         const currentPassword = String(req.body.currentPassword || '');

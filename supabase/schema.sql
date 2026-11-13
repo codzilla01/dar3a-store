@@ -95,6 +95,22 @@ update public.admin_users set role = 'developer' where role = 'super_admin';
 alter table public.admin_users drop constraint if exists admin_users_role_check;
 alter table public.admin_users add constraint admin_users_role_check check (role in ('developer', 'admin'));
 
+-- Developer device biometrics / passkeys (WebAuthn). Public keys only; no
+-- biometric material ever leaves the user device or is stored in this table.
+create table if not exists public.webauthn_credentials (
+    credential_id text primary key,
+    user_id uuid not null references public.admin_users(id) on delete cascade,
+    public_key text not null,
+    counter bigint not null default 0,
+    transports jsonb not null default '[]'::jsonb,
+    device_type text,
+    backed_up boolean not null default false,
+    name text,
+    created_at timestamptz not null default now(),
+    last_used_at timestamptz
+);
+create index if not exists webauthn_credentials_user_idx on public.webauthn_credentials (user_id, created_at desc);
+
 -- Annual client subscription and activation tracking ----------------------
 create table if not exists public.subscriptions (
     id uuid primary key default gen_random_uuid(),
@@ -213,7 +229,7 @@ declare
     target text;
     policy_name text;
 begin
-    foreach target in array array['products','settings','coupons','orders','subscribers','admin_sessions','admin_users','subscriptions','subscription_events'] loop
+    foreach target in array array['products','settings','coupons','orders','subscribers','admin_sessions','admin_users','webauthn_credentials','subscriptions','subscription_events'] loop
         if to_regclass('public.' || target) is not null then
             for policy_name in select policyname from pg_policies where schemaname = 'public' and tablename = target loop
                 execute format('drop policy if exists %I on public.%I', policy_name, target);

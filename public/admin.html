@@ -177,7 +177,9 @@
             <form id="login-form" autocomplete="on" style="text-align:right;margin-top:24px;">
                 <div class="form-group"><label for="login-username">اسم المستخدم</label><input class="form-control" id="login-username" name="username" autocomplete="username" required minlength="3" maxlength="64"></div>
                 <div class="form-group"><label for="login-password">كلمة المرور</label><input class="form-control" id="login-password" name="password" type="password" autocomplete="current-password" required minlength="12" maxlength="128"></div>
-                <button class="telegram-btn" id="login-submit" type="submit"><i class="fas fa-right-to-bracket"></i> دخول آمن</button>
+                <button class="telegram-btn" id="login-submit" type="submit"><i class="fas fa-right-to-bracket"></i> دخول بكلمة المرور</button>
+                <button class="btn btn-outline" id="biometric-login-btn" type="button" style="width:100%;justify-content:center;margin-top:10px;"><i class="fas fa-fingerprint"></i> دخول المطور ببصمة الجهاز</button>
+                <p id="biometric-login-help" style="color:#94a3b8;font-size:.75rem;margin:10px 0 0;">للمطور فقط: أدخل اسم المستخدم أعلاه ثم استخدم بصمة الجهاز أو Face ID أو Windows Hello أو PIN.</p>
                 <div id="login-error" class="error-text" role="alert"></div>
             </form>
             <p style="font-size:.72rem;color:#94a3b8;margin-top:16px;">تُحفظ الجلسة في Cookie آمن ولا تُخزّن كلمة المرور في المتصفح.</p>
@@ -249,6 +251,13 @@
                     <div class="form-group"><label>تأكيد كلمة المرور *</label><input class="form-control" id="confirm-password" type="password" required minlength="12" maxlength="128" autocomplete="new-password"></div>
                     <div class="form-group"><button class="btn btn-primary" type="submit"><i class="fas fa-lock"></i> حفظ كلمة المرور</button></div>
                 </form>
+                <div id="biometric-settings" style="margin-top:28px;padding-top:22px;border-top:1px solid rgba(255,255,255,.1);">
+                    <h3 style="font-size:1rem;margin-bottom:6px;"><i class="fas fa-fingerprint"></i> بصمة هذا الجهاز</h3>
+                    <p style="color:#94a3b8;font-size:.8rem;margin:0 0 14px;">متاح للمطور فقط. يستخدم Face ID أو Touch ID أو Windows Hello أو PIN الجهاز؛ لا تُرسل البصمة إلى الخادم.</p>
+                    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:end;"><div class="form-group" style="margin:0;min-width:220px;flex:1;"><label>اسم الجهاز</label><input class="form-control" id="biometric-device-name" maxlength="80" placeholder="مثال: iPhone الشخصي"></div><button class="btn btn-primary" id="register-biometric-btn" type="button"><i class="fas fa-fingerprint"></i> تفعيل البصمة</button></div>
+                    <p id="biometric-settings-help" style="color:#94a3b8;font-size:.75rem;margin:10px 0 0;"></p>
+                    <div id="biometric-credentials-list" style="margin-top:14px;"></div>
+                </div>
             </div>
 
             <!-- Developer-only user management -->
@@ -507,6 +516,7 @@
 
     <div class="toast" id="toast"></div>
 
+    <script src="webauthn.js"></script>
     <script>
         // ==================== CONFIGURATION ====================
         const CONFIG = {
@@ -1269,6 +1279,8 @@
             const developerNav = document.getElementById('developer-nav');
             if (usersNav) usersNav.style.display = isDeveloper ? '' : 'none';
             if (developerNav) developerNav.style.display = isDeveloper ? '' : 'none';
+            const biometricSettings = document.getElementById('biometric-settings');
+            if (biometricSettings) biometricSettings.style.display = isDeveloper ? '' : 'none';
         }
 
         async function checkExistingSession() {
@@ -1288,6 +1300,94 @@
             }
         }
 
+        async function establishAuthenticatedSession(user) {
+            if (!['developer', 'admin'].includes(user.role)) {
+                await fetch('/api/auth/logout', { method: 'POST', credentials: 'same-origin' });
+                throw new Error('هذا الحساب لا يملك صلاحية لوحة الإدارة.');
+            }
+            currentUser = user;
+            sessionToken = 'cookie-session';
+            applyRoleAccess();
+            document.getElementById('login-password').value = '';
+            document.getElementById('login-overlay').classList.add('hidden');
+            document.getElementById('user-info-sidebar').style.display = 'flex';
+            const info = document.querySelector('#user-info-sidebar div[style*="flex:1"]');
+            if (info) info.innerHTML = `<div style="font-weight:700;">${escapeHtml(currentUser.display_name || currentUser.username)}</div><small style="color:#94a3b8;">${currentUser.role === 'developer' ? 'Developer — صلاحيات كاملة' : 'Admin — إدارة المتجر'}</small>`;
+            await loadSettingsFromServer();
+            await refreshAll();
+            applyAllSettings();
+            if (currentUser.role === 'developer') await loadWebAuthnCredentials();
+        }
+
+        async function updateBiometricAvailability() {
+            const available = Boolean(window.Dar3aWebAuthn && await window.Dar3aWebAuthn.supported());
+            if (available) return;
+            const message = 'بصمة المنصة أو قفل الجهاز غير متاح في هذا المتصفح. استخدم كلمة المرور أو متصفحاً/جهازاً مدعوماً.';
+            ['biometric-login-btn', 'register-biometric-btn'].forEach(id => {
+                const button = document.getElementById(id);
+                if (button) button.disabled = true;
+            });
+            ['biometric-login-help', 'biometric-settings-help'].forEach(id => {
+                const help = document.getElementById(id);
+                if (help) { help.textContent = message; help.style.color = '#fca5a5'; }
+            });
+        }
+
+        async function loadWebAuthnCredentials() {
+            const list = document.getElementById('biometric-credentials-list');
+            if (!list || currentUser?.role !== 'developer') return;
+            try {
+                const credentials = await apiFetch('/api/auth/webauthn/credentials');
+                if (!credentials.length) { list.innerHTML = '<p style="color:#94a3b8;font-size:.8rem;">لا توجد بصمة مسجلة لهذا الحساب بعد.</p>'; return; }
+                list.innerHTML = credentials.map(credential => `<div style="display:flex;justify-content:space-between;gap:10px;align-items:center;background:rgba(255,255,255,.04);padding:10px 12px;border-radius:10px;margin-top:8px;"><div><strong>${escapeHtml(credential.name || 'بصمة جهاز')}</strong><br><small style="color:#94a3b8">آخر استخدام: ${credential.last_used_at ? new Date(credential.last_used_at).toLocaleString('ar-EG') : 'لم تستخدم بعد'}</small></div><button class="btn btn-danger btn-xs remove-biometric" data-id="${escapeHtml(credential.credential_id)}" type="button">إزالة</button></div>`).join('');
+                list.querySelectorAll('.remove-biometric').forEach(button => button.addEventListener('click', async () => {
+                    if (!confirm('هل تريد إزالة بصمة هذا الجهاز؟')) return;
+                    try { await apiFetch(`/api/auth/webauthn/credentials/${encodeURIComponent(button.dataset.id)}`, { method: 'DELETE' }); await loadWebAuthnCredentials(); showToast('تمت إزالة بصمة الجهاز.'); }
+                    catch (error) { showToast(`❌ ${error.message}`); }
+                }));
+            } catch (error) { list.innerHTML = `<p style="color:#fca5a5;font-size:.8rem;">تعذر جلب البصمات: ${escapeHtml(error.message)}</p>`; }
+        }
+
+        async function registerDeviceBiometric() {
+            if (currentUser?.role !== 'developer') return;
+            if (!window.Dar3aWebAuthn || !await window.Dar3aWebAuthn.supported()) { showToast('⚠️ هذا الجهاز أو المتصفح لا يدعم بصمة المنصة.'); return; }
+            const button = document.getElementById('register-biometric-btn');
+            button.disabled = true;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> افتح بصمة الجهاز...';
+            try {
+                const options = await apiFetch('/api/auth/webauthn/register/options', { method: 'POST', body: JSON.stringify({}) });
+                const response = await window.Dar3aWebAuthn.create(options);
+                await apiFetch('/api/auth/webauthn/register/verify', { method: 'POST', body: JSON.stringify({ response, name: document.getElementById('biometric-device-name').value }) });
+                document.getElementById('biometric-device-name').value = '';
+                await loadWebAuthnCredentials();
+                showToast('✅ تم تفعيل بصمة هذا الجهاز.');
+            } catch (error) { showToast(`❌ ${error.message || 'تعذر تفعيل البصمة.'}`); }
+            finally { button.disabled = false; button.innerHTML = '<i class="fas fa-fingerprint"></i> تفعيل البصمة'; }
+        }
+
+        async function biometricLogin() {
+            const button = document.getElementById('biometric-login-btn');
+            const error = document.getElementById('login-error');
+            const username = document.getElementById('login-username').value.trim();
+            error.classList.remove('show');
+            if (!username) { error.textContent = 'أدخل اسم مستخدم المطور أولاً.'; error.classList.add('show'); return; }
+            if (!window.Dar3aWebAuthn || !await window.Dar3aWebAuthn.supported()) { error.textContent = 'هذا الجهاز أو المتصفح لا يدعم بصمة المنصة.'; error.classList.add('show'); return; }
+            button.disabled = true;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> افتح بصمة الجهاز...';
+            try {
+                const optionResponse = await fetch('/api/auth/webauthn/authenticate/options', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username }) });
+                const options = await optionResponse.json().catch(() => ({}));
+                if (!optionResponse.ok) throw new Error(options.error || 'تعذر بدء دخول البصمة.');
+                const response = await window.Dar3aWebAuthn.get(options);
+                const verifyResponse = await fetch('/api/auth/webauthn/authenticate/verify', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ response }) });
+                const data = await verifyResponse.json().catch(() => ({}));
+                if (!verifyResponse.ok) throw new Error(data.error || 'تعذر التحقق من البصمة.');
+                await establishAuthenticatedSession(data.user);
+                showToast('تم تسجيل الدخول ببصمة الجهاز.');
+            } catch (exception) { error.textContent = exception.message || 'تم إلغاء أو رفض بصمة الجهاز.'; error.classList.add('show'); }
+            finally { button.disabled = false; button.innerHTML = '<i class="fas fa-fingerprint"></i> دخول المطور ببصمة الجهاز'; }
+        }
+
         async function login(event) {
             event.preventDefault();
             const button = document.getElementById('login-submit');
@@ -1302,23 +1402,14 @@
                 });
                 const data = await response.json().catch(() => ({}));
                 if (!response.ok) throw new Error(data.error || 'فشل تسجيل الدخول.');
-                if (!['developer', 'admin'].includes(data.user.role)) { await fetch('/api/auth/logout', { method: 'POST', credentials: 'same-origin' }); throw new Error('هذا الحساب لا يملك صلاحية لوحة الإدارة.'); }
-                currentUser = data.user;
-                sessionToken = 'cookie-session';
-                applyRoleAccess();
-                document.getElementById('login-password').value = '';
-                document.getElementById('login-overlay').classList.add('hidden');
-                document.getElementById('user-info-sidebar').style.display = 'flex';
-                await loadSettingsFromServer();
-                await refreshAll();
-                applyAllSettings();
+                await establishAuthenticatedSession(data.user);
                 showToast('تم تسجيل الدخول بأمان.');
             } catch (exception) {
                 error.textContent = exception.message;
                 error.classList.add('show');
             } finally {
                 button.disabled = false;
-                button.innerHTML = '<i class="fas fa-right-to-bracket"></i> دخول آمن';
+                button.innerHTML = '<i class="fas fa-right-to-bracket"></i> دخول بكلمة المرور';
             }
         }
 
@@ -1368,6 +1459,9 @@
             document.getElementById('prod-type')?.addEventListener('change', function() { document.getElementById('comp-type-group').style.display = this.value === 'component' ? 'block' : 'none'; });
             document.getElementById('filter-type')?.addEventListener('change', function() { renderProductsTable(this.value); });
             
+            document.getElementById('biometric-login-btn')?.addEventListener('click', biometricLogin);
+            document.getElementById('register-biometric-btn')?.addEventListener('click', registerDeviceBiometric);
+
             // Self-service password change for both Developer and Admin.
             document.getElementById('password-form')?.addEventListener('submit', async event => {
                 event.preventDefault();
@@ -1568,9 +1662,10 @@
 
         // ==================== INITIALIZATION ====================
         async function init() {
-            console.log('🚀 بدء تشغيل لوحة التحكم - مدير واحد');
+            console.log('🚀 بدء تشغيل لوحة التحكم بالأدوار الآمنة');
             createParticles();
             bindEvents();
+            updateBiometricAvailability();
             addSpecRow();
             
             if(!(await checkExistingSession())) {
@@ -1580,6 +1675,7 @@
                 await loadSettingsFromServer();
                 await refreshAll();
                 applyAllSettings();
+                if (currentUser?.role === 'developer') await loadWebAuthnCredentials();
                 console.log('✅ تم تسجيل الدخول تلقائياً');
             }
         }

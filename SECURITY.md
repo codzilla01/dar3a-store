@@ -11,6 +11,7 @@
 - بيانات Supabase لا تصل من المتصفح مباشرة. الخادم فقط يستخدم `SUPABASE_SERVICE_KEY`.
 - يتم رفض الوصول المباشر لجداول Supabase من أدوار `anon` و`authenticated` بواسطة RLS والصلاحيات في `schema.sql`.
 - الدخول الإداري باسم مستخدم وكلمة مرور bcrypt، والجلسة JWT في Cookie `HttpOnly` و`SameSite=Strict` و`Secure` في الإنتاج.
+- دخول إضافي اختياري لـ `developer` فقط عبر WebAuthn Passkeys وبصمة/قفل الجهاز. لا يغادر الجهاز أي قالب بصمة أو وجه أو PIN؛ تحفظ قاعدة البيانات المفتاح العام والعداد فقط، ويكون تحدي WebAuthn موقّعاً قصير العمر في Cookie منفصل `HttpOnly`/`SameSite=Strict`.
 - صلاحيات الخادم: `developer` و`admin`.
 - واجهات الإدارة الحساسة محمية على الخادم؛ إخفاء عناصر الواجهة ليس طبقة الصلاحيات.
 - حساب إجمالي الطلب والمخزون والكوبون يتم في PostgreSQL؛ لا يقبل الخادم سعر المتصفح.
@@ -27,6 +28,7 @@
 6. فعّل MFA في حسابات GitHub وVercel وSupabase، وخذ نسخاً احتياطية منتظمة.
 7. حدّث الحزم وشغّل `npm audit --omit=dev --audit-level=high` دورياً.
 8. استخدم HTTPS ونطاق العميل قبل أي استخدام حقيقي.
+9. عند تفعيل بصمة Developer، اضبط `WEBAUTHN_RP_ID` و`WEBAUTHN_ORIGIN` للقيم الدقيقة للنطاق HTTPS النهائي، وسجّل الأجهزة الموثوقة فقط وأزل المفقود منها فوراً.
 
 ## Reporting a vulnerability
 
