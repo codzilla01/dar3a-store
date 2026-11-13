@@ -6,8 +6,8 @@ const bcrypt = require('bcryptjs');
 const now = () => new Date().toISOString();
 const uid = () => crypto.randomUUID();
 
-const demoUsername = String(process.env.DEMO_SUPER_ADMIN_USERNAME || 'demo-admin').trim().toLowerCase();
-const demoPassword = process.env.DEMO_SUPER_ADMIN_PASSWORD || 'ChangeThisDemoPassword123!';
+const demoUsername = String(process.env.DEMO_DEVELOPER_USERNAME || 'demo-admin').trim().toLowerCase();
+const demoPassword = process.env.DEMO_DEVELOPER_PASSWORD || 'ChangeThisDemoPassword123!';
 
 const store = {
     products: [
@@ -25,7 +25,7 @@ const store = {
     coupons: [{ code: 'DAR3A10', type: 'percent', discount: 10, min_order: 0, active: true, created_at: now() }],
     orders: [],
     subscribers: [],
-    users: [{ id: uid(), username: demoUsername, display_name: 'مدير العرض', role: 'super_admin', password_hash: bcrypt.hashSync(demoPassword, 12), is_active: true, created_at: now(), updated_at: now(), last_login_at: null }],
+    users: [{ id: uid(), username: demoUsername, display_name: 'مدير العرض', role: 'developer', password_hash: bcrypt.hashSync(demoPassword, 12), is_active: true, created_at: now(), updated_at: now(), last_login_at: null }],
     subscriptions: [],
     events: []
 };

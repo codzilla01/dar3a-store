@@ -7,7 +7,7 @@ All notable changes to this project are documented here.
 
 ### أمن ومصادقة
 - استبدال Telegram OTP بتسجيل دخول اسم مستخدم/كلمة مرور bcrypt وجلسة `HttpOnly` آمنة.
-- تطبيق أدوار `super_admin` و`admin` و`developer` على مستوى API.
+- تطبيق أدوار `developer` و`admin` على مستوى API.
 - إغلاق CORS العام، إضافة Helmet/CSP وrate limits والتحقق الخادمي من المدخلات.
 - حذف طبقة API القديمة المكررة والحزم غير المستخدمة ذات المخاطر.
 
@@ -19,7 +19,7 @@ All notable changes to this project are documented here.
 ### اشتراكات العميل
 - إضافة `developer.html` لإدارة الاشتراك السنوي والتفعيل والتجديد والإيقاف والإلغاء.
 - مفاتيح التفعيل عشوائية ومخزنة كـ hash مع سجل عدد وآخر تحقق.
-- إضافة حسابات إدارة من Super Admin وأداة آمنة لإنشاء أول حساب.
+- إضافة حسابات إدارة من Developer وأداة آمنة لإنشاء أول حساب.
 
 ## [1.0.0] — 2026-10-10 — 🎉 الإصدار الأول — جاهز للتسليم
 

@@ -1,7 +1,7 @@
 {
   "name": "dar3a-store",
   "version": "1.1.0",
-  "description": "Dar3a Store — متجر إلكتروني عربي آمن مع Super Admin واشتراك سنوي وتفعيل",
+  "description": "Dar3a Store — متجر إلكتروني عربي آمن بدور مطور وإدارة متجر واشتراك سنوي وتفعيل",
   "main": "server.js",
   "license": "SEE LICENSE IN LICENSE",
   "author": "Dar3a Store",
@@ -13,7 +13,8 @@
     "supabase",
     "vercel",
     "pc-builder",
-    "super-admin",
+    "developer",
+    "admin",
     "annual-subscription",
     "license-activation"
   ],
@@ -29,9 +30,9 @@
     "start": "node server.js",
     "dev": "nodemon server.js",
     "build": "echo 'No build step needed'",
-    "check": "node --check index.js && node --check database.js && node --check fallback-db.js && node --check server.js && node --check scripts/bootstrap-admin.js",
+    "check": "node --check index.js && node --check database.js && node --check fallback-db.js && node --check server.js && node --check scripts/bootstrap-developer.js",
     "test": "node --test",
-    "bootstrap-admin": "node scripts/bootstrap-admin.js"
+    "bootstrap-developer": "node scripts/bootstrap-developer.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.108.1",
