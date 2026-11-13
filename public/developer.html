@@ -23,7 +23,9 @@
       <div class="notice" id="login-notice" role="alert"></div>
       <div class="field"><label for="username">اسم المستخدم</label><input id="username" autocomplete="username" required minlength="3" maxlength="64"></div>
       <div class="field"><label for="password">كلمة المرور</label><input id="password" type="password" autocomplete="current-password" required minlength="12" maxlength="128"></div>
-      <button class="btn" type="submit" style="width:100%"><i class="fa-solid fa-right-to-bracket"></i> دخول آمن</button>
+      <button class="btn" type="submit" style="width:100%"><i class="fa-solid fa-right-to-bracket"></i> دخول بكلمة المرور</button>
+      <button class="btn outline" id="biometric-login-btn" type="button" style="width:100%;margin-top:10px"><i class="fa-solid fa-fingerprint"></i> دخول ببصمة الجهاز</button>
+      <p class="lead" id="biometric-login-help" style="margin:10px 0 0;font-size:.75rem">للمطور فقط. أدخل اسم المستخدم أعلاه ثم استخدم بصمة الجهاز أو Face ID أو PIN.</p>
     </form>
   </div>
   <main class="shell">
@@ -45,6 +47,14 @@
           <div class="field"><label for="notes">ملاحظات</label><textarea id="notes" rows="3" maxlength="2000"></textarea></div>
           <button class="btn" type="submit" style="width:100%"><i class="fa-solid fa-file-circle-plus"></i> حفظ اشتراك معلّق</button>
         </form>
+        <div style="margin-top:24px;padding-top:20px;border-top:1px solid var(--line)">
+          <h2><i class="fa-solid fa-fingerprint"></i> بصمة هذا الجهاز</h2>
+          <p class="lead">فعّل دخولاً إضافياً لهذا الحساب على جهازك. البصمة أو الوجه أو PIN يتحقق داخل الجهاز فقط؛ الخادم يحفظ مفتاحاً عاماً فقط.</p>
+          <div class="field"><label for="biometric-device-name">اسم الجهاز</label><input id="biometric-device-name" maxlength="80" placeholder="مثال: هاتف المطور الشخصي"></div>
+          <button class="btn outline" id="register-biometric-btn" type="button" style="width:100%"><i class="fa-solid fa-fingerprint"></i> تفعيل بصمة هذا الجهاز</button>
+          <p class="lead" id="biometric-settings-help" style="margin:10px 0 0;font-size:.75rem"></p>
+          <div id="biometric-credentials" style="margin-top:10px"></div>
+        </div>
       </aside>
       <section class="panel">
         <div class="top" style="margin-bottom:18px"><div><h2>سجل التفعيلات والاشتراكات</h2><p class="lead" style="margin:5px 0 0">التفعيل يمنح العميل سنة واحدة ويعرض المفتاح مرة واحدة فقط.</p></div><button class="btn outline" id="refresh"><i class="fa-solid fa-rotate"></i> تحديث</button></div>
@@ -55,6 +65,7 @@
     </section>
     <p class="footer">المفاتيح تحفظ في قاعدة البيانات بصيغة hash فقط. لا تشارك مفتاح التفعيل عبر قناة غير موثوقة.</p>
   </main>
+  <script src="webauthn.js"></script>
   <script>
     let currentUser=null, subscriptions=[];
     const $=id=>document.getElementById(id);
@@ -66,10 +77,44 @@
     function render(){const now=Date.now(),in30=now+30*864e5;$('total-count').textContent=subscriptions.length;$('active-count').textContent=subscriptions.filter(s=>s.status==='active'&&(!s.expires_at||new Date(s.expires_at)>new Date())).length;$('pending-count').textContent=subscriptions.filter(s=>s.status==='pending').length;$('expiring-count').textContent=subscriptions.filter(s=>s.expires_at&&new Date(s.expires_at).getTime()>now&&new Date(s.expires_at).getTime()<in30).length;const tbody=$('subscriptions');if(!subscriptions.length){tbody.innerHTML='<tr><td colspan="6" class="empty">لا توجد اشتراكات حتى الآن.</td></tr>';return}tbody.innerHTML=subscriptions.map(s=>`<tr><td><strong>${escapeHtml(s.client_name)}</strong><div class="domain">${escapeHtml(s.domain)}</div></td><td><span class="status ${escapeHtml(s.status)}">${escapeHtml(statusLabel(s.status))}</span></td><td>${date(s.expires_at)}</td><td>${date(s.last_activated_at)}</td><td>${Number(s.activation_count||0)}</td><td><div class="actions">${s.status==='pending'?`<button class="btn green" data-action="activate" data-id="${s.id}">تفعيل</button>`:''}${s.status==='active'?`<button class="btn warn" data-action="renew" data-id="${s.id}">تجديد سنة</button><button class="btn outline" data-action="suspend" data-id="${s.id}">إيقاف</button>`:''}${s.status==='suspended'?`<button class="btn green" data-action="renew" data-id="${s.id}">إعادة وتنشيط</button>`:''}${s.status!=='revoked'?`<button class="btn outline" data-action="revoke" data-id="${s.id}">إلغاء</button>`:''}</div></td></tr>`).join('');tbody.querySelectorAll('button[data-action]').forEach(button=>button.addEventListener('click',()=>action(button.dataset.id,button.dataset.action)))}
     async function load(){try{subscriptions=await api('/api/developer/subscriptions');render()}catch(error){notice(error.message,'error')}}
     async function action(id,actionName){if(!confirm(`هل تريد تنفيذ إجراء: ${actionName}؟`))return;try{const result=await api(`/api/developer/subscriptions/${encodeURIComponent(id)}/action`,{method:'POST',body:JSON.stringify({action:actionName})});if(result.activationKey){$('key-result').innerHTML=`<div class="notice success show">⚠️ احفظ مفتاح التفعيل الآن؛ لن يظهر مرة أخرى:<div class="activation-key">${escapeHtml(result.activationKey)}</div></div>`;navigator.clipboard?.writeText(result.activationKey)}notice('تم حفظ التحديث.');await load()}catch(error){notice(error.message,'error')}}
-    async function login(event){event.preventDefault();try{const result=await api('/api/auth/login',{method:'POST',body:JSON.stringify({username:$('username').value,password:$('password').value})});if(result.user.role !== 'developer'){await api('/api/auth/logout',{method:'POST'});throw new Error('هذا الحساب لا يملك صلاحية بوابة المطور.')}currentUser=result.user;$('login-layer').classList.add('hidden');setup();await load()}catch(error){notice(error.message,'error','login-notice')}}
-    async function restore(){try{const result=await api('/api/auth/me');if(result.user.role !== 'developer')return;currentUser=result.user;$('login-layer').classList.add('hidden');setup();await load()}catch(error){/* The login layer stays visible. */}}
+    async function completeDeveloperLogin(user){
+      if(user?.role!=='developer'){await api('/api/auth/logout',{method:'POST'});throw new Error('هذا الحساب لا يملك صلاحية بوابة المطور.')}
+      currentUser=user;$('login-layer').classList.add('hidden');setup();await load();await loadWebAuthnCredentials()
+    }
+    async function login(event){event.preventDefault();try{const result=await api('/api/auth/login',{method:'POST',body:JSON.stringify({username:$('username').value,password:$('password').value})});await completeDeveloperLogin(result.user)}catch(error){notice(error.message,'error','login-notice')}}
+    async function biometricLogin(){
+      const button=$('biometric-login-btn'),username=$('username').value.trim();
+      if(!username){notice('أدخل اسم مستخدم المطور أولاً.','error','login-notice');return}
+      if(!window.Dar3aWebAuthn||!await window.Dar3aWebAuthn.supported()){notice('هذا الجهاز أو المتصفح لا يدعم بصمة المنصة أو قفل الجهاز. استخدم كلمة المرور.','error','login-notice');return}
+      button.disabled=true;button.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> افتح بصمة الجهاز...';
+      try{const options=await api('/api/auth/webauthn/authenticate/options',{method:'POST',body:JSON.stringify({username})});const response=await window.Dar3aWebAuthn.get(options);const result=await api('/api/auth/webauthn/authenticate/verify',{method:'POST',body:JSON.stringify({response})});await completeDeveloperLogin(result.user);notice('تم تسجيل الدخول ببصمة الجهاز.')}
+      catch(error){notice(error.message||'تم إلغاء أو رفض بصمة الجهاز.','error','login-notice')}
+      finally{button.disabled=false;button.innerHTML='<i class="fa-solid fa-fingerprint"></i> دخول ببصمة الجهاز'}
+    }
+    async function loadWebAuthnCredentials(){
+      const container=$('biometric-credentials');if(!currentUser||!container)return;
+      try{const credentials=await api('/api/auth/webauthn/credentials');if(!credentials.length){container.innerHTML='<p class="lead" style="margin:0">لا توجد بصمة جهاز مسجلة بعد.</p>';return}
+        container.innerHTML=credentials.map(c=>`<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;border-top:1px solid var(--line);padding:10px 0"><div><strong>${escapeHtml(c.name||'بصمة جهاز')}</strong><br><small style="color:var(--muted)">آخر استخدام: ${escapeHtml(date(c.last_used_at))}</small></div><button class="btn outline" data-credential="${escapeHtml(c.credential_id)}" type="button">إزالة</button></div>`).join('');
+        container.querySelectorAll('[data-credential]').forEach(button=>button.addEventListener('click',async()=>{if(!confirm('هل تريد إزالة بصمة هذا الجهاز؟'))return;try{await api(`/api/auth/webauthn/credentials/${encodeURIComponent(button.dataset.credential)}`,{method:'DELETE'});await loadWebAuthnCredentials();notice('تمت إزالة بصمة الجهاز.')}catch(error){notice(error.message,'error')}}));
+      }catch(error){container.innerHTML=`<p class="lead" style="color:#fecdd3;margin:0">تعذر جلب البصمات: ${escapeHtml(error.message)}</p>`}
+    }
+    async function registerDeviceBiometric(){
+      const button=$('register-biometric-btn');
+      if(!window.Dar3aWebAuthn||!await window.Dar3aWebAuthn.supported()){notice('هذا الجهاز أو المتصفح لا يدعم بصمة المنصة أو قفل الجهاز.','error');return}
+      button.disabled=true;button.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> افتح بصمة الجهاز...';
+      try{const options=await api('/api/auth/webauthn/register/options',{method:'POST',body:'{}'});const response=await window.Dar3aWebAuthn.create(options);await api('/api/auth/webauthn/register/verify',{method:'POST',body:JSON.stringify({response,name:$('biometric-device-name').value})});$('biometric-device-name').value='';await loadWebAuthnCredentials();notice('تم تفعيل بصمة هذا الجهاز.')}
+      catch(error){notice(error.message||'تعذر تفعيل بصمة الجهاز.','error')}
+      finally{button.disabled=false;button.innerHTML='<i class="fa-solid fa-fingerprint"></i> تفعيل بصمة هذا الجهاز'}
+    }
+    async function updateBiometricAvailability(){
+      const available=Boolean(window.Dar3aWebAuthn&&await window.Dar3aWebAuthn.supported());
+      if(available)return;
+      const message='بصمة المنصة أو قفل الجهاز غير متاح في هذا المتصفح. استخدم كلمة المرور أو متصفحاً/جهازاً مدعوماً.';
+      $('biometric-login-btn').disabled=true;$('register-biometric-btn').disabled=true;$('biometric-login-help').textContent=message;$('biometric-settings-help').textContent=message;
+    }
+    async function restore(){try{const result=await api('/api/auth/me');if(result.user.role!=='developer')return;await completeDeveloperLogin(result.user)}catch(error){/* The login layer stays visible. */}}
     function setup(){$('user-chip').textContent=`${currentUser.display_name||currentUser.username} • Developer — صلاحيات كاملة`}
-    $('login-form').addEventListener('submit',login);$('refresh').addEventListener('click',load);$('logout').addEventListener('click',async()=>{await api('/api/auth/logout',{method:'POST'});location.reload()});$('subscription-form').addEventListener('submit',async event=>{event.preventDefault();try{await api('/api/developer/subscriptions',{method:'POST',body:JSON.stringify({client_name:$('client-name').value,domain:$('domain').value,contact_name:$('contact-name').value,contact_email:$('contact-email').value,contact_phone:$('contact-phone').value,notes:$('notes').value})});event.target.reset();notice('تم إنشاء الاشتراك بحالة معلّق.');await load()}catch(error){notice(error.message,'error')}});restore();
+    $('login-form').addEventListener('submit',login);$('biometric-login-btn').addEventListener('click',biometricLogin);$('register-biometric-btn').addEventListener('click',registerDeviceBiometric);$('refresh').addEventListener('click',load);$('logout').addEventListener('click',async()=>{await api('/api/auth/logout',{method:'POST'});location.reload()});$('subscription-form').addEventListener('submit',async event=>{event.preventDefault();try{await api('/api/developer/subscriptions',{method:'POST',body:JSON.stringify({client_name:$('client-name').value,domain:$('domain').value,contact_name:$('contact-name').value,contact_email:$('contact-email').value,contact_phone:$('contact-phone').value,notes:$('notes').value})});event.target.reset();notice('تم إنشاء الاشتراك بحالة معلّق.');await load()}catch(error){notice(error.message,'error')}});updateBiometricAvailability();restore();
   </script>
 </body>
 </html>

@@ -198,6 +198,49 @@ async function updateUser(id, changes) {
     return data;
 }
 
+async function listWebAuthnCredentials(userId) {
+    const { data, error } = await client().from('webauthn_credentials')
+        .select('credential_id, name, transports, device_type, backed_up, created_at, last_used_at')
+        .eq('user_id', userId).order('created_at', { ascending: false });
+    throwIfError(error, 'تعذر جلب مفاتيح البصمة');
+    return data || [];
+}
+
+async function getWebAuthnCredential(credentialId) {
+    const { data, error } = await client().from('webauthn_credentials').select('*').eq('credential_id', credentialId).maybeSingle();
+    throwIfError(error, 'تعذر التحقق من مفتاح البصمة');
+    return data || null;
+}
+
+async function saveWebAuthnCredential(credential) {
+    const { data, error } = await client().from('webauthn_credentials').insert({
+        user_id: credential.user_id,
+        credential_id: credential.credential_id,
+        public_key: credential.public_key,
+        counter: credential.counter,
+        transports: credential.transports || [],
+        device_type: credential.device_type || null,
+        backed_up: Boolean(credential.backed_up),
+        name: credential.name || null
+    }).select('credential_id, name, transports, device_type, backed_up, created_at, last_used_at').single();
+    throwIfError(error, 'تعذر حفظ مفتاح البصمة');
+    return data;
+}
+
+async function updateWebAuthnCredential(credentialId, counter) {
+    const { error } = await client().from('webauthn_credentials').update({
+        counter,
+        last_used_at: new Date().toISOString()
+    }).eq('credential_id', credentialId);
+    throwIfError(error, 'تعذر تحديث مفتاح البصمة');
+}
+
+async function deleteWebAuthnCredential(userId, credentialId) {
+    const { error } = await client().from('webauthn_credentials').delete().eq('user_id', userId).eq('credential_id', credentialId);
+    throwIfError(error, 'تعذر حذف مفتاح البصمة');
+    return true;
+}
+
 async function getDashboardStats() {
     const db = client();
     const [products, orders, subscribers, subscriptions, recentOrders] = await Promise.all([
@@ -288,6 +331,11 @@ module.exports = {
     listUsers,
     createUser,
     updateUser,
+    listWebAuthnCredentials,
+    getWebAuthnCredential,
+    saveWebAuthnCredential,
+    updateWebAuthnCredential,
+    deleteWebAuthnCredential,
     getDashboardStats,
     listSubscriptions,
     createSubscription,

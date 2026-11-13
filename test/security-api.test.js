@@ -124,3 +124,55 @@ test('security response headers do not enable arbitrary-origin CORS', async () =
     assert.match(response.headers.get('content-security-policy'), /frame-ancestors 'none'/);
     assert.equal(response.headers.get('x-content-type-options'), 'nosniff');
 });
+
+test('WebAuthn device login is limited to Developer and issues a short-lived ceremony challenge', async () => {
+    const unauthenticatedCredentials = await request('/api/auth/webauthn/credentials');
+    assert.equal(unauthenticatedCredentials.response.status, 401);
+
+    const developerLogin = await request('/api/auth/login', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: 'owner', password: 'StrongDemoPassword123!' })
+    });
+    const developerCookie = cookieFrom(developerLogin.response);
+    const credentials = await request('/api/auth/webauthn/credentials', { headers: { Cookie: developerCookie } });
+    assert.equal(credentials.response.status, 200);
+    assert.deepEqual(credentials.body, []);
+
+    const registrationOptions = await request('/api/auth/webauthn/register/options', {
+        method: 'POST', headers: { 'Content-Type': 'application/json', Cookie: developerCookie }, body: '{}'
+    });
+    assert.equal(registrationOptions.response.status, 200);
+    assert.equal(typeof registrationOptions.body.challenge, 'string');
+    assert.equal(registrationOptions.body.authenticatorSelection.authenticatorAttachment, 'platform');
+    assert.equal(registrationOptions.body.authenticatorSelection.userVerification, 'required');
+    const ceremonyCookie = cookieFrom(registrationOptions.response);
+    assert.match(ceremonyCookie, /^dar3a_webauthn=/);
+    assert.match(registrationOptions.response.headers.get('set-cookie'), /HttpOnly/i);
+    assert.match(registrationOptions.response.headers.get('set-cookie'), /SameSite=Strict/i);
+    assert.match(registrationOptions.response.headers.get('set-cookie'), /Path=\/api\/auth\/webauthn/i);
+
+    const noCeremony = await request('/api/auth/webauthn/register/verify', {
+        method: 'POST', headers: { 'Content-Type': 'application/json', Cookie: developerCookie },
+        body: JSON.stringify({ response: {} })
+    });
+    assert.equal(noCeremony.response.status, 401);
+
+    const createAdmin = await request('/api/users', {
+        method: 'POST', headers: { 'Content-Type': 'application/json', Cookie: developerCookie },
+        body: JSON.stringify({ username: 'biometric.admin', display_name: 'Biometric Admin', role: 'admin', password: 'BiometricAdminPassword123!' })
+    });
+    assert.equal(createAdmin.response.status, 201);
+    const adminLogin = await request('/api/auth/login', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: 'biometric.admin', password: 'BiometricAdminPassword123!' })
+    });
+    const adminCookie = cookieFrom(adminLogin.response);
+    const adminRegistration = await request('/api/auth/webauthn/register/options', {
+        method: 'POST', headers: { 'Content-Type': 'application/json', Cookie: adminCookie }, body: '{}'
+    });
+    assert.equal(adminRegistration.response.status, 403);
+    const adminAuthentication = await request('/api/auth/webauthn/authenticate/options', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username: 'biometric.admin' })
+    });
+    assert.equal(adminAuthentication.response.status, 401);
+});
