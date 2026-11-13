@@ -173,7 +173,7 @@
         <div class="login-card">
             <div class="login-logo" id="login-logo-main"><i class="fas fa-user-shield"></i></div>
             <h2 id="login-store-name">Dar3a Store</h2>
-            <p id="login-subtitle">لوحة تحكم Super Admin الآمنة</p>
+            <p id="login-subtitle">لوحة تحكم المطور والإدارة الآمنة</p>
             <form id="login-form" autocomplete="on" style="text-align:right;margin-top:24px;">
                 <div class="form-group"><label for="login-username">اسم المستخدم</label><input class="form-control" id="login-username" name="username" autocomplete="username" required minlength="3" maxlength="64"></div>
                 <div class="form-group"><label for="login-password">كلمة المرور</label><input class="form-control" id="login-password" name="password" type="password" autocomplete="current-password" required minlength="12" maxlength="128"></div>
@@ -198,7 +198,7 @@
             <div class="sidebar-header">
                 <div class="sidebar-logo-icon" id="sidebar-logo-icon-el"><i class="fas fa-shield-halved"></i></div>
                 <div style="font-size:1.3rem;font-weight:900;" id="sidebar-store-name">Dar3a Store</div>
-                <div><span class="role-badge">مدير النظام</span></div>
+                <div><span class="role-badge" id="sidebar-role-badge">—</span></div>
             </div>
             <div class="user-info" id="user-info-sidebar" style="display:none;">
                 <div class="user-avatar"><i class="fas fa-user-cog"></i></div>
@@ -227,8 +227,9 @@
                 <a data-panel="orders"><i class="fas fa-receipt"></i> الطلبات</a>
                 <a data-panel="settings"><i class="fas fa-cog"></i> الإعدادات</a>
                 <a data-panel="newsletter"><i class="fas fa-envelope"></i> المشتركين</a>
-                <a data-panel="users"><i class="fas fa-users-gear"></i> مستخدمو النظام</a>
-                <a href="developer.html"><i class="fas fa-code"></i> بوابة المطور</a>
+                <a data-panel="profile"><i class="fas fa-key"></i> حسابي وكلمة المرور</a>
+                <a id="users-nav" data-panel="users"><i class="fas fa-users-gear"></i> مستخدمو النظام</a>
+                <a id="developer-nav" href="developer.html"><i class="fas fa-code"></i> الاشتراكات والتفعيل</a>
             </nav>
         </aside>
 
@@ -239,13 +240,24 @@
                 <div class="stats-grid" id="dashboard-stats"></div>
             </div>
 
-            <!-- Super Admin user management -->
+            <!-- Self-service password change: available to Developer and Admin. -->
+            <div class="panel" id="panel-profile">
+                <div class="panel-header"><div><h2><i class="fas fa-key"></i> حسابي وكلمة المرور</h2><p style="color:#94a3b8;font-size:.8rem;margin-top:4px;">غيّر كلمة مرور حسابك. يجب أن تكون 12 حرفاً على الأقل وتحتوي حروفاً وأرقاماً.</p></div></div>
+                <form id="password-form" class="form-grid" style="max-width:860px;align-items:end;">
+                    <div class="form-group"><label>كلمة المرور الحالية *</label><input class="form-control" id="current-password" type="password" required autocomplete="current-password"></div>
+                    <div class="form-group"><label>كلمة المرور الجديدة *</label><input class="form-control" id="new-password" type="password" required minlength="12" maxlength="128" autocomplete="new-password"></div>
+                    <div class="form-group"><label>تأكيد كلمة المرور *</label><input class="form-control" id="confirm-password" type="password" required minlength="12" maxlength="128" autocomplete="new-password"></div>
+                    <div class="form-group"><button class="btn btn-primary" type="submit"><i class="fas fa-lock"></i> حفظ كلمة المرور</button></div>
+                </form>
+            </div>
+
+            <!-- Developer-only user management -->
             <div class="panel" id="panel-users">
-                <div class="panel-header"><div><h2><i class="fas fa-users-gear"></i> إدارة مستخدمي النظام</h2><p style="color:#94a3b8;font-size:.8rem;margin-top:4px;">أنشئ حسابات Super Admin أو Admin أو Developer. كلمات المرور تُحفظ مشفّرة فقط.</p></div></div>
+                <div class="panel-header"><div><h2><i class="fas fa-users-gear"></i> إدارة مستخدمي النظام</h2><p style="color:#94a3b8;font-size:.8rem;margin-top:4px;">المطور فقط: أنشئ أو أوقف حسابات Developer وAdmin. كلمات المرور تُحفظ مشفّرة فقط.</p></div></div>
                 <form id="user-form" class="form-grid" style="margin-bottom:24px;align-items:end;">
                     <div class="form-group"><label>اسم المستخدم *</label><input class="form-control" id="new-user-username" required minlength="3" maxlength="64" pattern="[A-Za-z0-9._-]+" autocomplete="off"></div>
                     <div class="form-group"><label>الاسم الظاهر *</label><input class="form-control" id="new-user-name" required maxlength="100"></div>
-                    <div class="form-group"><label>الدور *</label><select class="form-control" id="new-user-role"><option value="admin">Admin</option><option value="developer">Developer</option><option value="super_admin">Super Admin</option></select></div>
+                    <div class="form-group"><label>الدور *</label><select class="form-control" id="new-user-role"><option value="admin">Admin — إدارة المتجر</option><option value="developer">Developer — صلاحيات كاملة</option></select></div>
                     <div class="form-group"><label>كلمة المرور *</label><input class="form-control" id="new-user-password" type="password" required minlength="12" maxlength="128" autocomplete="new-password"></div>
                     <div class="form-group"><button class="btn btn-primary" type="submit"><i class="fas fa-user-plus"></i> إنشاء حساب</button></div>
                 </form>
@@ -1236,7 +1248,7 @@
             await loadCouponsFromServer();
             await loadOrdersFromServer();
             await loadAndRenderSubscribers();
-            await loadUsersFromServer();
+            if (currentUser?.role === 'developer') await loadUsersFromServer();
             refreshDashboard();
             renderProductsTable(document.getElementById('filter-type').value);
             renderComponentsTable();
@@ -1249,17 +1261,27 @@
         // ==================== SECURE USERNAME/PASSWORD LOGIN ====================
         let currentUser = null;
 
+        function applyRoleAccess() {
+            const isDeveloper = currentUser?.role === 'developer';
+            const badge = document.getElementById('sidebar-role-badge');
+            if (badge) badge.textContent = isDeveloper ? 'Developer — صلاحيات كاملة' : 'Admin — إدارة المتجر';
+            const usersNav = document.getElementById('users-nav');
+            const developerNav = document.getElementById('developer-nav');
+            if (usersNav) usersNav.style.display = isDeveloper ? '' : 'none';
+            if (developerNav) developerNav.style.display = isDeveloper ? '' : 'none';
+        }
+
         async function checkExistingSession() {
             try {
                 const data = await apiFetch('/api/auth/me');
                 currentUser = data.user;
-                if (currentUser.role === 'developer') { window.location.replace('developer.html'); return false; }
-                if (currentUser.role !== 'super_admin') { throw new Error('هذه الصفحة مخصصة لحساب Super Admin.'); }
+                if (!['developer', 'admin'].includes(currentUser.role)) throw new Error('هذا الحساب لا يملك صلاحية لوحة الإدارة.');
                 sessionToken = 'cookie-session';
+                applyRoleAccess();
                 document.getElementById('login-overlay').classList.add('hidden');
                 document.getElementById('user-info-sidebar').style.display = 'flex';
                 const info = document.querySelector('#user-info-sidebar div[style*="flex:1"]');
-                if (info) info.innerHTML = `<div style="font-weight:700;">${escapeHtml(currentUser.display_name || currentUser.username)}</div><small style="color:#94a3b8;">Super Admin</small>`;
+                if (info) info.innerHTML = `<div style="font-weight:700;">${escapeHtml(currentUser.display_name || currentUser.username)}</div><small style="color:#94a3b8;">${currentUser.role === 'developer' ? 'Developer — صلاحيات كاملة' : 'Admin — إدارة المتجر'}</small>`;
                 return true;
             } catch (error) {
                 return false;
@@ -1280,10 +1302,10 @@
                 });
                 const data = await response.json().catch(() => ({}));
                 if (!response.ok) throw new Error(data.error || 'فشل تسجيل الدخول.');
-                if (data.user.role === 'developer') { window.location.replace('developer.html'); return; }
-                if (data.user.role !== 'super_admin') { await fetch('/api/auth/logout', { method: 'POST', credentials: 'same-origin' }); throw new Error('هذه الصفحة مخصصة لحساب Super Admin.'); }
+                if (!['developer', 'admin'].includes(data.user.role)) { await fetch('/api/auth/logout', { method: 'POST', credentials: 'same-origin' }); throw new Error('هذا الحساب لا يملك صلاحية لوحة الإدارة.'); }
                 currentUser = data.user;
                 sessionToken = 'cookie-session';
+                applyRoleAccess();
                 document.getElementById('login-password').value = '';
                 document.getElementById('login-overlay').classList.add('hidden');
                 document.getElementById('user-info-sidebar').style.display = 'flex';
@@ -1346,7 +1368,21 @@
             document.getElementById('prod-type')?.addEventListener('change', function() { document.getElementById('comp-type-group').style.display = this.value === 'component' ? 'block' : 'none'; });
             document.getElementById('filter-type')?.addEventListener('change', function() { renderProductsTable(this.value); });
             
-            // Super-admin user creation
+            // Self-service password change for both Developer and Admin.
+            document.getElementById('password-form')?.addEventListener('submit', async event => {
+                event.preventDefault();
+                const currentPassword = document.getElementById('current-password').value;
+                const newPassword = document.getElementById('new-password').value;
+                const confirmPassword = document.getElementById('confirm-password').value;
+                if (newPassword !== confirmPassword) { showToast('❌ تأكيد كلمة المرور غير مطابق.'); return; }
+                try {
+                    await apiFetch('/api/auth/change-password', { method: 'POST', body: JSON.stringify({ currentPassword, newPassword }) });
+                    event.target.reset();
+                    showToast('✅ تم تغيير كلمة المرور بنجاح.');
+                } catch (error) { showToast(`❌ ${error.message}`); }
+            });
+
+            // Developer-only user creation
             document.getElementById('user-form')?.addEventListener('submit', async event => {
                 event.preventDefault();
                 try {

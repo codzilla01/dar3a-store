@@ -1,6 +1,6 @@
 # 🛡️ Dar3a Store — متجر إنتاجي آمن
 
-متجر عربي RTL للأفلام والمسلسلات والبرامج والألعاب وتجميعات الكمبيوتر، مع طلبات عبر **WhatsApp**، لوحة **Super Admin**، وبوابة مطور مستقلة لإدارة الاشتراكات السنوية والتفعيل.
+متجر عربي RTL للأفلام والمسلسلات والبرامج والألعاب وتجميعات الكمبيوتر، مع طلبات عبر **WhatsApp**، لوحة إدارة بدورين، وبوابة مطور مستقلة لإدارة الاشتراكات السنوية والتفعيل.
 
 > حقوق توزيع المحتوى والترخيص مسؤولية مالك المتجر. قبل الإطلاق، تأكد من أن البيانات والمنتجات وسياسات النشاط تناسب بلد العميل.
 
@@ -9,8 +9,9 @@
 - مصادقة الإدارة أصبحت **اسم مستخدم وكلمة مرور**؛ لا يوجد Telegram OTP أو كلمات مرور افتراضية في الإنتاج.
 - الجلسة JWT محفوظة في **HttpOnly / SameSite=Strict cookie**، وليست في LocalStorage.
 - جميع عمليات الإدارة، الطلبات، المشتركين، الكوبونات، الإعدادات والمستخدمين محمية بصلاحيات خادمية.
-- الأدوار: `super_admin` و`admin` و`developer`.
-- لوحة Super Admin تدير المنتجات والطلبات والإعدادات والكوبونات والمشتركين وحسابات النظام.
+- الأدوار الوحيدة: `developer` و`admin`.
+- **Developer** يملك التحكم الكامل: المتجر، المستخدمون، الاشتراكات والتفعيل.
+- **Admin** يدير المتجر والأصناف والمخزون والطلبات والكوبونات والإعدادات والمشتركين، ويغيّر كلمة مرور حسابه فقط.
 - صفحة `developer.html` لإدارة الاشتراكات السنوية: إنشاء سجل عميل، تفعيل، تجديد، إيقاف، إلغاء، متابعة تاريخ الانتهاء وعدد عمليات تحقق التفعيل.
 - لا يثق الخادم بسعر السلة المرسل من المتصفح: يعيد حساب السعر والكوبون والمخزون داخل PostgreSQL في عملية واحدة.
 - سياسة Supabase الآن مغلقة عن `anon` و`authenticated`؛ الوصول يتم من API فقط بمفتاح `service_role` على الخادم.
@@ -31,8 +32,8 @@
 npm ci
 ALLOW_DEMO_MODE=true \
 ADMIN_JWT_SECRET="ضع-سراً-عشوائياً-بطول-32-حرفاً-على-الأقل" \
-DEMO_SUPER_ADMIN_USERNAME=demo-admin \
-DEMO_SUPER_ADMIN_PASSWORD="ChangeThisDemoPassword123!" \
+DEMO_DEVELOPER_USERNAME=demo-admin \
+DEMO_DEVELOPER_PASSWORD="ChangeThisDemoPassword123!" \
 npm start
 ```
 
@@ -67,17 +68,17 @@ npm start
 
 لا تضف `ALLOW_DEMO_MODE` أو متغيرات `DEMO_*` إلى Vercel.
 
-### 3. إنشاء أول Super Admin
+### 3. إنشاء أول حساب Developer
 
 بعد تنفيذ الـ schema وضبط `.env` محلياً، نفّذ:
 
 ```bash
-npm run bootstrap-admin -- owner 'Use-a-unique-strong-password-123' 'Store Owner'
+npm run bootstrap-developer -- developer 'Use-a-unique-strong-password-123' 'Store Developer'
 ```
 
 - لا تكتب كلمة المرور في Git أو في SQL Editor.
-- يشفّر الأمر كلمة المرور بـ bcrypt ثم ينشئ أو يعيد ضبط حساب `owner`.
-- سجّل الدخول من `/admin.html` وأنشئ حساب Developer منفصلاً من قسم **مستخدمو النظام**.
+- يشفّر الأمر كلمة المرور بـ bcrypt ثم ينشئ أو يعيد ضبط حساب `developer` بدور Developer كامل الصلاحيات.
+- سجّل الدخول من `/admin.html` بحساب Developer، ثم أنشئ حسابات Admin من قسم **مستخدمو النظام**.
 
 ### 4. النشر على Vercel
 
@@ -89,20 +90,16 @@ npm run bootstrap-admin -- owner 'Use-a-unique-strong-password-123' 'Store Owner
 
 ## استخدام لوحة التحكم
 
-### `/admin.html` — Super Admin
+### `/admin.html` — لوحة الإدارة
 
-تحتاج حساب `super_admin` لإدارة:
+تستخدم الصفحة نفسها للدورين:
 
-- المنتجات والمخزون ومنشئ تجميعات PC.
-- طلبات WhatsApp والبيانات التي وصلت للخادم.
-- الكوبونات، إعدادات المتجر، والمشتركين.
-- مستخدمي النظام: إنشاء `super_admin` أو `admin` أو `developer`، وإيقاف الحسابات.
-
-الـ `admin` يملك صلاحية قراءة الطلبات وتحديث حالتها عبر API فقط؛ الواجهة الكاملة مقصورة على Super Admin.
+- **Developer:** صلاحيات كاملة لإدارة المتجر والمستخدمين، ويستطيع الانتقال إلى صفحة الاشتراكات والتفعيل.
+- **Admin:** صلاحيات إدارة المتجر والأصناف والمخزون والطلبات والكوبونات والإعدادات والمشتركين. لا يستطيع إدارة المستخدمين أو الاشتراكات والتفعيل، ويمكنه تغيير كلمة مرور حسابه من قسم **حسابي وكلمة المرور**.
 
 ### `/developer.html` — بوابة المطور
 
-تحتاج حساب `developer` أو `super_admin`.
+تحتاج حساب `developer` فقط.
 
 1. أنشئ اشتراك العميل مع **النطاق فقط** مثل `store.example.com`.
 2. بعد استلام الدفعة، اضغط **تفعيل**. ينشئ النظام مفتاح تفعيل عشوائياً ويعرضه مرة واحدة.
@@ -131,7 +128,7 @@ Content-Type: application/json
 3. الخادم يعيد حساب الأسعار من المنتجات المخزنة، يتحقق من المخزون، ويخفضه، ثم يحفظ الطلب.
 4. **فقط عند نجاح الحفظ** تُفتح رسالة WhatsApp برقم طلب ومجموع معتمد من الخادم.
 
-لذلك لا يمكن للمتصفح تخفيض السعر أو إرسال طلب بسعر مزوّر. غيّر رقم WhatsApp من Super Admin بصيغة دولية.
+لذلك لا يمكن للمتصفح تخفيض السعر أو إرسال طلب بسعر مزوّر. غيّر رقم WhatsApp من لوحة الإدارة بصيغة دولية.
 
 ## واجهة API المختصرة
 
@@ -140,9 +137,10 @@ Content-Type: application/json
 | `GET /api/products`, `GET /api/settings` | عام |
 | `POST /api/newsletter`, `POST /api/orders` | عام ومحدود المعدل |
 | `POST /api/auth/login`, `POST /api/auth/logout`, `GET /api/auth/me` | جلسات الإدارة |
-| `GET /api/dashboard`, المنتجات، الإعدادات، الكوبونات، المستخدمون | Super Admin |
-| `GET/PATCH /api/orders/*` | Super Admin أو Admin |
-| `/api/developer/subscriptions*` | Developer أو Super Admin |
+| `GET /api/dashboard`، المنتجات، الإعدادات، الكوبونات، الطلبات، المشتركين | Developer أو Admin |
+| `/api/users` وإدارة الحسابات | Developer فقط |
+| `/api/developer/subscriptions*` | Developer فقط |
+| `POST /api/auth/change-password` | صاحب الحساب المسجل فقط |
 | `POST /api/license/verify` | عام، محدود المعدل، ولا يعرض بيانات حساسة |
 
 ## الجودة والفحص
@@ -156,8 +154,8 @@ npm audit --omit=dev --audit-level=high
 ## قائمة قبول قبل التسليم
 
 - [ ] تم تنفيذ `supabase/schema.sql` في مشروع العميل الصحيح.
-- [ ] تم إنشاء Super Admin بكلمة مرور فريدة وموثقة في مدير كلمات مرور.
-- [ ] تم إنشاء حساب Developer مستقل.
+- [ ] تم إنشاء حساب Developer بكلمة مرور فريدة وموثقة في مدير كلمات مرور.
+- [ ] تم إنشاء حساب Admin مستقل لإدارة المتجر.
 - [ ] `SUPABASE_SERVICE_KEY` و`ADMIN_JWT_SECRET` موجودان في Vercel فقط ولم يُرفعا إلى Git.
 - [ ] لا توجد سياسات RLS عامة في Supabase.
 - [ ] تم اختبار الدخول والخروج، وإيقاف حساب تجريبي، وعدم وصوله للـ API.

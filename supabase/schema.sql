@@ -80,7 +80,7 @@ create table if not exists public.admin_users (
     id uuid primary key default gen_random_uuid(),
     username text not null unique check (username = lower(username)),
     display_name text not null,
-    role text not null check (role in ('super_admin', 'admin', 'developer')),
+    role text not null check (role in ('developer', 'admin')),
     password_hash text not null,
     is_active boolean not null default true,
     last_login_at timestamptz,
@@ -88,6 +88,12 @@ create table if not exists public.admin_users (
     updated_at timestamptz not null default now()
 );
 create index if not exists admin_users_active_idx on public.admin_users (username, is_active);
+
+-- Role migration from the earlier three-role release. Existing Super Admin
+-- accounts become Developer accounts, the full-control role in this release.
+update public.admin_users set role = 'developer' where role = 'super_admin';
+alter table public.admin_users drop constraint if exists admin_users_role_check;
+alter table public.admin_users add constraint admin_users_role_check check (role in ('developer', 'admin'));
 
 -- Annual client subscription and activation tracking ----------------------
 create table if not exists public.subscriptions (
@@ -242,5 +248,5 @@ values ('site_settings', '{
 }'::jsonb)
 on conflict (key) do nothing;
 
--- Create the first super-admin safely after this migration:
--- npm run bootstrap-admin -- <username> <strong-password> <display-name>
+-- Create the first full-control Developer account safely after this migration:
+-- npm run bootstrap-developer -- <username> <strong-password> <display-name>

@@ -5,8 +5,8 @@ const http = require('node:http');
 process.env.NODE_ENV = 'test';
 process.env.ALLOW_DEMO_MODE = 'true';
 process.env.ADMIN_JWT_SECRET = 'test-secret-that-is-longer-than-thirty-two-characters';
-process.env.DEMO_SUPER_ADMIN_USERNAME = 'owner';
-process.env.DEMO_SUPER_ADMIN_PASSWORD = 'StrongDemoPassword123!';
+process.env.DEMO_DEVELOPER_USERNAME = 'owner';
+process.env.DEMO_DEVELOPER_PASSWORD = 'StrongDemoPassword123!';
 
 const app = require('../index');
 let server;
@@ -51,7 +51,7 @@ test('login uses an HttpOnly cookie and exposes no password hash', async () => {
         body: JSON.stringify({ username: 'owner', password: 'StrongDemoPassword123!' })
     });
     assert.equal(response.status, 200);
-    assert.equal(body.user.role, 'super_admin');
+    assert.equal(body.user.role, 'developer');
     assert.equal('password_hash' in body.user, false);
     const cookie = cookieFrom(response);
     assert.match(cookie, /^dar3a_session=/);
@@ -75,16 +75,31 @@ test('server calculates order total and ignores client supplied prices', async (
     assert.equal(body.order.items[0].price, 5000);
 });
 
-test('developer can create, activate and verify an annual subscription', async () => {
-    const login = await request('/api/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username: 'owner', password: 'StrongDemoPassword123!' }) });
-    const ownerCookie = cookieFrom(login.response);
+test('developer controls subscriptions while Admin manages the store and changes own password', async () => {
+    const developerLogin = await request('/api/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username: 'owner', password: 'StrongDemoPassword123!' }) });
+    const developerCookie = cookieFrom(developerLogin.response);
     const user = await request('/api/users', {
-        method: 'POST', headers: { 'Content-Type': 'application/json', Cookie: ownerCookie },
-        body: JSON.stringify({ username: 'dev.user', display_name: 'Developer', role: 'developer', password: 'DeveloperPassword123!' })
+        method: 'POST', headers: { 'Content-Type': 'application/json', Cookie: developerCookie },
+        body: JSON.stringify({ username: 'store.admin', display_name: 'Store Admin', role: 'admin', password: 'AdminPassword123!' })
     });
     assert.equal(user.response.status, 201);
-    const developerLogin = await request('/api/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username: 'dev.user', password: 'DeveloperPassword123!' }) });
-    const developerCookie = cookieFrom(developerLogin.response);
+
+    const adminLogin = await request('/api/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username: 'store.admin', password: 'AdminPassword123!' }) });
+    const adminCookie = cookieFrom(adminLogin.response);
+    assert.equal(adminLogin.body.user.role, 'admin');
+    assert.equal((await request('/api/dashboard', { headers: { Cookie: adminCookie } })).response.status, 200);
+    assert.equal((await request('/api/coupons', { headers: { Cookie: adminCookie } })).response.status, 200);
+    assert.equal((await request('/api/settings', { method: 'POST', headers: { 'Content-Type': 'application/json', Cookie: adminCookie }, body: JSON.stringify({ name: 'Admin managed store' }) })).response.status, 200);
+    assert.equal((await request('/api/users', { headers: { Cookie: adminCookie } })).response.status, 403);
+    assert.equal((await request('/api/developer/subscriptions', { headers: { Cookie: adminCookie } })).response.status, 403);
+    const changed = await request('/api/auth/change-password', {
+        method: 'POST', headers: { 'Content-Type': 'application/json', Cookie: adminCookie },
+        body: JSON.stringify({ currentPassword: 'AdminPassword123!', newPassword: 'NewAdminPassword123!' })
+    });
+    assert.equal(changed.response.status, 200);
+    assert.equal((await request('/api/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username: 'store.admin', password: 'AdminPassword123!' }) })).response.status, 401);
+    assert.equal((await request('/api/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username: 'store.admin', password: 'NewAdminPassword123!' }) })).response.status, 200);
+
     const subscription = await request('/api/developer/subscriptions', {
         method: 'POST', headers: { 'Content-Type': 'application/json', Cookie: developerCookie },
         body: JSON.stringify({ client_name: 'Client Co', domain: 'store.example.com', contact_email: 'owner@example.com' })

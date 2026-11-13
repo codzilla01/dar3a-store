@@ -310,17 +310,32 @@ app.post('/api/auth/login', authLimiter, async (req, res, next) => {
         res.json({ success: true, user: db.withoutSecrets ? db.withoutSecrets(user) : { id: user.id, username: user.username, role: user.role, display_name: user.display_name } });
     } catch (error) { next(error); }
 });
+app.post('/api/auth/change-password', requireAuth, async (req, res, next) => {
+    try {
+        const currentPassword = String(req.body.currentPassword || '');
+        const newPassword = validPassword(req.body.newPassword);
+        const user = await db.getUserById(req.user.id);
+        if (!user || !await bcrypt.compare(currentPassword, user.password_hash)) {
+            throw publicError('كلمة المرور الحالية غير صحيحة.', 401);
+        }
+        if (await bcrypt.compare(newPassword, user.password_hash)) {
+            throw publicError('اختر كلمة مرور جديدة مختلفة عن الحالية.');
+        }
+        await db.updateUser(req.user.id, { password_hash: await bcrypt.hash(newPassword, 12) });
+        res.json({ success: true, message: 'تم تغيير كلمة المرور بنجاح.' });
+    } catch (error) { next(error); }
+});
 app.post('/api/auth/logout', (req, res) => {
     res.clearCookie('dar3a_session', { httpOnly: true, secure: production, sameSite: 'strict', path: '/' });
     res.json({ success: true });
 });
 app.get('/api/auth/me', requireAuth, (req, res) => res.json({ user: req.user }));
 
-// Super admin dashboard and store administration
-app.get('/api/dashboard', requireAuth, requireRole('super_admin'), async (req, res, next) => {
+// Developer dashboard and store administration
+app.get('/api/dashboard', requireAuth, requireRole('developer', 'admin'), async (req, res, next) => {
     try { res.json(await db.getDashboardStats()); } catch (error) { next(error); }
 });
-app.post('/api/products', requireAuth, requireRole('super_admin'), async (req, res, next) => {
+app.post('/api/products', requireAuth, requireRole('developer', 'admin'), async (req, res, next) => {
     try {
         if (!Array.isArray(req.body.products) || req.body.products.length > 1000) throw publicError('قائمة المنتجات غير صحيحة.');
         const products = req.body.products.map(cleanProduct);
@@ -329,17 +344,17 @@ app.post('/api/products', requireAuth, requireRole('super_admin'), async (req, r
         res.json({ success: true });
     } catch (error) { next(error); }
 });
-app.post('/api/settings', requireAuth, requireRole('super_admin'), async (req, res, next) => {
+app.post('/api/settings', requireAuth, requireRole('developer', 'admin'), async (req, res, next) => {
     try {
         const current = await db.getSettings() || {};
         await db.saveSettings({ ...current, ...cleanSettings(req.body) });
         res.json({ success: true });
     } catch (error) { next(error); }
 });
-app.get('/api/coupons', requireAuth, requireRole('super_admin'), async (req, res, next) => {
+app.get('/api/coupons', requireAuth, requireRole('developer', 'admin'), async (req, res, next) => {
     try { res.json(await db.getCoupons()); } catch (error) { next(error); }
 });
-app.post('/api/coupons', requireAuth, requireRole('super_admin'), async (req, res, next) => {
+app.post('/api/coupons', requireAuth, requireRole('developer', 'admin'), async (req, res, next) => {
     try {
         const coupon = {
             code: cleanText(req.body.coupon?.code ?? req.body.code, 'الكود', { required: true, max: 40 }).toUpperCase(),
@@ -353,45 +368,45 @@ app.post('/api/coupons', requireAuth, requireRole('super_admin'), async (req, re
         res.status(201).json({ success: true, coupon: await db.addCoupon(coupon) });
     } catch (error) { next(error); }
 });
-app.delete('/api/coupons', requireAuth, requireRole('super_admin'), async (req, res, next) => {
+app.delete('/api/coupons', requireAuth, requireRole('developer', 'admin'), async (req, res, next) => {
     try { await db.deleteCoupon(cleanText(req.body.couponCode, 'كود الكوبون', { required: true, max: 40 })); res.json({ success: true }); } catch (error) { next(error); }
 });
-app.get('/api/orders', requireAuth, requireRole('super_admin', 'admin'), async (req, res, next) => {
+app.get('/api/orders', requireAuth, requireRole('developer', 'admin'), async (req, res, next) => {
     try { res.json(await db.getOrders()); } catch (error) { next(error); }
 });
-app.patch('/api/orders/:id/status', requireAuth, requireRole('super_admin', 'admin'), async (req, res, next) => {
+app.patch('/api/orders/:id/status', requireAuth, requireRole('developer', 'admin'), async (req, res, next) => {
     try {
         const status = cleanText(req.body.status, 'حالة الطلب', { required: true, max: 20 });
         if (!['new', 'confirmed', 'delivered', 'cancelled'].includes(status)) throw publicError('حالة الطلب غير صحيحة.');
         res.json({ success: true, order: await db.updateOrderStatus(req.params.id, status) });
     } catch (error) { next(error); }
 });
-app.get('/api/newsletter', requireAuth, requireRole('super_admin'), async (req, res, next) => {
+app.get('/api/newsletter', requireAuth, requireRole('developer', 'admin'), async (req, res, next) => {
     try { res.json(await db.getSubscribers()); } catch (error) { next(error); }
 });
-app.delete('/api/newsletter', requireAuth, requireRole('super_admin'), async (req, res, next) => {
+app.delete('/api/newsletter', requireAuth, requireRole('developer', 'admin'), async (req, res, next) => {
     try { await db.deleteSubscriber(req.body.email === 'all' ? 'all' : cleanEmail(req.body.email)); res.json({ success: true }); } catch (error) { next(error); }
 });
-app.get('/api/users', requireAuth, requireRole('super_admin'), async (req, res, next) => {
+app.get('/api/users', requireAuth, requireRole('developer'), async (req, res, next) => {
     try { res.json(await db.listUsers()); } catch (error) { next(error); }
 });
-app.post('/api/users', requireAuth, requireRole('super_admin'), async (req, res, next) => {
+app.post('/api/users', requireAuth, requireRole('developer'), async (req, res, next) => {
     try {
         const role = cleanText(req.body.role, 'الدور', { required: true, max: 20 });
-        if (!['super_admin', 'admin', 'developer'].includes(role)) throw publicError('الدور غير صحيح.');
+        if (!['developer', 'admin'].includes(role)) throw publicError('الدور غير صحيح.');
         const password = validPassword(req.body.password);
         const user = await db.createUser({ username: canonicalUsername(req.body.username), display_name: cleanText(req.body.display_name, 'الاسم الظاهر', { required: true, max: 100 }), role, password_hash: await bcrypt.hash(password, 12) });
         res.status(201).json({ success: true, user });
     } catch (error) { next(error); }
 });
-app.patch('/api/users/:id', requireAuth, requireRole('super_admin'), async (req, res, next) => {
+app.patch('/api/users/:id', requireAuth, requireRole('developer'), async (req, res, next) => {
     try {
-        if (req.params.id === req.user.id && (req.body.is_active === false || (req.body.role && req.body.role !== 'super_admin'))) throw publicError('لا يمكنك تعطيل أو خفض صلاحيات حسابك الحالي.');
+        if (req.params.id === req.user.id && (req.body.is_active === false || (req.body.role && req.body.role !== 'developer'))) throw publicError('لا يمكنك تعطيل أو خفض صلاحيات حساب المطور الحالي.');
         const changes = {};
         if (req.body.display_name !== undefined) changes.display_name = cleanText(req.body.display_name, 'الاسم الظاهر', { required: true, max: 100 });
         if (req.body.is_active !== undefined) changes.is_active = Boolean(req.body.is_active);
         if (req.body.role !== undefined) {
-            if (!['super_admin', 'admin', 'developer'].includes(req.body.role)) throw publicError('الدور غير صحيح.');
+            if (!['developer', 'admin'].includes(req.body.role)) throw publicError('الدور غير صحيح.');
             changes.role = req.body.role;
         }
         if (req.body.password !== undefined) changes.password_hash = await bcrypt.hash(validPassword(req.body.password), 12);
@@ -401,10 +416,10 @@ app.patch('/api/users/:id', requireAuth, requireRole('super_admin'), async (req,
 });
 
 // Developer portal: annual subscriptions, activation and renewal tracking.
-app.get('/api/developer/subscriptions', requireAuth, requireRole('developer', 'super_admin'), async (req, res, next) => {
+app.get('/api/developer/subscriptions', requireAuth, requireRole('developer'), async (req, res, next) => {
     try { res.json(await db.listSubscriptions()); } catch (error) { next(error); }
 });
-app.post('/api/developer/subscriptions', requireAuth, requireRole('developer', 'super_admin'), async (req, res, next) => {
+app.post('/api/developer/subscriptions', requireAuth, requireRole('developer'), async (req, res, next) => {
     try {
         const subscription = await db.createSubscription({
             client_name: cleanText(req.body.client_name, 'اسم العميل', { required: true, max: 160 }),
@@ -419,7 +434,7 @@ app.post('/api/developer/subscriptions', requireAuth, requireRole('developer', '
         res.status(201).json({ success: true, subscription });
     } catch (error) { next(error); }
 });
-app.post('/api/developer/subscriptions/:id/action', requireAuth, requireRole('developer', 'super_admin'), async (req, res, next) => {
+app.post('/api/developer/subscriptions/:id/action', requireAuth, requireRole('developer'), async (req, res, next) => {
     try {
         const action = cleanText(req.body.action, 'الإجراء', { required: true, max: 20 });
         const subscription = await db.getSubscription(req.params.id);
