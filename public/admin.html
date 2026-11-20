@@ -31,7 +31,7 @@
         /* Login Styles */
         .login-overlay {
             position: fixed; inset: 0; background: radial-gradient(circle at center, #1a1a2e 0%, #0a0e17 100%);
-            z-index: 10000; display: flex; align-items: center; justify-content: center; transition: all 0.5s;
+            z-index: 10000; display: flex; overflow-y: auto; align-items: safe center; justify-content: center; transition: all 0.5s;
         }
         .login-overlay.hidden { opacity: 0; visibility: hidden; pointer-events: none; transform: scale(0.95); }
         .login-card {
@@ -168,7 +168,7 @@
 <body>
     <div class="bg-particles" id="bg-particles"></div>
 
-    <!-- Secure username/password login. Session is an HttpOnly cookie. -->
+    <!-- Owner password or developer device login. Session is an HttpOnly cookie. -->
     <div class="login-overlay" id="login-overlay">
         <div class="login-card">
             <div class="login-logo" id="login-logo-main"><i class="fas fa-user-shield"></i></div>
@@ -176,10 +176,11 @@
             <p id="login-subtitle">لوحة تحكم المطور والإدارة الآمنة</p>
             <form id="login-form" autocomplete="on" style="text-align:right;margin-top:24px;">
                 <div class="form-group"><label for="login-username">اسم المستخدم</label><input class="form-control" id="login-username" name="username" autocomplete="username" required minlength="3" maxlength="64"></div>
-                <div class="form-group"><label for="login-password">كلمة المرور</label><input class="form-control" id="login-password" name="password" type="password" autocomplete="current-password" required minlength="12" maxlength="128"></div>
-                <button class="telegram-btn" id="login-submit" type="submit"><i class="fas fa-right-to-bracket"></i> دخول بكلمة المرور</button>
+                <div class="form-group"><label for="login-password">كلمة المرور (للمالك فقط)</label><input class="form-control" id="login-password" name="password" type="password" autocomplete="current-password" required minlength="12" maxlength="128"></div>
+                <button class="telegram-btn" id="login-submit" type="submit"><i class="fas fa-right-to-bracket"></i> دخول المالك بكلمة المرور</button>
                 <button class="btn btn-outline" id="biometric-login-btn" type="button" style="width:100%;justify-content:center;margin-top:10px;"><i class="fas fa-fingerprint"></i> دخول المطور ببصمة الجهاز</button>
                 <p id="biometric-login-help" style="color:#94a3b8;font-size:.75rem;margin:10px 0 0;">للمطور فقط: أدخل اسم المستخدم أعلاه ثم استخدم بصمة الجهاز أو Face ID أو Windows Hello أو PIN.</p>
+                <p style="font-size:.8rem"><a href="/developer.html">إعداد أول جهاز للمطور</a></p>
                 <div id="login-error" class="error-text" role="alert"></div>
             </form>
             <p style="font-size:.72rem;color:#94a3b8;margin-top:16px;">تُحفظ الجلسة في Cookie آمن ولا تُخزّن كلمة المرور في المتصفح.</p>
@@ -1322,7 +1323,7 @@
         async function updateBiometricAvailability() {
             const available = Boolean(window.Dar3aWebAuthn && await window.Dar3aWebAuthn.supported());
             if (available) return;
-            const message = 'بصمة المنصة أو قفل الجهاز غير متاح في هذا المتصفح. استخدم كلمة المرور أو متصفحاً/جهازاً مدعوماً.';
+            const message = 'بصمة المنصة أو قفل الجهاز غير متاح في هذا المتصفح. يلزم جهاز مدعوم لدخول المطور.';
             ['biometric-login-btn', 'register-biometric-btn'].forEach(id => {
                 const button = document.getElementById(id);
                 if (button) button.disabled = true;
@@ -1409,7 +1410,7 @@
                 error.classList.add('show');
             } finally {
                 button.disabled = false;
-                button.innerHTML = '<i class="fas fa-right-to-bracket"></i> دخول بكلمة المرور';
+                button.innerHTML = '<i class="fas fa-right-to-bracket"></i> دخول المالك بكلمة المرور';
             }
         }
 

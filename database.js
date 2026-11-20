@@ -198,6 +198,16 @@ async function updateUser(id, changes) {
     return data;
 }
 
+async function checkEnrollment(userId, digest, consume = false) {
+    const table = client().from('device_enrollments');
+    let query = (consume ? table.delete() : table.select('user_id')).eq('user_id', userId)
+        .eq('code_hash', digest).gt('expires_at', new Date().toISOString());
+    if (consume) query = query.select('user_id');
+    const { data, error } = await query.maybeSingle();
+    throwIfError(error, 'تعذر التحقق من رمز إعداد الجهاز');
+    return Boolean(data);
+}
+
 async function listWebAuthnCredentials(userId) {
     const { data, error } = await client().from('webauthn_credentials')
         .select('credential_id, name, transports, device_type, backed_up, created_at, last_used_at')
@@ -331,6 +341,7 @@ module.exports = {
     listUsers,
     createUser,
     updateUser,
+    checkEnrollment,
     listWebAuthnCredentials,
     getWebAuthnCredential,
     saveWebAuthnCredential,

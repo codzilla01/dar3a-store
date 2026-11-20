@@ -8,6 +8,9 @@ process.env.ADMIN_JWT_SECRET = 'test-secret-that-is-longer-than-thirty-two-chara
 process.env.DEMO_DEVELOPER_USERNAME = 'owner';
 process.env.DEMO_DEVELOPER_PASSWORD = 'StrongDemoPassword123!';
 
+const crypto = require('node:crypto');
+const { isoCBOR } = require('@simplewebauthn/server/helpers');
+process.env.DEMO_ENROLLMENT_CODE = crypto.randomBytes(32).toString('hex');
 const app = require('../index');
 let server;
 let baseUrl;
@@ -27,6 +30,7 @@ test.before(async () => {
     server = http.createServer(app);
     await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
     baseUrl = `http://127.0.0.1:${server.address().port}`;
+    developerCookie = await enrollAndAuthenticateDeveloper();
 });
 
 test.after(async () => new Promise((resolve, reject) => server.close((error) => error ? reject(error) : resolve())));
@@ -45,21 +49,66 @@ test('sensitive administration endpoints reject unauthenticated requests', async
     }
 });
 
-test('login uses an HttpOnly cookie and exposes no password hash', async () => {
-    const { response, body } = await request('/api/auth/login', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: 'owner', password: 'StrongDemoPassword123!' })
-    });
-    assert.equal(response.status, 200);
+let developerCookie;
+const post = (path, body, Cookie = '') => request(path, {
+    method: 'POST', headers: { 'Content-Type': 'application/json', Cookie }, body: JSON.stringify(body)
+});
+
+async function enrollAndAuthenticateDeveloper() {
+    const prefix = '/api/auth/webauthn/';
+    const grant = { username: 'owner', enrollmentCode: process.env.DEMO_ENROLLMENT_CODE };
+    const options = await post(prefix + 'register/options', grant);
+    assert.equal(options.response.status, 200);
+    const ceremony = cookieFrom(options.response);
+    assert.equal((await request('/api/dashboard', { headers: { Cookie: ceremony } })).response.status, 401);
+
+    // Test authenticator: none attestation, ES256 key and locally verified user.
+    const {privateKey, publicKey} = crypto.generateKeyPairSync('ec', {namedCurve: 'prime256v1'});
+    const jwk = publicKey.export({format: 'jwk'});
+    const key = isoCBOR.encode(new Map([[1, 2], [3, -7], [-1, 1], [-2, Buffer.from(jwk.x, 'base64url')], [-3, Buffer.from(jwk.y, 'base64url')]]));
+    const id = crypto.randomBytes(32), id64 = id.toString('base64url');
+    const hash = value => crypto.createHash('sha256').update(value).digest();
+    const rpHash = hash(options.body.rp.id);
+    const clientData = (type, challenge) => Buffer.from(JSON.stringify({ type, challenge, origin: baseUrl }));
+    const credential = { id: id64, rawId: id64, type: 'public-key' };
+    const register = flags => {
+        const authData = Buffer.concat([rpHash, Buffer.from([flags]), Buffer.alloc(20), Buffer.from([0, id.length]), id, key]);
+        const attestation = isoCBOR.encode(new Map([['fmt','none'], ['attStmt',new Map()], ['authData',authData]]));
+        return post(prefix + 'register/verify', {...grant, response: {...credential, response: {
+            clientDataJSON: clientData('webauthn.create', options.body.challenge).toString('base64url'),
+            attestationObject: Buffer.from(attestation).toString('base64url')
+        }}}, ceremony);
+    };
+    assert.equal((await register(0x4d)).response.status, 400); // backup-eligible key
+    const enrolled = await register(0x45);
+    assert.equal(enrolled.response.status, 201);
+    assert.doesNotMatch(enrolled.response.headers.get('set-cookie'), /dar3a_session=/);
+    assert.equal((await post(prefix + 'register/options', grant)).response.status, 401);
+
+    const auth = await post(prefix + 'authenticate/options', {username: grant.username});
+    assert.deepEqual(auth.body.allowCredentials.map(c => c.id), [id64]);
+    const data = clientData('webauthn.get', auth.body.challenge);
+    const authData = Buffer.concat([rpHash, Buffer.from([5,0,0,0,1])]);
+    const signature = crypto.sign('sha256', Buffer.concat([authData, hash(data)]), privateKey);
+    const verified = await post(prefix + 'authenticate/verify', {response: {...credential, response: {
+        clientDataJSON: data.toString('base64url'), authenticatorData: authData.toString('base64url'), signature: signature.toString('base64url')
+    }}}, cookieFrom(auth.response));
+    assert.equal(verified.response.status, 200);
+    const cookie = verified.response.headers.getSetCookie().find(c => c.startsWith('dar3a_session=')).split(';')[0];
+    assert.match(verified.response.headers.get('set-cookie'), /HttpOnly/);
+    assert.equal('password_hash' in verified.body.user, false);
+    return cookie;
+}
+
+test('developer password and legacy sessions cannot access the dashboard', async () => {
+    const login = await post('/api/auth/login', { username: 'owner', password: process.env.DEMO_DEVELOPER_PASSWORD });
+    assert.equal(login.response.status, 401);
+    assert.equal(cookieFrom(login.response), '');
+    const {body} = await request('/api/auth/me', {headers: {Cookie: developerCookie}});
     assert.equal(body.user.role, 'developer');
-    assert.equal('password_hash' in body.user, false);
-    const cookie = cookieFrom(response);
-    assert.match(cookie, /^dar3a_session=/);
-    assert.match(response.headers.get('set-cookie'), /HttpOnly/i);
-    assert.match(response.headers.get('set-cookie'), /SameSite=Strict/i);
-    const me = await request('/api/auth/me', { headers: { Cookie: cookie } });
-    assert.equal(me.response.status, 200);
-    assert.equal(me.body.user.username, 'owner');
+    const legacyToken = require('jsonwebtoken').sign({sub: body.user.id, role: 'developer'}, process.env.ADMIN_JWT_SECRET,
+        {issuer: 'dar3a-store', audience: 'dar3a-admin', expiresIn: '1h'});
+    assert.equal((await request('/api/dashboard', {headers: {Cookie: `dar3a_session=${legacyToken}`}})).response.status, 401);
 });
 
 test('server calculates order total and ignores client supplied prices', async () => {
@@ -76,8 +125,6 @@ test('server calculates order total and ignores client supplied prices', async (
 });
 
 test('developer controls subscriptions while Admin manages the store and changes own password', async () => {
-    const developerLogin = await request('/api/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username: 'owner', password: 'StrongDemoPassword123!' }) });
-    const developerCookie = cookieFrom(developerLogin.response);
     const user = await request('/api/users', {
         method: 'POST', headers: { 'Content-Type': 'application/json', Cookie: developerCookie },
         body: JSON.stringify({ username: 'store.admin', display_name: 'Store Admin', role: 'admin', password: 'AdminPassword123!' })
@@ -129,14 +176,9 @@ test('WebAuthn device login is limited to Developer and issues a short-lived cer
     const unauthenticatedCredentials = await request('/api/auth/webauthn/credentials');
     assert.equal(unauthenticatedCredentials.response.status, 401);
 
-    const developerLogin = await request('/api/auth/login', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: 'owner', password: 'StrongDemoPassword123!' })
-    });
-    const developerCookie = cookieFrom(developerLogin.response);
     const credentials = await request('/api/auth/webauthn/credentials', { headers: { Cookie: developerCookie } });
     assert.equal(credentials.response.status, 200);
-    assert.deepEqual(credentials.body, []);
+    assert.equal(credentials.body.length, 1);
 
     const registrationOptions = await request('/api/auth/webauthn/register/options', {
         method: 'POST', headers: { 'Content-Type': 'application/json', Cookie: developerCookie }, body: '{}'

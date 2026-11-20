@@ -95,6 +95,13 @@ update public.admin_users set role = 'developer' where role = 'super_admin';
 alter table public.admin_users drop constraint if exists admin_users_role_check;
 alter table public.admin_users add constraint admin_users_role_check check (role in ('developer', 'admin'));
 
+-- One expiring provisioning grant per developer, issued only by the operator CLI.
+create table if not exists public.device_enrollments (
+    user_id uuid primary key references public.admin_users(id) on delete cascade,
+    code_hash text not null,
+    expires_at timestamptz not null
+);
+
 -- Developer device biometrics / passkeys (WebAuthn). Public keys only; no
 -- biometric material ever leaves the user device or is stored in this table.
 create table if not exists public.webauthn_credentials (
@@ -229,7 +236,7 @@ declare
     target text;
     policy_name text;
 begin
-    foreach target in array array['products','settings','coupons','orders','subscribers','admin_sessions','admin_users','webauthn_credentials','subscriptions','subscription_events'] loop
+    foreach target in array array['products','settings','coupons','orders','subscribers','admin_sessions','admin_users','device_enrollments','webauthn_credentials','subscriptions','subscription_events'] loop
         if to_regclass('public.' || target) is not null then
             for policy_name in select policyname from pg_policies where schemaname = 'public' and tablename = target loop
                 execute format('drop policy if exists %I on public.%I', policy_name, target);

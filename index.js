@@ -276,8 +276,8 @@ function cleanItems(items) {
     return [...merged].map(([id, quantity]) => ({ id, quantity }));
 }
 
-function signSession(user) {
-    return jwt.sign({ sub: user.id, role: user.role, username: user.username }, JWT_SECRET, {
+function signSession(user, credentialId) {
+    return jwt.sign({ sub: user.id, role: user.role, username: user.username, credentialId }, JWT_SECRET, {
         algorithm: 'HS256', issuer: 'dar3a-store', audience: 'dar3a-admin', expiresIn: '8h'
     });
 }
@@ -289,6 +289,11 @@ async function requireAuth(req, res, next) {
         const payload = jwt.verify(token, JWT_SECRET, { algorithms: ['HS256'], issuer: 'dar3a-store', audience: 'dar3a-admin' });
         const user = await db.getUserById(payload.sub);
         if (!user || !user.is_active || user.role !== payload.role) throw publicError('الجلسة غير صالحة.', 401);
+        // Legacy password-only developer sessions must not survive this policy change.
+        if (user.role === 'developer') {
+            const device = payload.credentialId && await db.getWebAuthnCredential(payload.credentialId);
+            if (!isDeviceBound(device) || device.user_id !== user.id) throw publicError('سجّل الدخول بجهاز المطور المسجّل.', 401);
+        }
         req.user = db.withoutSecrets ? db.withoutSecrets(user) : (() => { const { password_hash, ...safe } = user; return safe; })();
         next();
     } catch (error) {
@@ -357,22 +362,42 @@ app.post('/api/license/verify', publicWriteLimiter, async (req, res, next) => {
     } catch (error) { next(error); }
 });
 
-// Authentication: username/password only. The resulting token remains in an HttpOnly cookie.
+// Password login is for store owners (admin) only.
 app.post('/api/auth/login', authLimiter, async (req, res, next) => {
     try {
         const username = canonicalUsername(req.body.username);
         const password = String(req.body.password || '');
         const user = await db.getUserByUsername(username);
-        const valid = user?.is_active && password && await bcrypt.compare(password, user.password_hash);
+        const valid = user?.role === 'admin' && user.is_active && password && await bcrypt.compare(password, user.password_hash);
         if (!valid) throw publicError('اسم المستخدم أو كلمة المرور غير صحيحين.', 401);
         await db.updateUserLogin(user.id);
         res.cookie('dar3a_session', signSession(user), sessionCookieOptions());
         res.json({ success: true, user: db.withoutSecrets ? db.withoutSecrets(user) : { id: user.id, username: user.username, role: user.role, display_name: user.display_name } });
     } catch (error) { next(error); }
 });
+function isDeviceBound(credential) {
+    return credential?.device_type === 'singleDevice' && credential.backed_up === false;
+}
+
+// A provisioning code can authorize registration, never a dashboard session.
+async function authorizeRegistration(req, res, next) {
+    if (req.body?.enrollmentCode === undefined) return requireAuth(req, res, next);
+    try {
+        const code = req.body.enrollmentCode;
+        const invalid = () => publicError('رمز إعداد الجهاز غير صالح أو منتهي.', 401);
+        if (typeof code !== 'string' || !/^[a-f0-9]{64}$/.test(code)) throw invalid();
+        const user = await db.getUserByUsername(canonicalUsername(req.body.username));
+        const digest = crypto.createHash('sha256').update(code).digest('hex');
+        if (!user?.is_active || user.role !== 'developer' || !await db.checkEnrollment(user.id, digest)) throw invalid();
+        req.enrollmentHash = digest;
+        req.user = user;
+        next();
+    } catch (error) { next(error); }
+}
+
 // WebAuthn platform authenticators use the device's biometric/PIN system. Only
 // Developer accounts can register and use a biometric credential.
-app.post('/api/auth/webauthn/register/options', requireAuth, requireRole('developer'), async (req, res, next) => {
+app.post('/api/auth/webauthn/register/options', authLimiter, authorizeRegistration, requireRole('developer'), async (req, res, next) => {
     try {
         const config = getWebAuthnConfig(req);
         const credentials = await db.listWebAuthnCredentials(req.user.id);
@@ -387,17 +412,18 @@ app.post('/api/auth/webauthn/register/options', requireAuth, requireRole('develo
             excludeCredentials: credentials.map((credential) => ({ id: credential.credential_id, transports: credential.transports || [] })),
             authenticatorSelection: {
                 authenticatorAttachment: 'platform',
-                residentKey: 'required',
+                // Login supplies allowCredentials; a discoverable (often synced) key isn't needed.
+                residentKey: 'discouraged',
                 userVerification: 'required'
             }
         });
-        createWebAuthnChallenge(res, 'register', req.user.id, options.challenge);
+        createWebAuthnChallenge(res, req.enrollmentHash || 'register', req.user.id, options.challenge);
         res.json(options);
     } catch (error) { next(error); }
 });
-app.post('/api/auth/webauthn/register/verify', requireAuth, requireRole('developer'), async (req, res, next) => {
+app.post('/api/auth/webauthn/register/verify', authLimiter, authorizeRegistration, requireRole('developer'), async (req, res, next) => {
     try {
-        const ceremony = readWebAuthnChallenge(req, 'register');
+        const ceremony = readWebAuthnChallenge(req, req.enrollmentHash || 'register');
         clearWebAuthnChallenge(res);
         if (ceremony.userId !== req.user.id) throw publicError('جلسة البصمة لا تخص هذا الحساب.', 403);
         const config = getWebAuthnConfig(req);
@@ -415,6 +441,8 @@ app.post('/api/auth/webauthn/register/verify', requireAuth, requireRole('develop
         }
         if (!verification.verified || !verification.registrationInfo) throw publicError('تعذر التحقق من بصمة الجهاز.', 400);
         const { credential, credentialDeviceType, credentialBackedUp } = verification.registrationInfo;
+        if (credentialDeviceType !== 'singleDevice' || credentialBackedUp) throw publicError('اختر مفتاحاً محفوظاً على هذا الجهاز فقط؛ المفاتيح القابلة للمزامنة غير مقبولة.');
+        if (req.enrollmentHash && !await db.checkEnrollment(req.user.id, req.enrollmentHash, true)) throw publicError('انتهت صلاحية رمز الإعداد.', 401);
         const saved = await db.saveWebAuthnCredential({
             user_id: req.user.id,
             credential_id: credential.id,
@@ -434,8 +462,8 @@ app.post('/api/auth/webauthn/authenticate/options', authLimiter, async (req, res
         const user = await db.getUserByUsername(username);
         if (!user || !user.is_active || user.role !== 'developer') throw publicError('بيانات دخول البصمة غير متاحة لهذا الحساب.', 401);
         const config = getWebAuthnConfig(req);
-        const credentials = await db.listWebAuthnCredentials(user.id);
-        if (!credentials.length) throw publicError('لا توجد بصمة مسجلة لهذا الحساب. سجلها أولاً من لوحة المطور.', 401);
+        const credentials = (await db.listWebAuthnCredentials(user.id)).filter(isDeviceBound);
+        if (!credentials.length) throw publicError('لا يوجد مفتاح مرتبط بجهاز لهذا الحساب. استخدم رمز الإعداد من بوابة المطور.', 401);
         const options = await generateAuthenticationOptions({
             rpID: config.rpID,
             timeout: 60000,
@@ -452,7 +480,7 @@ app.post('/api/auth/webauthn/authenticate/verify', authLimiter, async (req, res,
         clearWebAuthnChallenge(res);
         const credentialId = cleanText(req.body.response?.id, 'معرف البصمة', { required: true, max: 2048 });
         const credential = await db.getWebAuthnCredential(credentialId);
-        if (!credential || credential.user_id !== ceremony.userId) throw publicError('بصمة الجهاز غير معروفة.', 401);
+        if (!isDeviceBound(credential) || credential.user_id !== ceremony.userId) throw publicError('بصمة الجهاز غير معروفة.', 401);
         const user = await db.getUserById(ceremony.userId);
         if (!user || !user.is_active || user.role !== 'developer') throw publicError('الحساب غير متاح لدخول البصمة.', 401);
         const config = getWebAuthnConfig(req);
@@ -474,9 +502,9 @@ app.post('/api/auth/webauthn/authenticate/verify', authLimiter, async (req, res,
         } catch (error) {
             throw publicError('تعذر التحقق من بصمة الجهاز.', 401);
         }
-        if (!verification.verified) throw publicError('تعذر التحقق من بصمة الجهاز.', 401);
+        if (!verification.verified || verification.authenticationInfo.credentialDeviceType !== 'singleDevice' || verification.authenticationInfo.credentialBackedUp) throw publicError('تعذر التحقق من بصمة الجهاز.', 401);
         await db.updateWebAuthnCredential(credential.credential_id, verification.authenticationInfo.newCounter);
-        res.cookie('dar3a_session', signSession(user), sessionCookieOptions());
+        res.cookie('dar3a_session', signSession(user, credentialId), sessionCookieOptions());
         res.json({ success: true, user: db.withoutSecrets ? db.withoutSecrets(user) : { id: user.id, username: user.username, role: user.role, display_name: user.display_name } });
     } catch (error) { next(error); }
 });
