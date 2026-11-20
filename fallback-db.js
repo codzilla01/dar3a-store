@@ -31,6 +31,10 @@ const store = {
     events: []
 };
 
+const demoCode = process.env.DEMO_ENROLLMENT_CODE;
+let enrollmentHash = demoCode && crypto.createHash('sha256').update(demoCode).digest('hex');
+const enrollmentExpiry = Date.now() + 10 * 60_000;
+
 const copy = (value) => JSON.parse(JSON.stringify(value));
 const safeUser = (user) => { const { password_hash, ...safe } = user; return copy(safe); };
 
@@ -89,6 +93,11 @@ module.exports = {
     async listUsers() { return store.users.map(safeUser); },
     async createUser(user) { const item = { id: uid(), ...copy(user), is_active: true, created_at: now(), updated_at: now(), last_login_at: null }; store.users.push(item); return safeUser(item); },
     async updateUser(id, changes) { const item = store.users.find((user) => user.id === id); if (!item) throw new Error('المستخدم غير موجود'); Object.assign(item, copy(changes), { updated_at: now() }); return safeUser(item); },
+    async checkEnrollment(userId, digest, consume = false) {
+        if (userId !== store.users[0].id || Date.now() >= enrollmentExpiry || digest !== enrollmentHash) return false;
+        if (consume) enrollmentHash = null;
+        return true;
+    },
     async listWebAuthnCredentials(userId) { return copy(store.webauthnCredentials.filter((credential) => credential.user_id === userId).map(({ public_key, counter, user_id, ...safe }) => safe)); },
     async getWebAuthnCredential(credentialId) { const credential = store.webauthnCredentials.find((item) => item.credential_id === credentialId); return credential ? copy(credential) : null; },
     async saveWebAuthnCredential(credential) { if (store.webauthnCredentials.some((item) => item.credential_id === credential.credential_id)) throw new Error('مفتاح البصمة مسجل بالفعل'); const item = { ...copy(credential), created_at: now(), last_used_at: null }; store.webauthnCredentials.push(item); const { public_key, counter, user_id, ...safe } = item; return copy(safe); },

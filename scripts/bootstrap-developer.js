@@ -2,6 +2,7 @@
 // Creates or resets the initial developer account without putting a password in SQL or Git.
 require('dotenv').config();
 
+const crypto = require('node:crypto');
 const bcrypt = require('bcryptjs');
 const { createClient } = require('@supabase/supabase-js');
 
@@ -27,16 +28,23 @@ if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_KEY) {
         auth: { persistSession: false, autoRefreshToken: false }
     });
     const password_hash = await bcrypt.hash(password, 12);
-    const { error } = await supabase.from('admin_users').upsert({
+    const { data: user, error } = await supabase.from('admin_users').upsert({
         username,
         display_name: displayName.slice(0, 100),
         role: 'developer',
         password_hash,
         is_active: true,
         updated_at: new Date().toISOString()
-    }, { onConflict: 'username' });
+    }, { onConflict: 'username' }).select('id').single();
     if (error) throw error;
-    console.log(`Developer "${username}" is ready. Keep the password in a password manager.`);
+    const code = crypto.randomBytes(32).toString('hex');
+    const grant = await supabase.from('device_enrollments').upsert({
+        user_id: user.id,
+        code_hash: crypto.createHash('sha256').update(code).digest('hex'),
+        expires_at: new Date(Date.now() + 10 * 60_000).toISOString()
+    });
+    if (grant.error) throw grant.error;
+    console.log(`Open /developer.html on the trusted device. One-use enrollment code for ${username} (10 minutes): ${code}`);
 })().catch((error) => {
     console.error(`Could not create the developer: ${error.message}`);
     process.exit(1);
